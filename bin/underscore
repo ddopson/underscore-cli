@@ -1,0 +1,301 @@
+#!/usr/bin/env node
+
+var _       = require('underscore');
+var program = require('commander');
+var fs      = require('fs');
+
+try {
+  version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
+} catch(e) {
+  console.error("Error parsing 'package.json'.  Installation is corrupted: ", e.stack);
+  version = 'unknown';
+}
+
+program
+  .version(version)
+  .option('--in <filename>', 'The data file to load')
+  .option('--out <filename>', 'The output file')
+  .option('--data <JSON>', 'Input data. Instead of strict JSON parsing, eval is used.')
+  .option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.")
+  ;
+
+function defineCommand(opts) {
+  var name = opts.name;
+  var description = opts.description;
+  var fn = opts.fn;
+
+  var cmd = program.command(name).description(description);
+
+  if (opts.fn) {
+    if (opts.expr) {
+      cmd.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
+      cmd.action(function(expression, a, b, c) {
+        var userFn = getUserFn(expression, opts.expr);
+        processData(function(data) {
+          return fn(data, userFn, a, b, c);
+        });
+      });
+    } else {
+      cmd.action(function(a, b, c) {
+        processData(function (data) {
+          return fn(data, a, b, c);
+        });
+      });
+    }
+  }
+  
+  if (opts.examples) {
+    cmd.helpInformation = _.wrap(cmd.helpInformation, function (orig) {
+      return orig.apply(cmd) + "  Examples:\n\n" +
+      _.map(opts.examples, function (result, text) {
+        return "# underscore " + text + "\n" + result + "\n";
+      }).join("\n").replace(/^/gm, '    ');
+    });
+  }
+
+  return cmd;
+}
+
+function printMoreHelp() {
+  console.log("See 'underscore help <command>' for more information on a specific command.");
+}
+
+program.on('--help', function () {
+  printMoreHelp();
+});
+
+defineCommand({
+  name: 'help [command]',
+  description: "Print more detailed help and examples for a specific command"
+}).action(function(command) {
+  if(command) {
+    var commandObj = _.find(program.commands, function (obj) { return obj.name==command });
+    if(commandObj) {
+      console.log(commandObj.helpInformation());
+    } else {
+      console.error("Unknown command: " + command);
+    }
+  } else {
+    console.log(program.helpInformation());
+    printMoreHelp();
+  }
+});
+
+defineCommand({
+  name: 'map <expression>',
+  description: "Map each value from a list/object through a transformation expression whose arguments are (value, key, list).'",
+  expr: ["value", "key", "list"],
+  fn: _.map,
+  examples: {
+    "map --data '[1, 2, 3, 4]' 'value+1'":  "[2, 3, 4, 5]",
+  }
+});
+
+defineCommand({
+  name: 'flatten', 
+  description: "Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.",
+  fn: function (data) { return _.flatten(data, program.shallow); },
+  examples: {
+    "flatten --data '[1, [2, [3]], 4]'":            '[1, 2, 3, 4]',
+    "flatten --shallow --data '[1, [2, [3]], 4]'":  '[1, 2, [3], 4]'
+  }
+}).option('--shallow', 'Only flatten array by a single level');
+
+defineCommand({
+  name: 'reduce <expression> [initial_value]',
+  description: "Boil a list down to a single value by successively combining each element with a running total.  Expression args: (total, value, key, list)",
+  expr: ['total', 'value', 'key', 'list'],
+  fn: function (data, userFn, initial) { 
+    if (initial) {
+      return _.reduce(data, userFn, jsonParse(initial, 'initial_value'));
+    } else {
+      return _.reduce(data, userFn); // total == first value
+    }
+  },
+  examples: {
+    "reduce --data '[1, 2, 3, 4]' 'total+value'":        "10",
+    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value'":   "1234",
+    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": "01234",
+  }
+});
+
+defineCommand({
+  name: 'reduceRight <expression> [initial_value]',
+  description: "Right-associative version of reduce. ie, 1 + (2 + (3 + 4)). Expression args: (total, value, key, list)",
+  expr: ['total', 'value', 'key', 'list'],
+  fn: function (data, userFn, initial) { 
+    if (initial) {
+      return _.reduceRight(data, userFn, jsonParse(initial, 'initial_value'));
+    } else {
+      return _.reduceRight(data, userFn); // total == first value
+    }
+  },
+  examples: {
+    "reduceRight --data '[1, 2, 3, 4]' 'total+value'": "10",
+    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value'": "4321",
+    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": "04321",
+  }
+});
+
+defineCommand({
+  name: 'find <expression>',
+  description: "Return the first value for which the expression returns a truish value.  Expression args: (value, key, list)",
+  expr: ['value', 'key', 'list'],
+  fn: _.find,
+  examples: {
+    "find --data '[1, 2, 3, 4]' 'value > 2'": "3",
+    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "2",
+  }
+});
+
+defineCommand({
+  name: 'filter <expression>',
+  description: "Return an array of all values that make the expression true.  Expression args: (value, key, list)",
+  expr: ['value', 'key', 'list'],
+  fn: _.filter,
+  examples: {
+    "find --data '[1, 2, 3, 4]' 'value > 2'": "[3, 4]",
+    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "2",
+  }
+});
+
+defineCommand({
+  name: 'reject <expression>',
+  description: "Return an array of all values that make the expression false.  Expression args: (value, key, list)",
+  expr: ['value', 'key', 'list'],
+  fn: _.reject,
+  examples: {
+    "find --data '[1, 2, 3, 4]' 'value > 2'": "[1, 2]",
+    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "1",
+  }
+});
+
+defineCommand({
+  name: 'all <expression>',
+  description: "Return 'true' if all values in the input make the expression true.  Expression args: (value, key, list)",
+  expr: ['value', 'key', 'list'],
+  fn: _.all,
+  examples: {
+    "all --data '[1, 2, 3, 4]' 'value > 5'": "false",
+    "all --data '[1, 2, 3, 4]' 'value > 2'": "false",
+    "all --data '[1, 2, 3, 4]' 'value > 0'": "true",
+    "all --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "false",
+  }
+});
+
+defineCommand({
+  name: 'any <expression>',
+  description: "Return 'true' if any of the values in the input make the expression true.  Expression args: (value, key, list)",
+  expr: ['value', 'key', 'list'],
+  fn: _.all,
+  examples: {
+    "all --data '[1, 2, 3, 4]' 'value > 5'": "false",
+    "all --data '[1, 2, 3, 4]' 'value > 2'": "true",
+    "all --data '[1, 2, 3, 4]' 'value > 0'": "true",
+    "all --data '{foo: 1, bar: 2}' 'key == \"bar\"'": "true",
+  }
+});
+
+defineCommand({
+  name: 'identity',
+  description: "Output the data without any transformations",
+  fn: function (data) { return data; },
+  examples: {
+    "identity --data '[1, 2, 3, 4]'": "[1, 2, 3, 4]",
+  }
+});
+
+defineCommand({
+  name: 'pluck <key>',
+  description: "Extract a single property from a list of objects",
+  fn: _.pluck,
+  examples: {
+    "pluck --data \"[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]\" name": '["moe", "larry", "curly"]' 
+  }
+});
+
+program
+  .parse(process.argv);
+
+function getUserFn(expression, args) {
+    var code = '(function (' + args.join() + '){' + 
+      (program.nowrap ? expression : ('return (' + expression + ');')) + 
+    '})';
+    try {
+        var userFn = eval (code);
+    } catch (e) {
+      console.error("Error when compiling user expression '%s': %s", code, e.message);
+      process.exit(-1);
+    }
+    return userFn;
+}
+
+function jsonParse(text, source) {
+  if (text === undefined) {
+    return undefined;
+  }
+  try {
+    if (program.strict) {
+      return JSON.parse(text);
+    } else {
+      return eval(text);
+    }
+  } catch (e) {
+    console.error("Error while JSON parsing %s: %s", source, e.message);
+    process.exit(-1);
+  }
+}
+
+function processData(fn) {
+  inputData(function(data) {
+    try {
+      var output = fn(data);
+    } catch (e) {
+      console.error("Error while processing data: %s", e.stack);
+      process.exit(-1);
+    }
+    outputData(output);
+  });
+}
+
+function inputData(cb) {
+  var text, data;
+  if (program.data) {
+    text = program.data;
+    data = jsonParse(text, "'data' argument");
+    cb(data);
+  } else if (program.in) {
+    try {
+      text = fs.readFileSync(program.in);
+    } catch (e) {
+      console.error("Error while reading input file '%s': %s", program.in, e.message);
+      process.exit(-1);
+    }
+    var data = jsonParse(text, "input data from '" + program.in + "'");
+    cb(data);
+  } else {
+    process.stdin.resume();
+    text = "";
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', function (d) {
+      text += d;
+    });
+    process.stdin.on('end', function () {
+      data = jsonParse(text, 'input data');
+      cb(data);
+    });
+  }  
+}
+
+function outputData(data) {
+  if (program.out) {
+    try {
+      fs.writeFileSync(program.out, data);
+    } catch (e) {
+      console.error("Error while writing to output file '%s': ", program.out, e.message);
+    }
+  } else {
+    console.log(data);
+  }
+}
+
