@@ -275,6 +275,39 @@ defineCommand({
   }
 });
 
+// Object Stuff
+//keys
+//values
+//extend
+//defaults
+//functions - does this make sense?  point it at a module with 'eval/require'
+
+// other
+// range
+// indexOf
+// lastIndexOf
+// zip
+// [mine] zipObject
+// uniq
+// intersection
+// [skip] difference
+// union
+// without
+// [mine] withoutKeys
+// compact
+// map --compact
+// last
+// first
+
+// Tests
+// any / all
+//isArray
+//isObject
+//isString
+//isNumber
+//getType
+
+
 program
   .parse(process.argv);
 
@@ -295,16 +328,23 @@ function jsonParse(text, source) {
   if (text === undefined) {
     return undefined;
   }
-  try {
     if (program.strict) {
-      return JSON.parse(text);
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        console.error("Error while JSON parsing %s: %s", source, e.message);
+        process.exit(-1);
+      }
     } else {
-      return eval(text);
+      try {
+        return eval("ret=" + text); // somehow, adding "ret=" makes this work.  else objects don't parse correctly
+      } catch (e) {
+        // TODO: print location where things went wrong
+        console.error("DATA: " + text);
+        console.error("Error while JSONlax ('eval') parsing %s: %s", source, e.stack);
+        process.exit(-1);
+      }
     }
-  } catch (e) {
-    console.error("Error while JSON parsing %s: %s", source, e.message);
-    process.exit(-1);
-  }
 }
 
 function processData(fn) {
@@ -342,7 +382,7 @@ function inputData(cb) {
       text += d;
     });
     process.stdin.on('end', function () {
-      data = jsonParse(text, 'input data');
+      data = jsonParse(text, 'input data from (stdin)');
       cb(data);
     });
   }  
