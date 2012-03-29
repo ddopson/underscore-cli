@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var _       = require('underscore');
+_.mixin(require('underscore.string'));
 var program = require('commander');
 var fs      = require('fs');
 
@@ -11,13 +12,63 @@ try {
   version = 'unknown';
 }
 
-program
-  .version(version)
-  .option('--in <filename>', 'The data file to load')
-  .option('--out <filename>', 'The output file')
-  .option('--data <JSON>', 'Input data. Instead of strict JSON parsing, eval is used.')
-  .option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.")
-  ;
+program.version(version);
+
+function addStandardOptions(command) {
+  command
+    .option('-i, --in <filename>', 'The data file to load.  If not specified, defaults to stdin.')
+    .option('-o, --out <filename>', 'The output file.  If not specified, defaults to stdout.')
+    .option('-d, --data <JSON>', 'Input data provided in lieu of a filename')
+    .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
+}
+
+function addExpressionOptions(command) {
+  command.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
+}
+
+addStandardOptions(program);
+addExpressionOptions(program);
+
+
+program.commandHelp = function () {
+  var cmds = program.commands.map(function(cmd){
+    var args = cmd.args.map(function(arg){
+      return arg.required
+        ? '<' + arg.name + '>'
+        : (arg.name == 'command' ? '[' + arg.name + ']' : '');
+    }).join(' ').replace('expression', 'exp');
+    return [cmd.name + ' ' + args, cmd.description()];
+  });
+
+  var maxlen = _.max(_.map(cmds, function (cmd) { return cmd[0].length; }));
+
+  return _.map(cmds, function (cmd) {
+    return _.sprintf('%-' + maxlen + 's %s', cmd[0], cmd[1]);
+  }).join('\n').replace(/^/gm, ' ');
+};
+
+program.helpInformation = function () {
+  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in|--data/); });
+  var optsStr = '[--in <filename>|--data <JSON>] ' + _.compact(opts.map(function (o) { return o.flags.match('version') ? null : '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
+  return [
+      ''
+    , '  Usage: ' + program.name + ' <command> ' + optsStr
+    , ''
+    , '  Commands:'
+    , ''
+    , '' + program.commandHelp().replace(/^/gm, '    ')
+    , ''
+    , '  Options:'
+    , ''
+    , '' + program.optionHelp().replace(/^/gm, '    ')
+    , ''
+    , '  Examples:'
+    , ''
+    , '' //+ program.examplesHelp().replace(/^/gm, '    ')
+    , ''
+    , "See '" + program.name + " help <command>' for more information on a specific command."
+  ].join('\n');
+};
 
 function defineCommand(opts) {
   var name = opts.name;
@@ -27,8 +78,9 @@ function defineCommand(opts) {
   var cmd = program.command(name).description(description);
 
   if (opts.fn) {
+    addStandardOptions(cmd);
     if (opts.expr) {
-      cmd.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
+      addExpressionOptions(cmd);
       cmd.action(function(expression, a, b, c) {
         var userFn = getUserFn(expression, opts.expr);
         processData(function(data) {
@@ -45,24 +97,33 @@ function defineCommand(opts) {
   }
   
   if (opts.examples) {
-    cmd.helpInformation = _.wrap(cmd.helpInformation, function (orig) {
-      return orig.apply(cmd) + "  Examples:\n\n" +
-      _.map(opts.examples, function (result, text) {
-        return "# underscore " + text + "\n" + result + "\n";
-      }).join("\n").replace(/^/gm, '    ');
-    });
+
+    cmd.examplesHelp = function () {
+      return _.map(opts.examples, function (result, text) {
+        return "# underscore " + text + "\nprints: " + result + "\n";
+      }).join("\n");
+    };
+
+    cmd.helpInformation = function () {
+      return [
+          ''
+        , '  Usage: ' + program.name + ' ' + opts.name + (opts.name.match(/\[|\</) ? '' : ' [options]')
+        , ''
+        , '  ' + description
+        , ''
+        , '  Options:'
+        , ''
+        , '' + cmd.optionHelp().replace(/^/gm, '    ')
+        , ''
+        , '  Examples:'
+        , ''
+        , '' + cmd.examplesHelp().replace(/^/gm, '    ')
+      ].join('\n');
+    };
   }
 
   return cmd;
 }
-
-function printMoreHelp() {
-  console.log("See 'underscore help <command>' for more information on a specific command.");
-}
-
-program.on('--help', function () {
-  printMoreHelp();
-});
 
 defineCommand({
   name: 'help [command]',
@@ -77,7 +138,16 @@ defineCommand({
     }
   } else {
     console.log(program.helpInformation());
-    printMoreHelp();
+  }
+});
+
+defineCommand({
+  name: 'print',
+  description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
+  fn: function (data) { return data; },
+  examples: {
+    "print --data '[1, 2, 3, 4]'": "[1, 2, 3, 4]",
+    "cat data.json | underscore print": "{foo: 'bar', baz: [1, 2, 3]}",
   }
 });
 
@@ -90,16 +160,6 @@ defineCommand({
     "map --data '[1, 2, 3, 4]' 'value+1'":  "[2, 3, 4, 5]",
   }
 });
-
-defineCommand({
-  name: 'flatten', 
-  description: "Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.",
-  fn: function (data) { return _.flatten(data, program.shallow); },
-  examples: {
-    "flatten --data '[1, [2, [3]], 4]'":            '[1, 2, 3, 4]',
-    "flatten --shallow --data '[1, [2, [3]], 4]'":  '[1, 2, [3], 4]'
-  }
-}).option('--shallow', 'Only flatten array by a single level');
 
 defineCommand({
   name: 'reduce <expression> [initial_value]',
@@ -197,13 +257,14 @@ defineCommand({
 });
 
 defineCommand({
-  name: 'identity',
-  description: "Output the data without any transformations",
-  fn: function (data) { return data; },
+  name: 'flatten', 
+  description: "Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.",
+  fn: function (data) { return _.flatten(data, program.shallow); },
   examples: {
-    "identity --data '[1, 2, 3, 4]'": "[1, 2, 3, 4]",
+    "flatten --data '[1, [2, [3]], 4]'":            '[1, 2, 3, 4]',
+    "flatten --shallow --data '[1, [2, [3]], 4]'":  '[1, 2, [3], 4]'
   }
-});
+}).option('--shallow', 'Only flatten array by a single level');
 
 defineCommand({
   name: 'pluck <key>',
