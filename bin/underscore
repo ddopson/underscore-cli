@@ -20,6 +20,7 @@ function addStandardOptions(command) {
     .option('-i, --in <filename>', 'The data file to load.  If not specified, defaults to stdin.')
     .option('-o, --out <filename>', 'The output file.  If not specified, defaults to stdout.')
     .option('-d, --data <JSON>', 'Input data provided in lieu of a filename')
+    .option('-q, --quiet', "Suppress normal output.  'console.log' will still trigger output.")
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
 }
 
@@ -84,7 +85,7 @@ program.Command.prototype.examplesHelp = function () {
       if (!_.isString(result)) {
         result = util.inspect(result, false, 99);
       }
-      return "# underscore " + text + "\nprints: " + result + "\n";
+      return (text.match(/\|/) ? '# ' : "# underscore ") + text + "\n" + result.replace(/^/gm, "prints: ") + "\n";
     }).join("\n");
   }).join("\n");
 };
@@ -149,6 +150,15 @@ function printHelp() {
     process.exit(0);
   }
 }
+
+program.examples = {
+    "map --data '[1, 2, 3, 4]' 'value+1'":  [2, 3, 4, 5],
+    "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' '_.max(value)'":  [4, 8],
+    "echo '{\"foo\":1, \"bar\":2}' | underscore map -q 'console.log(\"key = \", key)'": "key = foo\nkey = bar",
+    "pluck --data \"[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]\" name": ["moe", "larry", "curly"],
+    "keys --data '{name : \"larry\", age : 50}'": ["name", "age"],
+    "reduce --data '[1, 2, 3, 4]' 'total+value'":        "10",
+};
 
 program.command('*').action(function (cmd) {
   printHelp("Unknown command: '%s'", cmd);
@@ -522,16 +532,18 @@ function inputData(cb) {
   }  
 }
 
-function outputData(data, cb) {
-  if (program.out) {
-    try {
-      fs.writeFileSync(program.out, data);
-    } catch (e) {
-      console.error("Error while writing to output file '%s': ", program.out, e.message);
-      process.exit(-1);
+function outputData(data) {
+  if(!program.quiet) {
+    if (program.out) {
+      try {
+        fs.writeFileSync(program.out, data);
+      } catch (e) {
+        console.error("Error while writing to output file '%s': ", program.out, e.message);
+        process.exit(-1);
+      }
+    } else {
+      console.log(data);
     }
-  } else {
-    console.log(data);
   }
 }
 
