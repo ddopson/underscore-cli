@@ -81,6 +81,9 @@ program.Command.prototype.examplesHelp = function () {
   }
   return _.map(examples, function (example) {
     return _.map(example, function (result, text) {
+      if (!_.isString(result)) {
+        result = util.inspect(result, false, 99);
+      }
       return "# underscore " + text + "\nprints: " + result + "\n";
     }).join("\n");
   }).join("\n");
@@ -114,23 +117,24 @@ function defineCommand(opts) {
   
   if (opts.examples) {
     cmd.examples = opts.examples;
-    cmd.helpInformation = function () {
-      return [
-          ''
-        , '  Usage: ' + program.name + ' ' + opts.name + (opts.name.match(/\[|\</) ? '' : ' [options]')
-        , ''
-        , '  ' + description
-        , ''
-        , '  Options:'
-        , ''
-        , '' + cmd.optionHelp().replace(/^/gm, '    ')
-        , ''
-        , '  Examples:'
-        , ''
-        , '' + cmd.examplesHelp().replace(/^/gm, '    ')
-      ].join('\n');
-    };
   }
+  
+  cmd.helpInformation = function () {
+    return [
+        ''
+      , '  Usage: ' + program.name + ' ' + opts.name + (opts.name.match(/\[|\</) ? '' : ' [options]')
+      , ''
+      , '  ' + description
+      , ''
+      , '  Options:'
+      , ''
+      , '' + cmd.optionHelp().replace(/^/gm, '    ')
+      , ''
+      , '  Examples:'
+      , ''
+      , '' + cmd.examplesHelp().replace(/^/gm, '    ')
+    ].join('\n');
+  };
 
   return cmd;
 }
@@ -171,7 +175,7 @@ defineCommand({
   name: 'examples',
   description: "Print an exhaustive list of ALL examples"
 }).action(function() {
-  var examples = _.pluck(program.commands, 'examples');
+  var examples = _.compact(_.pluck(program.commands, 'examples'));
   console.log(program.Command.prototype.examplesHelp.apply({examples: examples}));
   process.exit(0);
 });
@@ -181,8 +185,8 @@ defineCommand({
   description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
   fn: function (data) { return data; },
   examples: {
-    "print --data '[1, 2, 3, 4]'": "[1, 2, 3, 4]",
-    "cat data.json | underscore print": "{foo: 'bar', baz: [1, 2, 3]}",
+    "print --data '[1, 2, 3, 4]'": [1, 2, 3, 4],
+    "cat data.json | underscore print": {foo: 'bar', baz: [1, 2, 3]},
   }
 });
 
@@ -192,7 +196,7 @@ defineCommand({
   expr: ["value", "key", "list"],
   fn: _.map,
   examples: {
-    "map --data '[1, 2, 3, 4]' 'value+1'":  "[2, 3, 4, 5]",
+    "map --data '[1, 2, 3, 4]' 'value+1'":  [2, 3, 4, 5],
   }
 });
 
@@ -249,8 +253,8 @@ defineCommand({
   expr: ['value', 'key', 'list'],
   fn: _.filter,
   examples: {
-    "find --data '[1, 2, 3, 4]' 'value > 2'": "[3, 4]",
-    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "2",
+    "filter --data '[1, 2, 3, 4]' 'value > 2'": [3, 4],
+    "filter --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": [2],
   }
 });
 
@@ -260,8 +264,8 @@ defineCommand({
   expr: ['value', 'key', 'list'],
   fn: _.reject,
   examples: {
-    "find --data '[1, 2, 3, 4]' 'value > 2'": "[1, 2]",
-    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "1",
+    "reject --data '[1, 2, 3, 4]' 'value > 2'": [1, 2],
+    "reject --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": [1],
   }
 });
 
@@ -282,12 +286,12 @@ defineCommand({
   name: 'any <expression>',
   description: "Return 'true' if any of the values in the input make the expression true.  Expression args: (value, key, list)",
   expr: ['value', 'key', 'list'],
-  fn: _.all,
+  fn: _.any,
   examples: {
-    "all --data '[1, 2, 3, 4]' 'value > 5'": "false",
-    "all --data '[1, 2, 3, 4]' 'value > 2'": "true",
-    "all --data '[1, 2, 3, 4]' 'value > 0'": "true",
-    "all --data '{foo: 1, bar: 2}' 'key == \"bar\"'": "true",
+    "any --data '[1, 2, 3, 4]' 'value > 5'": "false",
+    "any --data '[1, 2, 3, 4]' 'value > 2'": "true",
+    "any --data '[1, 2, 3, 4]' 'value > 0'": "true",
+    "any --data '{foo: 1, bar: 2}' 'key == \"bar\"'": "true",
   }
 });
 
@@ -296,8 +300,8 @@ defineCommand({
   description: "Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.",
   fn: function (data) { return _.flatten(data, program.args[0].shallow ? true : false); },
   examples: {
-    "flatten --data '[1, [2, [3]], 4]'":            '[1, 2, 3, 4]',
-    "flatten --shallow --data '[1, [2, [3]], 4]'":  '[1, 2, [3], 4]'
+    "flatten --data '[1, [2, [3]], 4]'":            [1, 2, 3, 4],
+    "flatten --shallow --data '[1, [2, [3]], 4]'":  [1, 2, [3], 4]
   }
 }).option('--shallow', 'Only flatten array by a single level');
 
@@ -306,7 +310,7 @@ defineCommand({
   description: "Extract a single property from a list of objects",
   fn: _.pluck,
   examples: {
-    "pluck --data \"[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]\" name": '["moe", "larry", "curly"]' 
+    "pluck --data \"[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]\" name": ["moe", "larry", "curly"]
   }
 });
 
@@ -315,16 +319,16 @@ defineCommand({
   description: "Retrieve all the names of an object's properties.",
   fn: _.keys,
   examples: {
-    "keys --data '{name : \"larry\", age : 50}'": '["name", "age"]'
+    "keys --data '{name : \"larry\", age : 50}'": ["name", "age"]
   }
 });
 
 defineCommand({
   name: 'values',
   description: "Retrieve all the values of an object's properties.",
-  fn: _.keys,
+  fn: _.values,
   examples: {
-    "keys --data '{name : \"larry\", age : 50}'": '["larry", 50]'
+    "values --data '{name : \"larry\", age : 50}'": ["larry", 50]
   }
 });
 
@@ -337,7 +341,7 @@ defineCommand({
     return _.extend(data, data2);
   },
   examples: {
-    "keys --data '{name : \"larry\", age : 50}' '{age: 65}'": '{name: "larry", age: 65}'
+    "extend --data '{name : \"larry\", age : 50}' '{age: 65}'": {name: "larry", age: 65}
   }
 });
 
@@ -349,7 +353,7 @@ defineCommand({
     return _.defaults(data, data2);
   },
   examples: {
-    "keys --data '{name : \"larry\", age : 50}' '{name: \"unknown\", salary: 100}'": '{name: "larry", age: 50, salary: 100}'
+    "defaults --data '{name : \"larry\", age : 50}' '{name: \"unknown\", salary: 100}'": {name: "larry", age: 50, salary: 100}
   }
 });
 
