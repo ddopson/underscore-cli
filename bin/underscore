@@ -4,6 +4,7 @@ var _       = require('underscore');
 _.mixin(require('underscore.string'));
 var program = require('commander');
 var fs      = require('fs');
+var util    = require('util');
 
 try {
   version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
@@ -29,16 +30,19 @@ function addExpressionOptions(command) {
 addStandardOptions(program);
 addExpressionOptions(program);
 
-
 program.commandHelp = function () {
-  var cmds = program.commands.map(function(cmd){
-    var args = cmd.args.map(function(arg){
-      return arg.required
-        ? '<' + arg.name + '>'
-        : (arg.name == 'command' ? '[' + arg.name + ']' : '');
-    }).join(' ').replace('expression', 'exp');
-    return [cmd.name + ' ' + args, cmd.description()];
-  });
+  var cmds = _(program.commands)
+    .reject(function (cmd) { return cmd.name === '*'; })
+    .map(function(cmd){
+      var args = _(cmd.args)
+        .map(function(arg){
+          return arg.required
+            ? '<' + arg.name.replace('expression', 'exp') + '>'
+            : (arg.name == 'command' ? '[' + arg.name + ']' : '');
+        })
+        .join(' ');
+      return [cmd.name + ' ' + args, cmd.description()];
+    });
 
   var maxlen = _.max(_.map(cmds, function (cmd) { return cmd[0].length; }));
 
@@ -64,10 +68,22 @@ program.helpInformation = function () {
     , ''
     , '  Examples:'
     , ''
-    , '' //+ program.examplesHelp().replace(/^/gm, '    ')
+    , '' + program.examplesHelp().replace(/^/gm, '    ')
     , ''
     , "See '" + program.name + " help <command>' for more information on a specific command."
   ].join('\n');
+};
+
+program.Command.prototype.examplesHelp = function () {
+  var examples = this.examples;
+  if (!_.isArray(examples)) {
+    examples = [examples];
+  }
+  return _.map(examples, function (example) {
+    return _.map(example, function (result, text) {
+      return "# underscore " + text + "\nprints: " + result + "\n";
+    }).join("\n");
+  }).join("\n");
 };
 
 function defineCommand(opts) {
@@ -97,13 +113,7 @@ function defineCommand(opts) {
   }
   
   if (opts.examples) {
-
-    cmd.examplesHelp = function () {
-      return _.map(opts.examples, function (result, text) {
-        return "# underscore " + text + "\nprints: " + result + "\n";
-      }).join("\n");
-    };
-
+    cmd.examples = opts.examples;
     cmd.helpInformation = function () {
       return [
           ''
@@ -125,20 +135,45 @@ function defineCommand(opts) {
   return cmd;
 }
 
+function printHelp() {
+  if (arguments.length > 0) {
+    console.error.apply(console.error, arguments);
+    console.error(program.helpInformation());
+    process.exit(1);
+  } else {
+    console.log(program.helpInformation());
+    process.exit(0);
+  }
+}
+
+program.command('*').action(function (cmd) {
+  printHelp("Unknown command: '%s'", cmd);
+});
+
 defineCommand({
   name: 'help [command]',
   description: "Print more detailed help and examples for a specific command"
 }).action(function(command) {
-  if(command) {
+  if(! command) {
+    printHelp();
+  } else {
     var commandObj = _.find(program.commands, function (obj) { return obj.name==command });
     if(commandObj) {
       console.log(commandObj.helpInformation());
+      process.exit(0);
     } else {
-      console.error("Unknown command: " + command);
+      printHelp("Unknown command: " + command);
     }
-  } else {
-    console.log(program.helpInformation());
   }
+});
+
+defineCommand({
+  name: 'examples',
+  description: "Print an exhaustive list of ALL examples"
+}).action(function() {
+  var examples = _.pluck(program.commands, 'examples');
+  console.log(program.Command.prototype.examplesHelp.apply({examples: examples}));
+  process.exit(0);
 });
 
 defineCommand({
@@ -259,7 +294,7 @@ defineCommand({
 defineCommand({
   name: 'flatten', 
   description: "Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.",
-  fn: function (data) { return _.flatten(data, program.shallow); },
+  fn: function (data) { return _.flatten(data, program.args[0].shallow ? true : false); },
   examples: {
     "flatten --data '[1, [2, [3]], 4]'":            '[1, 2, 3, 4]',
     "flatten --shallow --data '[1, [2, [3]], 4]'":  '[1, 2, [3], 4]'
@@ -275,11 +310,51 @@ defineCommand({
   }
 });
 
+defineCommand({
+  name: 'keys',
+  description: "Retrieve all the names of an object's properties.",
+  fn: _.keys,
+  examples: {
+    "keys --data '{name : \"larry\", age : 50}'": '["name", "age"]'
+  }
+});
+
+defineCommand({
+  name: 'values',
+  description: "Retrieve all the values of an object's properties.",
+  fn: _.keys,
+  examples: {
+    "keys --data '{name : \"larry\", age : 50}'": '["larry", 50]'
+  }
+});
+
+defineCommand({
+  name: 'extend <object>',
+  aliases: ['override'],
+  description: "Override properties in the input data.",
+  fn: function (data, data2) {
+    data2 = jsonParse(data2, 'override_data');
+    return _.extend(data, data2);
+  },
+  examples: {
+    "keys --data '{name : \"larry\", age : 50}' '{age: 65}'": '{name: "larry", age: 65}'
+  }
+});
+
+defineCommand({
+  name: 'defaults <object>',
+  description: "Fill in missing properties in the input data.",
+  fn: function (data, data2) {
+    data2 = jsonParse(data2, 'default_data');
+    return _.defaults(data, data2);
+  },
+  examples: {
+    "keys --data '{name : \"larry\", age : 50}' '{name: \"unknown\", salary: 100}'": '{name: "larry", age: 50, salary: 100}'
+  }
+});
+
+
 // Object Stuff
-//keys
-//values
-//extend
-//defaults
 //functions - does this make sense?  point it at a module with 'eval/require'
 
 // other
@@ -310,6 +385,10 @@ defineCommand({
 
 program
   .parse(process.argv);
+
+if (program.args.length === 0) {
+  printHelp();  
+}
 
 function getUserFn(expression, args) {
     var code = '(function (' + args.join() + '){' + 
@@ -356,6 +435,7 @@ function processData(fn) {
       process.exit(-1);
     }
     outputData(output);
+    process.exit(0);
   });
 }
 
@@ -388,12 +468,13 @@ function inputData(cb) {
   }  
 }
 
-function outputData(data) {
+function outputData(data, cb) {
   if (program.out) {
     try {
       fs.writeFileSync(program.out, data);
     } catch (e) {
       console.error("Error while writing to output file '%s': ", program.out, e.message);
+      process.exit(-1);
     }
   } else {
     console.log(data);
