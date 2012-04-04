@@ -71,7 +71,7 @@ program.helpInformation = function () {
     , ''
     , '' + program.examplesHelp().replace(/^/gm, '    ')
     , ''
-    , "See '" + program.name + " help <command>' for more information on a specific command."
+    , "See '" + program.name + " help <command>' for more information and examples on a specific command."
   ].join('\n');
 };
 
