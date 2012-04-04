@@ -197,6 +197,9 @@ defineCommand({
   fn: _.map,
   examples: {
     "map --data '[1, 2, 3, 4]' 'value+1'":  [2, 3, 4, 5],
+    "map --data '{\"a\": 1, \"b\": 2}' 'key === \"a\" ? value+1 : value-1'":  [2, 1],
+    "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' 'value[1]/value[0]'":  [4, 4],
+    "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' '_.max(value)'":  [4, 8],
   }
 });
 
