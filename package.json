@@ -16,6 +16,7 @@
   ,"directories": {
     "bin": "./bin"
   }
+  ,"repository": {"type": "git", "url": "git://github.com/ddopson/underscore-cli.git" }
   ,"scripts": {
     "test": "vows --spec test/*-test.js"
   }
