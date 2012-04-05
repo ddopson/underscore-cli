@@ -1,2 +1,5 @@
 node_modules
 npm-debug.log
+/actual.txt
+/expected.txt
+/underscore-*.tgz
