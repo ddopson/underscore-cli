@@ -10,15 +10,10 @@ Underscore-CLI can be a simple pretty printer:
     cat data.json | underscore print
 
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
+    
+    curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
 
-    echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
-    prints: key = foo
-    prints: key = bar
-
-Underscore-CLI exposes the full capabilities of [underscore.js] (http://documentcloud.github.com/underscore/), both as first-class commands, and within command-line Javascript expressions:
-
-    # underscore keys --data '{the_name : "larry", his_age : 50}' | underscore map '_.camelize(value)'
-    prints: ['theName', 'hisAge']
+See [Real World Example] (#real_world_example) for the output and a few other variants.  
 
 ### Features
 
@@ -101,7 +96,43 @@ If you run the tool without any arguments, this is what prints out:
 
   See 'underscore help <command>' for more information and examples on a specific command.
 
-### Installing Node (command-line javascript)
+# Real World Example
+<a id="real_world_example" name="real_world_example"></a>
+
+    curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
+
+Which prints (truncated for brevity. the actual list has 25 entries):
+
+    [ 'Fjaðrárgljúfur canyon, Iceland [OC] [683x1024]',
+      'New town, Edinburgh, Scotland [4320 x 3240]',
+      'Sunrise in Bryce Canyon, UT [1120x700] [OC]',
+      'Kariega Game Reserve, South Africa [3584x2688]',
+      'Valle de la Luna, Chile [OS] [1024x683]',
+      'Frosted trees after a snowstorm in Laax, Switzerland [OC] [1072x712]' ]
+
+How many entries was that again?:
+
+    curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title | underscore process 'data.length'
+
+Oh yeah:
+
+    25
+
+Hmm, I think I'd like code-worthy names for those images.
+Good thing Underscore-CLI exposes the full capabilities of [underscore.js] (http://documentcloud.github.com/underscore/) and (plus [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
+
+curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title | underscore map '_.camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
+    [ 'FjarrgljfurCanyonIceland',
+      'NewTownEdinburghScotland',
+      'SunriseInBryceCanyonUT',
+      'KariegaGameReserveSouthAfrica',
+      'ValleDeLaLunaChile',
+      'FrostedTreesAfterASnowstormInLaaxSwitzerland' ]
+
+Try doing THAT with any other one-liner!
+
+
+# Installing Node (command-line javascript)
 <a id="installing_node" name="installing_node"></a>
 
 This tool makes heavy use of Javascript.  Node is very easy to install and rapidly becoming _the_ way to run javascript from the command-line: [Download Node](http://nodejs.org/#download)
@@ -114,4 +145,14 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 
 # Alternatives
 
+* [jsonpipe] (https://github.com/dvxhouse/jsonpipe) - Python focused, w/ a featureset centered around a single scenario
+* [jshon] (http://kmkeen.com/jshon/) - Has a lot of functions, but very terse
+* [json-command] (https://github.com/zpoley/json-command) - very limited
+* [TickTick] (https://github.com/kristopolous/TickTick) - Bash focused JSON manipulation.  Iteresting w/ heavy Bash integration. Complements this tool.
+* [json] (https://github.com/trentm/json) - Similar idea.
+* [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JS environment. Good technical documentation.
+* [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JS library.
+* [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea that I might add as annother command to Underscore-CLI
+
+Please add a Github issue if I've missed any.
 

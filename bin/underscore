@@ -201,6 +201,41 @@ defineCommand({
 });
 
 defineCommand({
+  name: 'process <expression>',
+  description: "Run arbitrary JS against the input data.  Expression Args: (data)",
+  expr: ['data'],
+  fn: function (data, userFn) {
+    return userFn(data);
+  },
+  examples: {
+    "process --data '\"my-string\"' '_.camelize(data)'": "myString",
+    "process --data '[1, 2, 3, 4]' '_.max(data)'": 4
+  }
+});
+
+defineCommand({
+  name: 'extract <field>',
+  description: "Extract a field from the input data.  Also supports field1.field2.field3",
+  fn: function (data, field) {
+    var fields = field.split('.');
+    var sofar = ''; 
+    _.map(fields, function (f) {
+      if (data[f] !== undefined) {
+        data = data[f];
+        sofar = sofar + '.' + f;
+      } else {
+        throw new Error(util.format("data%s does not contain field '%s'", sofar, f));
+      }
+    });
+    return data;
+  },
+  examples: {
+    "extract field1.field2.field3 --data '{field1: {field2: { field3: 1234 }}}'": 1234
+  }
+});
+
+
+defineCommand({
   name: 'map <expression>',
   description: "Map each value from a list/object through a transformation expression whose arguments are (value, key, list).'",
   expr: ["value", "key", "list"],
