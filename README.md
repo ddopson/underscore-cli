@@ -3,11 +3,9 @@
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
 Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.  
 
-Why can't command-line Javascript / JSON be easy?
+<b>Why can't command-line Javascript / JSON be easy?</b>
 
-This package provides a rich command-line interface for processing structured data (eg, JSON).
-
-It can be used as a simple pretty printer:
+Underscore-CLI can be a simple pretty printer:
 
     cat data.json | underscore print
 
@@ -19,31 +17,21 @@ Or it can form the backbone of a rich, full-powered Javascript command-line, ins
 
 Underscore-CLI exposes the full capabilities of [underscore.js] (http://documentcloud.github.com/underscore/), both as first-class commands, and within command-line Javascript expressions:
 
-      # underscore keys --data '{the_name : "larry", his_age : 50}' | underscore map '_.camelize(value)'
-      prints: ['theName', 'hisAge']
+    # underscore keys --data '{the_name : "larry", his_age : 50}' | underscore map '_.camelize(value)'
+    prints: ['theName', 'hisAge']
 
 ### Features
 
-* THE "swiss-army-knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered Javascript command-line
-* Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) from the command-line
-* Makes it VERY easy to write simple JS one-liners similar to using "perl -pe"
-* Multiple command invokations can be chained together to create a data processing pipeline
-* Rich support for input / output formats - pretty-printing, strict JSON, etc [coming soon]
-* Excellent command-line documentation with multiple examples for every command
+ * **FLEXIBLE** - THE "swiss-army-knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered Javascript command-line
+ * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string))
+ * **SIMPLE** - Makes it simple to write JS one-liners similar to using "perl -pe"
+ * **CHAINED** - Multiple command invokations can be chained together to create a data processing pipeline
+ * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc [coming soon]
+ * **DOCUMENTED** - Excellent command-line documentation with multiple examples for every command
 
-### Installing Node (command-line javascript)
+### Installing Underscore-CLI
 
-This tool makes heavy use of Javascript.  Node is very easy to install and rapidly becoming _the_ way to run javascript from the command-line:
-
-http://nodejs.org/#download
-
-Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
-
-    brew install node
-
-For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
-
-### Installing the Module
+If you don't yet have [Node](http://nodejs.org/#download), see [Installing Node](#installing_node).
 
     npm install -g underscore-cli
     underscore help
@@ -112,5 +100,18 @@ If you run the tool without any arguments, this is what prints out:
       
 
   See 'underscore help <command>' for more information and examples on a specific command.
+
+### Installing Node (command-line javascript)
+<a id="installing_node" name="installing_node"></a>
+
+This tool makes heavy use of Javascript.  Node is very easy to install and rapidly becoming _the_ way to run javascript from the command-line: [Download Node](http://nodejs.org/#download)
+
+Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
+
+    brew install node
+
+For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
+
+# Alternatives
 
 
