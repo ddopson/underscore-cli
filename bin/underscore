@@ -5,6 +5,7 @@ _.mixin(require('underscore.string'));
 var program = require('commander');
 var fs      = require('fs');
 var util    = require('util');
+var JSONSelect = require('JSONSelect');
 
 try {
   version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
@@ -119,13 +120,35 @@ function defineCommand(opts) {
   if (opts.examples) {
     cmd.examples = opts.examples;
   }
-  
+ 
+  cmd.notes = opts.notes;
+
+  cmd.notesHelp = function () {
+    var notes = this.notes;
+    if (_.isArray(notes)) {
+      return notes.join("\n");
+    } else {
+      return notes;
+    }
+  }
+
   cmd.helpInformation = function () {
-    return [
+    var help = [];
+    help = help.concat([
         ''
       , '  Usage: ' + program.name + ' ' + opts.name + (opts.name.match(/\[|\</) ? '' : ' [options]')
       , ''
-      , '  ' + description
+    ]);
+    if (cmd.notes) {
+      help = help.concat([
+        '' + cmd.notesHelp().replace(/^/gm, '  ')
+      ]);
+    } else {
+      help = help.concat([
+        '  ' + description
+      ]);
+    }
+    help = help.concat([
       , ''
       , '  Options:'
       , ''
@@ -134,7 +157,9 @@ function defineCommand(opts) {
       , '  Examples:'
       , ''
       , '' + cmd.examplesHelp().replace(/^/gm, '    ')
-    ].join('\n');
+    ]);
+    
+    return help.join('\n');
   };
 
   return cmd;
@@ -281,6 +306,17 @@ defineCommand({
     "reduceRight --data '[1, 2, 3, 4]' 'total+value'": "10",
     "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value'": "4321",
     "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": "04321",
+  }
+});
+
+defineCommand({
+  name: 'select <jselexp>',
+  description: "Run a 'JSON Selector' query against the input data. See jsonselect.org.",
+  fn: function (data, sel) {
+    return JSONSelect.match(sel, data); 
+  },
+  examples: {
+    "cat earthporn.json | underscore select '.data .title'": "['Picture of Greece', 'Pretty Beach', 'Italy From the Air']"
   }
 });
 
@@ -454,6 +490,39 @@ defineCommand({
     "isNumber --data '[]'": false,
     "isNumber --data \"'9'\"": false,
     "isNumber --data \"9\"": true,
+  }
+});
+
+defineCommand({
+  name: 'template <filename>',
+  description: "Process an underscore template and print the results. See 'help template'",
+  notes: [
+    'Process an underscore template and print the results.  Template syntax is similar to the ERB templates used in Ruby:',
+    "Variables can be interpolated with <%= ... %>, or drop the '=' character to run code without interpolating the result.",
+    'Note that functions like _.map are available inside the template and loops can span multiple interpolation boundaries.',
+    'For creating XML/HTML, I reccommend that you consider HAML/JADE templates.  For general text, _.template is as good as it gets',
+    '',
+    'See http://documentcloud.github.com/underscore/#template.'
+  ],
+  fn: function (data, filename) {
+    try {
+      var template = fs.readFileSync(filename);
+    } catch (e) {
+      console.error("Error reading template file '%s': %s", filename, e.message);
+      process.exit(-1);
+    }
+
+    try {
+      var output = _.template(template, data);
+    } catch (e) {
+      console.error("Error processing template file '%s': %s", filename, e.message);
+      process.exit(-1);
+    }
+
+    return output;
+  },
+  examples: {
+    "template --data '{name: \"moe\"}'": "hello moe",
   }
 });
 

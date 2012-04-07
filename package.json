@@ -7,7 +7,9 @@
   ]
   ,"dependencies": {
     "underscore": "*",
-    "commander": "*"
+    "underscore.string": "*",
+    "commander": "*",
+    "JSONSelect": "*"
   }
   ,"devDependencies": {
     "mocha": "*" 

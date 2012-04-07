@@ -118,11 +118,15 @@ Oh yeah, there were:
 
     25
 
+Doing the same thing with 'select' ([jsonselect.org](http://jsonselect.org)):
+
+    cat earthporn.json | underscore select '.data .title'
+
 Hmm, I think I'd like code-worthy names for those images.
 
 Good thing Underscore-CLI exposes the full capabilities of [underscore.js] (http://documentcloud.github.com/underscore/) and (plus [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
 
-    curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title | underscore map '_.camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
+    cat earthporn.json | underscore select '.data .title' | underscore map '_.camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
  
 Which prints ...
 
