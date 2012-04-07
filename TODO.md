@@ -1,12 +1,12 @@
 
 
 # Help
- 
  * Implement 'underscore help strict' and 'underscore help json' that display detailed info on data input / output
  * colorize help - with WHITE for bolding
+ * autogenerate an 'example' for each input / output format
+ * autogenerate README.md from a template and the command-line help output
 
-
-
+# Other
 * implement more commands
 
 # Inputs
