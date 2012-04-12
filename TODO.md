@@ -1,4 +1,7 @@
 
+# Test
+ * convert test.sh to pure-JS under Mocha 
+ * add tests for file input / output, and various formats
 
 # Help
  * Implement 'underscore help strict' and 'underscore help json' that display detailed info on data input / output
