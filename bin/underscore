@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 
-var _       = require('underscore');
+var _             = require('underscore');
 _.mixin(require('underscore.string'));
-var program = require('commander');
-var fs      = require('fs');
-var util    = require('util');
-var JSONSelect = require('JSONSelect');
+var program       = require('commander');
+var fs            = require('fs');
+var util          = require('util');
+var JSONSelect    = require('JSONSelect');
+var inputFormats  = require('../lib/input-formats');
+var outputFormats = require('../lib/output-formats');
+
+var defaultInputFormat  = 'lax';
+var defaultOutputFormat = 'lax';
 
 try {
   version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
@@ -19,7 +24,9 @@ program.version(version);
 function addStandardOptions(command) {
   command
     .option('-i, --in <filename>', 'The data file to load.  If not specified, defaults to stdin.')
+    .option('--infmt <format>', 'The format of the input data. See \'help formats\'')
     .option('-o, --out <filename>', 'The output file.  If not specified, defaults to stdout.')
+    .option('--outfmt <format>', 'The format of the output data. See \'help formats\'')
     .option('-d, --data <JSON>', 'Input data provided in lieu of a filename')
     .option('-q, --quiet', "Suppress normal output.  'console.log' will still trigger output.")
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
@@ -32,7 +39,9 @@ function addExpressionOptions(command) {
 addStandardOptions(program);
 addExpressionOptions(program);
 
-program.commandHelp = function () {
+var Command = program.Command;
+
+Command.prototype.commandHelp = function () {
   var cmds = _(program.commands)
     .reject(function (cmd) { return cmd.name === '*'; })
     .map(function(cmd){
@@ -53,42 +62,113 @@ program.commandHelp = function () {
   }).join('\n').replace(/^/gm, ' ');
 };
 
-program.helpInformation = function () {
-  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in|--data/); });
-  var optsStr = '[--in <filename>|--data <JSON>] ' + _.compact(opts.map(function (o) { return o.flags.match('version') ? null : '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
-  return [
-      ''
-    , '  Usage: ' + program.name + ' <command> ' + optsStr
-    , ''
-    , '  Commands:'
-    , ''
-    , '' + program.commandHelp().replace(/^/gm, '    ')
-    , ''
-    , '  Options:'
-    , ''
-    , '' + program.optionHelp().replace(/^/gm, '    ')
-    , ''
-    , '  Examples:'
-    , ''
-    , '' + program.examplesHelp().replace(/^/gm, '    ')
-    , ''
-    , "See '" + program.name + " help <command>' for more information and examples on a specific command."
-  ].join('\n');
-};
-
-program.Command.prototype.examplesHelp = function () {
+Command.prototype.examplesHelp = function () {
   var examples = this.examples;
+  var format = this.defaultOutputFormat ? this.defaultOutputFormat : defaultOutputFormat;
+  var formatter = outputFormats[format];
   if (!_.isArray(examples)) {
     examples = [examples];
   }
   return _.map(examples, function (example) {
     return _.map(example, function (result, text) {
-      if (!_.isString(result)) {
-        result = util.inspect(result, false, 99);
+      try {
+        return (text.match(/underscore/) ? '' : 'underscore ') + text + "\n" + formatter.stringify(result).replace(/^/gm, "# ") + "\n";
+      } catch (e) {
+        console.log("ERROR with '%s': %s", text, e.stack);
+        process.exit(-1);
       }
-      return (text.match(/\|/) ? '# ' : "# underscore ") + text + "\n" + result.replace(/^/gm, "prints: ") + "\n";
     }).join("\n");
   }).join("\n");
+};
+
+Command.prototype.notesHelp = function () {
+  var notes = this.notes;
+  if (_.isArray(notes)) {
+    return notes.join("\n");
+  } else if (notes) {
+    return notes;
+  } else if (this._description) {
+    return this._description;
+  } else {
+    return '';
+  }
+}
+
+Command.prototype.usage = function(str){
+  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in\b|--data|--version/); });
+  var optsStr = '[--in <filename>|--data <JSON>] ' + _.compact(opts.map(function (o) { return '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
+  
+  var args = this.args.map(function(arg){
+    return arg.required
+      ? '<' + arg.name + '>' 
+      : '[' + arg.name + ']';
+  });
+
+  if (this.commands.length > 0) {
+    args.push('<command>');
+  }
+
+  return args.join(' ') + ' ' + optsStr;
+};
+
+Command.prototype.fullName = function () {
+  if (this.parent) {
+    return this.parent.fullName() + ' ' + this.name;
+  } else {
+    return this.name;
+  }
+};
+
+Command.prototype.helpInformation = function () {
+  
+  var help = [
+      ''
+    , '  Usage: ' + this.fullName() + ' ' + this.usage()
+    , ''
+    , '' + this.notesHelp().replace(/^/gm, '  ')
+  ];
+
+  help = help.concat(this.commands.length == 0 ? [] : [
+      '  Commands:'
+    , ''
+    , '' + this.commandHelp().replace(/^/gm, '    ')
+    , ''
+  ]);
+  
+  help = help.concat([
+    , ''
+    , '  Options:'
+    , ''
+    , '' + this.optionHelp().replace(/^/gm, '    ')
+  ]);
+    
+  help = help.concat([
+    , ''
+    , '  Examples:'
+    , ''
+    , '' + this.examplesHelp().replace(/^/gm, '    ')
+  ]);
+  
+  return help.join('\n');
+};
+
+Command.prototype.command = function (args) {
+  if (_.isString(args)) {
+    args = { name: args };
+  }
+  
+  var args2 = args.name.split(/ +/);
+  var cmd = new Command(args2.shift());
+  this.commands.push(cmd);
+  cmd.parseExpectedArgs(args2);
+  cmd.parent = this;
+  
+  if (args.description) {
+    cmd.description(args.description);
+  }
+  
+  return cmd;
+ 
 };
 
 function defineCommand(opts) {
@@ -96,8 +176,12 @@ function defineCommand(opts) {
   var description = opts.description;
   var fn = opts.fn;
 
-  var cmd = program.command(name).description(description);
-
+  var cmd = program.command(opts);
+  cmd.examples = opts.examples;
+  cmd.notes = opts.notes;
+  cmd.defaultOutputFormat = opts.defaultOutputFormat;
+  cmd.defaultInputFormat = opts.defaultInputFormat;
+  
   if (opts.fn) {
     addStandardOptions(cmd);
     if (opts.expr) {
@@ -109,59 +193,20 @@ function defineCommand(opts) {
         });
       });
     } else {
-      cmd.action(function(a, b, c) {
+      cmd.action(function(a, b, c, d, e) {
+        if (cmd.defaultOutputFormat) {
+          defaultOutputFormat = cmd.defaultOutputFormat;
+        }
+        if (opts.defaultInputFormat) {
+          defaultInputFormat = cmd.defaultInputFormat;
+        }
         processData(function (data) {
-          return fn(data, a, b, c);
+          return fn(data, a, b, c, d, e);
         });
       });
     }
   }
   
-  if (opts.examples) {
-    cmd.examples = opts.examples;
-  }
- 
-  cmd.notes = opts.notes;
-
-  cmd.notesHelp = function () {
-    var notes = this.notes;
-    if (_.isArray(notes)) {
-      return notes.join("\n");
-    } else {
-      return notes;
-    }
-  }
-
-  cmd.helpInformation = function () {
-    var help = [];
-    help = help.concat([
-        ''
-      , '  Usage: ' + program.name + ' ' + opts.name + (opts.name.match(/\[|\</) ? '' : ' [options]')
-      , ''
-    ]);
-    if (cmd.notes) {
-      help = help.concat([
-        '' + cmd.notesHelp().replace(/^/gm, '  ')
-      ]);
-    } else {
-      help = help.concat([
-        '  ' + description
-      ]);
-    }
-    help = help.concat([
-      , ''
-      , '  Options:'
-      , ''
-      , '' + cmd.optionHelp().replace(/^/gm, '    ')
-      , ''
-      , '  Examples:'
-      , ''
-      , '' + cmd.examplesHelp().replace(/^/gm, '    ')
-    ]);
-    
-    return help.join('\n');
-  };
-
   return cmd;
 }
 
@@ -177,12 +222,12 @@ function printHelp() {
 }
 
 program.examples = {
-    "map --data '[1, 2, 3, 4]' 'value+1'":  [2, 3, 4, 5],
+    "map --data '[1, 2, 3, 4]' 'value+1'"                     :  [2, 3, 4, 5],
     "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' '_.max(value)'":  [4, 8],
     "echo '{\"foo\":1, \"bar\":2}' | underscore map -q 'console.log(\"key = \", key)'": "key = foo\nkey = bar",
     "pluck --data \"[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]\" name": ["moe", "larry", "curly"],
-    "keys --data '{name : \"larry\", age : 50}'": ["name", "age"],
-    "reduce --data '[1, 2, 3, 4]' 'total+value'":        "10",
+    "keys --data '{name : \"larry\", age : 50}'"              : ["name", "age"],
+    "reduce --data '[1, 2, 3, 4]' 'total+value'"              : 10,
 };
 
 program.command('*').action(function (cmd) {
@@ -210,9 +255,38 @@ defineCommand({
   name: 'examples',
   description: "Print an exhaustive list of ALL examples"
 }).action(function() {
-  var examples = _.compact(_.pluck(program.commands, 'examples'));
-  console.log(program.Command.prototype.examplesHelp.apply({examples: examples}));
+  console.log(_.compact(_.map(program.commands, function (cmd) {
+    return cmd.examplesHelp();
+  })).join('\n'));
   process.exit(0);
+});
+
+defineCommand({
+  name: 'type',
+  description: 'Print the type of the input data: {object, array, number, string, null}',
+  fn: function (data) {
+    if (_.isArray(data)) {
+      return 'array';
+    } else if (_.isObject(data)) {
+      return 'object';
+    } else if (_.isString(data)) {
+      return 'string';
+    } else if (_.isNumber(data)) {
+      return 'number';
+    } else if (_.isNull(data)) {
+      return 'null';
+    } else {
+      return 'UNKNOWN?';
+    }
+  },
+  examples: {
+    'type --data \'[]\'':   'array',
+    'type --data \'{}\'':   'object',
+    'type --data 99':       'number',
+    'type --data \'99\'':   'number',
+    'type --data \'"99"\'': 'string',
+    'type --data \'null\'': 'null',
+  }
 });
 
 defineCommand({
@@ -221,7 +295,7 @@ defineCommand({
   fn: function (data) { return data; },
   examples: {
     "print --data '[1, 2, 3, 4]'": [1, 2, 3, 4],
-    "cat data.json | underscore print": {foo: 'bar', baz: [1, 2, 3]},
+    "cat example-data/simple.json | underscore print": {foo: 'bar', baz: [1, 2, 3]},
   }
 });
 
@@ -279,15 +353,15 @@ defineCommand({
   expr: ['total', 'value', 'key', 'list'],
   fn: function (data, userFn, initial) { 
     if (initial) {
-      return _.reduce(data, userFn, jsonParse(initial, 'initial_value'));
+      return _.reduce(data, userFn, parseInput(initial, initial));
     } else {
       return _.reduce(data, userFn); // total == first value
     }
   },
   examples: {
-    "reduce --data '[1, 2, 3, 4]' 'total+value'":        "10",
-    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value'":   "1234",
-    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": "01234",
+    "reduce --data '[1, 2, 3, 4]' 'total+value'":        10,
+    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value'":   '1234',
+    "reduce --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": '01234',
   }
 });
 
@@ -297,15 +371,15 @@ defineCommand({
   expr: ['total', 'value', 'key', 'list'],
   fn: function (data, userFn, initial) { 
     if (initial) {
-      return _.reduceRight(data, userFn, jsonParse(initial, 'initial_value'));
+      return _.reduceRight(data, userFn, parseInput(initial, 'initial_value'));
     } else {
       return _.reduceRight(data, userFn); // total == first value
     }
   },
   examples: {
-    "reduceRight --data '[1, 2, 3, 4]' 'total+value'": "10",
-    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value'": "4321",
-    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": "04321",
+    "reduceRight --data '[1, 2, 3, 4]' 'total+value'": 10,
+    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value'": '4321',
+    "reduceRight --data '[1, 2, 3, 4]' 'total+\"\"+value' 0": '04321',
   }
 });
 
@@ -316,7 +390,13 @@ defineCommand({
     return JSONSelect.match(sel, data); 
   },
   examples: {
-    "cat earthporn.json | underscore select '.data .title'": "['Picture of Greece', 'Pretty Beach', 'Italy From the Air']"
+    "underscore -i example-data/earthporn.json select '.children .title'": 
+    [ 'Eating breakfast in the Norwegian woods! Captured with my phone [2448x3264] ',
+      'The Rugged Beauty of Zion NP Utah at Sunrise [OC] (1924x2579)',
+      'Falls and island near Valdez, AK on a rainy day [4200 x 3000]',
+      'Havasu Falls, Havasupai, Arizona.  This is a personal photograph from a trip I took in 2006 before the flood of 2008 [960x1280]',
+      'Victoria Amazonica in Brazil, SC [2448X3264]',
+      'A dreamy haze flows over the Alaska Range on the Castner Glacier [4948 x 3280]' ]
   }
 });
 
@@ -326,8 +406,8 @@ defineCommand({
   expr: ['value', 'key', 'list'],
   fn: _.find,
   examples: {
-    "find --data '[1, 2, 3, 4]' 'value > 2'": "3",
-    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "2",
+    "find --data '[1, 2, 3, 4]' 'value > 2'": 3,
+    "find --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": 2,
   }
 });
 
@@ -397,7 +477,7 @@ defineCommand({
   aliases: ['override'],
   description: "Override properties in the input data.",
   fn: function (data, data2) {
-    data2 = jsonParse(data2, 'override_data');
+    data2 = parseInput(data2, 'override_data');
     return _.extend(data, data2);
   },
   examples: {
@@ -409,7 +489,7 @@ defineCommand({
   name: 'defaults <object>',
   description: "Fill in missing properties in the input data.",
   fn: function (data, data2) {
-    data2 = jsonParse(data2, 'default_data');
+    data2 = parseInput(data2, 'default_data');
     return _.defaults(data, data2);
   },
   examples: {
@@ -423,10 +503,10 @@ defineCommand({
   expr: ['value', 'key', 'list'],
   fn: _.any,
   examples: {
-    "any --data '[1, 2, 3, 4]' 'value > 5'": "false",
-    "any --data '[1, 2, 3, 4]' 'value > 2'": "true",
-    "any --data '[1, 2, 3, 4]' 'value > 0'": "true",
-    "any --data '{foo: 1, bar: 2}' 'key == \"bar\"'": "true",
+    "any --data '[1, 2, 3, 4]' 'value > 5'": false,
+    "any --data '[1, 2, 3, 4]' 'value > 2'": true,
+    "any --data '[1, 2, 3, 4]' 'value > 0'": true,
+    "any --data '{foo: 1, bar: 2}' 'key == \"bar\"'": true,
   }
 });
 
@@ -436,10 +516,10 @@ defineCommand({
   expr: ['value', 'key', 'list'],
   fn: _.all,
   examples: {
-    "all --data '[1, 2, 3, 4]' 'value > 5'": "false",
-    "all --data '[1, 2, 3, 4]' 'value > 2'": "false",
-    "all --data '[1, 2, 3, 4]' 'value > 0'": "true",
-    "all --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": "false",
+    "all --data '[1, 2, 3, 4]' 'value > 5'": false,
+    "all --data '[1, 2, 3, 4]' 'value > 2'": false,
+    "all --data '[1, 2, 3, 4]' 'value > 0'": true,
+    "all --data '{\"foo\": 1, \"bar\": 2}' 'key == \"bar\"'": false,
   }
 });
 
@@ -475,9 +555,9 @@ defineCommand({
   description: "Return 'true' if the input data is a string",
   fn: _.isString,
   examples: {
-    "isString --data '{}'": false,
-    "isString --data '[]'": false,
-    "isString --data \"'foo'\"": true
+    "isString --data '{}'"      : false,
+    "isString --data '[]'"      : false,
+    "isString --data \"'foo'\"" : true
   }
 });
 
@@ -486,10 +566,10 @@ defineCommand({
   description: "Return 'true' if the input data is a number",
   fn: _.isNumber,
   examples: {
-    "isNumber --data '{}'": false,
-    "isNumber --data '[]'": false,
-    "isNumber --data \"'9'\"": false,
-    "isNumber --data \"9\"": true,
+    "isNumber --data '{}'"    : false,
+    "isNumber --data '[]'"    : false,
+    "isNumber --data \"'9'\"" : false,
+    "isNumber --data \"9\""   : true,
   }
 });
 
@@ -506,7 +586,7 @@ defineCommand({
   ],
   fn: function (data, filename) {
     try {
-      var template = fs.readFileSync(filename);
+      var template = fs.readFileSync(filename, 'utf8');
     } catch (e) {
       console.error("Error reading template file '%s': %s", filename, e.message);
       process.exit(-1);
@@ -521,8 +601,9 @@ defineCommand({
 
     return output;
   },
+  defaultOutputFormat: 'text',
   examples: {
-    "template --data '{name: \"moe\"}'": "hello moe",
+    "template --data '{name: \"moe\"}' example-data/trivial.template": "hello moe",
   }
 });
 
@@ -550,7 +631,6 @@ defineCommand({
 // Tests
 //getType
 
-
 program
   .parse(process.argv);
 
@@ -565,33 +645,10 @@ function getUserFn(expression, args) {
     try {
         var userFn = eval (code);
     } catch (e) {
-      console.error("Error when compiling user expression '%s': %s", code, e.message);
+      console.error("Error while compiling user expression '%s': %s", code, e.message);
       process.exit(-1);
     }
     return userFn;
-}
-
-function jsonParse(text, source) {
-  if (text === undefined) {
-    return undefined;
-  }
-    if (program.strict) {
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        console.error("Error while JSON parsing %s: %s", source, e.message);
-        process.exit(-1);
-      }
-    } else {
-      try {
-        return eval("ret=" + text); // somehow, adding "ret=" makes this work.  else objects don't parse correctly
-      } catch (e) {
-        // TODO: print location where things went wrong
-        console.error("DATA: " + text);
-        console.error("Error while JSONlax ('eval') parsing %s: %s", source, e.stack);
-        process.exit(-1);
-      }
-    }
 }
 
 function processData(fn) {
@@ -607,20 +664,48 @@ function processData(fn) {
   });
 }
 
+function parseInput(text, source) {
+  if (text === undefined) {
+    return undefined;
+  }
+  var format;
+  if (program.infmt) {
+    format = program.infmt;
+  } else if (program.strict) {
+    format = 'strict';
+  } else {
+    format = 'lax';
+  }
+
+  if (! inputFormats[format]) {
+      console.error("Unrecognized input format: '%s'.  See 'help formats'", format);
+      process.exit(-1);
+  }
+
+  var formatObj = inputFormats[format];
+  
+  try {
+    return formatObj.parse(text);
+  } catch (e) {
+    console.error("Error while parsing %s in mode '%s': %s", source, format, e.message);
+    process.exit(-1);
+  }
+}
+
 function inputData(cb) {
   var text, data;
   if (program.data) {
     text = program.data;
-    data = jsonParse(text, "'data' argument");
+    data = parseInput(text, "'--data' argument");
     cb(data);
   } else if (program.in) {
     try {
-      text = fs.readFileSync(program.in);
+      text = fs.readFileSync(program.in, 'utf8');
     } catch (e) {
       console.error("Error while reading input file '%s': %s", program.in, e.message);
       process.exit(-1);
     }
-    var data = jsonParse(text, "input data from '" + program.in + "'");
+    var data = parseInput(text, "'" + program.in + "'");
     cb(data);
   } else {
     process.stdin.resume();
@@ -630,7 +715,7 @@ function inputData(cb) {
       text += d;
     });
     process.stdin.on('end', function () {
-      data = jsonParse(text, 'input data from (stdin)');
+      data = parseInput(text, 'STDIN');
       cb(data);
     });
   }  
@@ -638,15 +723,39 @@ function inputData(cb) {
 
 function outputData(data) {
   if(!program.quiet) {
+    
+    var format;
+    if (program.outfmt) {
+      format = program.outfmt;
+    } else if (program.strict) {
+      format = 'json';
+    } else {
+      format = defaultOutputFormat;
+    }
+  
+    if (! outputFormats[format]) {
+        var valid_formats = "['" + _.keys(outputFormats).join("', '") + "']";
+        console.error("Unrecognized output format: '%s'.  See 'help formats', or select from %s", format, valid_formats);
+        process.exit(-1);
+    }
+          
+    var output;
+    try {
+       output = outputFormats[format].stringify(data);
+    } catch (e) {
+      console.error("Error formatting output data in mode '%s': %s", format, e.message);
+      process.exit(-1);
+    }
+    
     if (program.out) {
       try {
-        fs.writeFileSync(program.out, data);
+        fs.writeFileSync(program.out, output, 'utf8');
       } catch (e) {
         console.error("Error while writing to output file '%s': ", program.out, e.message);
         process.exit(-1);
       }
     } else {
-      console.log(data);
+      console.log(output);
     }
   }
 }
