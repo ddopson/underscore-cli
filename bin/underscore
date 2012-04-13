@@ -263,7 +263,7 @@ defineCommand({
 
 defineCommand({
   name: 'type',
-  description: 'Print the type of the input data: {object, array, number, string, null}',
+  description: 'Print the type of the input data: {object, array, number, string, boolean, null}',
   fn: function (data) {
     if (_.isArray(data)) {
       return 'array';
@@ -275,6 +275,8 @@ defineCommand({
       return 'number';
     } else if (_.isNull(data)) {
       return 'null';
+    } else if (_.isBoolean(data)) {
+      return 'boolean';
     } else {
       return 'UNKNOWN?';
     }
@@ -285,6 +287,7 @@ defineCommand({
     'type --data 99':       'number',
     'type --data \'99\'':   'number',
     'type --data \'"99"\'': 'string',
+    'type --data \'false\'': 'boolean',
     'type --data \'null\'': 'null',
   }
 });
