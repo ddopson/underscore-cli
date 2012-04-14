@@ -36,12 +36,16 @@ If you don't yet have [Node](http://nodejs.org/#download), see [Installing Node]
 If you run the tool without any arguments, this is what prints out:
 
   
-    Usage: underscore <command> [--in <filename>|--data <JSON>] [--out <filename>] [--quiet] [--strict] [--nowrap]
+    Usage: underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--nowrap]
   
+  
+    
     Commands:
+  
   
        help [command]      Print more detailed help and examples for a specific command
        examples            Print an exhaustive list of ALL examples
+       type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
        print               Output the data without any transformations. Can be used to pretty-print JSON data.
        process <exp>       Run arbitrary JS against the input data.  Expression Args: (data)
        extract <field>     Extract a field from the input data.  Also supports field1.field2.field3
@@ -55,7 +59,7 @@ If you run the tool without any arguments, this is what prints out:
        flatten             Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.
        pluck <key>         Extract a single property from a list of objects
        keys                Retrieve all the names of an object's properties.
-         values              Retrieve all the values of an object's properties.
+       values              Retrieve all the values of an object's properties.
        extend <object>     Override properties in the input data.
        defaults <object>   Fill in missing properties in the input data.
        any <exp>           Return 'true' if any of the values in the input make the expression true.  Expression args: (value, key, list)
@@ -64,44 +68,50 @@ If you run the tool without any arguments, this is what prints out:
        isArray             Return 'true' if the input data is an array
        isString            Return 'true' if the input data is a string
        isNumber            Return 'true' if the input data is a number
+       isBoolean           Return 'true' if the input data is a boolean, ie {true, false}
+       isNull              Return 'true' if the input data is the 'null' value
+       isUndefined         Return 'true' if the input data is undefined
        template <filename> Process an underscore template and print the results. See 'help template'
-       type                Print the type of the input data: {object, array, number, string, null}
+  
+  
   
     Options:
+  
   
       -h, --help            output usage information
       -V, --version         output the version number
       -i, --in <filename>   The data file to load.  If not specified, defaults to stdin.
       --infmt <format>      The format of the input data. See 'help formats'
       -o, --out <filename>  The output file.  If not specified, defaults to stdout.
+      --outfmt <format>     The format of the output data. See 'help formats'
       -d, --data <JSON>     Input data provided in lieu of a filename
+      -n, --nodata          Input data is 'undefined'
       -q, --quiet           Suppress normal output.  'console.log' will still trigger output.
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
       --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
   
+  
     Examples:
   
-      # underscore map --data '[1, 2, 3, 4]' 'value+1'
-      prints: [ 2, 3, 4, 5 ]
-      
-      # underscore map --data '{"a": [1, 4], "b": [2, 8]}' '_.max(value)'
-      prints: [ 4, 8 ]
-      
-      # echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
-      prints: key = foo
-      prints: key = bar
-      
-      # underscore pluck --data "[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]" name
-      prints: [ 'moe', 'larry', 'curly' ]
-      
-      # underscore keys --data '{name : "larry", age : 50}'
-      prints: [ 'name', 'age' ]
-      
-      # underscore reduce --data '[1, 2, 3, 4]' 'total+value'
-      prints: 10
-      
   
-  See 'underscore help <command>' for more information and examples on a specific command.
+      underscore map --data '[1, 2, 3, 4]' 'value+1'
+      # [ 2, 3, 4, 5 ]
+      
+      underscore map --data '{"a": [1, 4], "b": [2, 8]}' '_.max(value)'
+      # [ 4, 8 ]
+      
+      echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
+      # 'key = foo\nkey = bar'
+      
+      underscore pluck --data "[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]" name
+      # [ 'moe', 'larry', 'curly' ]
+      
+      underscore keys --data '{name : "larry", age : 50}'
+      # [ 'name', 'age' ]
+      
+      underscore reduce --data '[1, 2, 3, 4]' 'total+value'
+      # 10
+      
 
 # Real World Example
 <a id="real_world_example" name="real_world_example"></a>

@@ -28,6 +28,7 @@ function addStandardOptions(command) {
     .option('-o, --out <filename>', 'The output file.  If not specified, defaults to stdout.')
     .option('--outfmt <format>', 'The format of the output data. See \'help formats\'')
     .option('-d, --data <JSON>', 'Input data provided in lieu of a filename')
+    .option('-n, --nodata', "Input data is 'undefined'")
     .option('-q, --quiet', "Suppress normal output.  'console.log' will still trigger output.")
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
 }
@@ -95,8 +96,8 @@ Command.prototype.notesHelp = function () {
 }
 
 Command.prototype.usage = function(str){
-  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in\b|--data|--version/); });
-  var optsStr = '[--in <filename>|--data <JSON>] ' + _.compact(opts.map(function (o) { return '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
+  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in\b|--data|--nodata|--version/); });
+  var optsStr = '[--in <filename>|--data <JSON>|--nodata] ' + _.compact(opts.map(function (o) { return '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
   
   var args = this.args.map(function(arg){
     return arg.required
@@ -119,19 +120,23 @@ Command.prototype.fullName = function () {
   }
 };
 
+function indent(str, spaces) {
+  return str.replace(/^/gm, spaces);
+}
+
 Command.prototype.helpInformation = function () {
   
   var help = [
       ''
     , '  Usage: ' + this.fullName() + ' ' + this.usage()
     , ''
-    , '' + this.notesHelp().replace(/^/gm, '  ')
+    , '' + indent(this.notesHelp(), '  ')
   ];
 
   help = help.concat(this.commands.length == 0 ? [] : [
       '  Commands:'
     , ''
-    , '' + this.commandHelp().replace(/^/gm, '    ')
+    , '' + indent(this.commandHelp(), '    ')
     , ''
   ]);
   
@@ -139,14 +144,14 @@ Command.prototype.helpInformation = function () {
     , ''
     , '  Options:'
     , ''
-    , '' + this.optionHelp().replace(/^/gm, '    ')
+    , '' + indent(this.optionHelp(), '    ')
   ]);
     
   help = help.concat([
     , ''
     , '  Examples:'
     , ''
-    , '' + this.examplesHelp().replace(/^/gm, '    ')
+    , '' + indent(this.examplesHelp(), '    ')
   ]);
   
   return help.join('\n');
@@ -263,7 +268,7 @@ defineCommand({
 
 defineCommand({
   name: 'type',
-  description: 'Print the type of the input data: {object, array, number, string, boolean, null}',
+  description: 'Print the type of the input data: {object, array, number, string, boolean, null, undefined}',
   fn: function (data) {
     if (_.isArray(data)) {
       return 'array';
@@ -273,22 +278,26 @@ defineCommand({
       return 'string';
     } else if (_.isNumber(data)) {
       return 'number';
-    } else if (_.isNull(data)) {
-      return 'null';
     } else if (_.isBoolean(data)) {
       return 'boolean';
+    } else if (_.isNull(data)) {
+      return 'null';
+    } else if (_.isUndefined(data)) {
+      return 'undefined';
     } else {
-      return 'UNKNOWN?';
+      return 'UNKNOWN? (this is a bug; please report it to https://github.com/ddopson/underscore-cli/issues)';
     }
   },
   examples: {
-    'type --data \'[]\'':   'array',
-    'type --data \'{}\'':   'object',
-    'type --data 99':       'number',
-    'type --data \'99\'':   'number',
-    'type --data \'"99"\'': 'string',
-    'type --data \'false\'': 'boolean',
-    'type --data \'null\'': 'null',
+    'type --data \'[]\''        : 'array',
+    'type --data \'{}\''        : 'object',
+    'type --data 99'            : 'number',
+    'type --data \'99\''        : 'number',
+    'type --data \'"99"\''      : 'string',
+    'type --data \'false\''     : 'boolean',
+    'type --nodata'             : 'null',
+    'type --data \'null\''      : 'null',
+    'type --data \'undefined\'' : 'undefined',
   }
 });
 
@@ -577,6 +586,44 @@ defineCommand({
 });
 
 defineCommand({
+  name: 'isBoolean',
+  description: "Return 'true' if the input data is a boolean, ie {true, false}",
+  fn: _.isBoolean,
+  examples: {
+    "isBoolean --data '0'"     : false,
+    "isBoolean --data '1'"     : false,
+    "isBoolean --data 'true'"  : true,
+    "isBoolean --data 'false'" : true,
+  }
+});
+
+defineCommand({
+  name: 'isNull',
+  description: "Return 'true' if the input data is the 'null' value",
+  fn: _.isNull,
+  examples: {
+    "isNull --data '0'"         : false,
+    "isNull --data '1'"         : false,
+    "isNull --data 'false'"     : false,
+    "isNull --data 'null'"      : true,
+    "isNull --data 'undefined'" : false,
+  }
+});
+
+defineCommand({
+  name: 'isUndefined',
+  description: "Return 'true' if the input data is undefined",
+  fn: _.isUndefined,
+  examples: {
+    "isUndefined --data '0'"         : false,
+    "isUndefined --data '1'"         : false,
+    "isUndefined --data 'false'"     : false,
+    "isUndefined --data 'null'"      : false,
+    "isUndefined --data 'undefined'" : true,
+  }
+});
+
+defineCommand({
   name: 'template <filename>',
   description: "Process an underscore template and print the results. See 'help template'",
   notes: [
@@ -631,8 +678,6 @@ defineCommand({
 // last
 // first
 
-// Tests
-//getType
 
 program
   .parse(process.argv);
@@ -681,11 +726,16 @@ function parseInput(text, source) {
   }
 
   if (! inputFormats[format]) {
-      console.error("Unrecognized input format: '%s'.  See 'help formats'", format);
-      process.exit(-1);
+    console.error("Unrecognized input format: '%s'.  See 'help formats'", format);
+    process.exit(-1);
   }
 
   var formatObj = inputFormats[format];
+  
+  if(!text.match(/./)) {
+    console.error("Error while parsing %s: File is empty!", source);
+    process.exit(-1);
+  }
   
   try {
     return formatObj.parse(text);
@@ -701,6 +751,8 @@ function inputData(cb) {
     text = program.data;
     data = parseInput(text, "'--data' argument");
     cb(data);
+  } else if (program.nodata) {
+    cb(null);
   } else if (program.in) {
     try {
       text = fs.readFileSync(program.in, 'utf8');
@@ -737,9 +789,9 @@ function outputData(data) {
     }
   
     if (! outputFormats[format]) {
-        var valid_formats = "['" + _.keys(outputFormats).join("', '") + "']";
-        console.error("Unrecognized output format: '%s'.  See 'help formats', or select from %s", format, valid_formats);
-        process.exit(-1);
+      var valid_formats = "['" + _.keys(outputFormats).join("', '") + "']";
+      console.error("Unrecognized output format: '%s'.  See 'help formats', or select from %s", format, valid_formats);
+      process.exit(-1);
     }
           
     var output;
