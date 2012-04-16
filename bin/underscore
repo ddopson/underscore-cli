@@ -179,18 +179,20 @@ Command.prototype.command = function (args) {
     cmd.description(args.description);
   }
   
+  if (args.action) {
+    cmd.action(args.action);
+  }
+
+  if (args.notes) {
+    cmd.notes = args.notes;
+  }
+  
   return cmd;
- 
 };
 
 function defineCommand(opts) {
-  var name = opts.name;
-  var description = opts.description;
-  var fn = opts.fn;
-
   var cmd = program.command(opts);
   cmd.examples = opts.examples;
-  cmd.notes = opts.notes;
   cmd.defaultOutputFormat = opts.defaultOutputFormat;
   cmd.defaultInputFormat = opts.defaultInputFormat;
   
@@ -201,7 +203,7 @@ function defineCommand(opts) {
       cmd.action(function(expression, a, b, c) {
         var userFn = getUserFn(expression, opts.expr);
         processData(function(data) {
-          return fn(data, userFn, a, b, c);
+          return opts.fn(data, userFn, a, b, c);
         });
       });
     } else {
@@ -213,7 +215,7 @@ function defineCommand(opts) {
           defaultInputFormat = cmd.defaultInputFormat;
         }
         processData(function (data) {
-          return fn(data, a, b, c, d, e);
+          return opts.fn(data, a, b, c, d, e);
         });
       });
     }
@@ -310,6 +312,7 @@ defineCommand({
 
 defineCommand({
   name: 'print',
+  aliases: 'print',
   description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
   fn: function (data) { return data; },
   examples: {
@@ -817,6 +820,8 @@ function outputData(data) {
         process.exit(-1);
       }
     } else {
+      // trim the last newline, if exists
+      output = output.replace(/\n$/, '')
       console.log(output);
     }
   }
