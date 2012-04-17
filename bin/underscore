@@ -302,9 +302,9 @@ defineCommand({
     'type --data \'99\''        : 'number',
     'type --data \'"99"\''      : 'string',
     'type --data \'false\''     : 'boolean',
-    'type --nodata'             : 'null',
     'type --data \'null\''      : 'null',
     'type --data \'undefined\'' : 'undefined',
+    'type --nodata'             : 'undefined',
   }
 });
 
@@ -650,7 +650,11 @@ defineCommand({
     }
 
     try {
-      var output = _.template(template, data);
+        var output = _.template(template, data);
+        if (typeof output === 'function') {
+          // the 'compile' case
+          output = output.source;
+        }
     } catch (e) {
       console.error("Error processing template file '%s': %s", filename, e.message);
       process.exit(-1);
@@ -661,6 +665,17 @@ defineCommand({
   defaultOutputFormat: 'text',
   examples: {
     "template --data '{name: \"moe\"}' example-data/trivial.template": "hello moe",
+    "template --nodata example-data/trivial.template": [
+      "function(obj){",
+      "var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};",
+      "with(obj||{}){",
+      "__p+='hello '+",
+      "( name )+",
+      "'\\n';",
+      "}",
+      "return __p;",
+      "}"
+    ]
   }
 });
 
@@ -759,7 +774,7 @@ function inputData(cb) {
     data = parseInput(text, "'--data' argument");
     cb(data);
   } else if (program.nodata) {
-    cb(null);
+    cb(undefined);
   } else if (program.in) {
     try {
       text = fs.readFileSync(program.in, 'utf8');
