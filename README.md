@@ -44,9 +44,9 @@ If you run the tool without any arguments, this is what prints out:
   
   
        help [command]      Print more detailed help and examples for a specific command
-       examples            Print an exhaustive list of ALL examples
        type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
        print               Output the data without any transformations. Can be used to pretty-print JSON data.
+       run <exp>           Runs arbitrary JS code. Use for CLI Javascripting.
        process <exp>       Run arbitrary JS against the input data.  Expression Args: (data)
        extract <field>     Extract a field from the input data.  Also supports field1.field2.field3
        map <exp>           Map each value from a list/object through a transformation expression whose arguments are (value, key, list).'
@@ -180,5 +180,4 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 * [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea that I might add as annother command to Underscore-CLI
 
 Please add a Github issue if I've missed any.
-
 
