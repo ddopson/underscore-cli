@@ -326,6 +326,7 @@ defineCommand({
 
 defineCommand({
   name: 'print',
+  aliases: 'pretty',
   description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
   fn: function (data) { return data; },
   examples: {
@@ -879,6 +880,7 @@ function outputData(data) {
         process.exit(-1);
       }
     } else {
+      // trim the last newline, if exists
       output = output.replace(/\n$/, '');
       console.log(output);
     }

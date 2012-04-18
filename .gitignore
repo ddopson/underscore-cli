@@ -1,4 +1,5 @@
 node_modules
+/package/*
 npm-debug.log
 /actual.txt
 /expected.txt
