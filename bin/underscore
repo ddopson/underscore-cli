@@ -9,9 +9,6 @@ var JSONSelect    = require('JSONSelect');
 var inputFormats  = require('../lib/input-formats');
 var outputFormats = require('../lib/output-formats');
 
-var defaultInputFormat  = 'lax';
-var defaultOutputFormat = 'lax';
-
 try {
   version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 } catch(e) {
@@ -33,6 +30,15 @@ function addStandardOptions(command) {
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
 }
 
+var defaultInputFormat  = 'lax';
+var defaultOutputFormat = 'lax';
+// TODO: convert to using program.defaults
+program.defaults = {
+  infmt: 'lax',
+  outfmt: 'lax',
+  printUndefined: true,
+};
+
 function addExpressionOptions(command) {
   command.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
 }
@@ -44,7 +50,7 @@ var Command = program.Command;
 
 Command.prototype.commandHelp = function () {
   var cmds = _(program.commands)
-    .reject(function (cmd) { return cmd.name === '*'; })
+    .reject(function (cmd) { return cmd.hidden; })
     .map(function(cmd){
       var args = _(cmd.args)
         .map(function(arg){
@@ -71,11 +77,17 @@ Command.prototype.examplesHelp = function () {
     examples = [examples];
   }
   return _.map(examples, function (example) {
-    return _.map(example, function (result, text) {
+    if(example && example.cmd && example.result) {
+      var cmd = example.cmd;
+      var result = example.result;
+      var fmt = example.format ? outputFormats[example.format] : formatter;
+      return (cmd.match(/underscore/) ? '' : 'underscore ') + cmd + "\n" + fmt.stringify(result).replace(/^/gm, "# ") + "\n";
+    }
+    return _.map(example, function (result, cmd) {
       try {
-        return (text.match(/underscore/) ? '' : 'underscore ') + text + "\n" + formatter.stringify(result).replace(/^/gm, "# ") + "\n";
+        return (cmd.match(/underscore/) ? '' : 'underscore ') + cmd + "\n" + formatter.stringify(result).replace(/^/gm, "# ") + "\n";
       } catch (e) {
-        console.log("ERROR with '%s': %s", text, e.stack);
+        console.log("ERROR with '%s': %s", cmd, e.stack);
         process.exit(-1);
       }
     }).join("\n");
@@ -175,48 +187,47 @@ Command.prototype.command = function (args) {
   cmd.parseExpectedArgs(args2);
   cmd.parent = this;
   
-  if (args.description) {
-    cmd.description(args.description);
+  for(var key in args) {
+    if(args.hasOwnProperty(key)) {
+      if(key === 'name') {
+        continue;
+      } else if(typeof cmd[key] === 'function') {
+        cmd[key](args[key]);
+      } else {
+        cmd[key] = args[key];
+      }
+    }
   }
   
   return cmd;
- 
 };
 
 function defineCommand(opts) {
-  var name = opts.name;
-  var description = opts.description;
-  var fn = opts.fn;
-
   var cmd = program.command(opts);
-  cmd.examples = opts.examples;
-  cmd.notes = opts.notes;
-  cmd.defaultOutputFormat = opts.defaultOutputFormat;
-  cmd.defaultInputFormat = opts.defaultInputFormat;
   
   if (opts.fn) {
     addStandardOptions(cmd);
-    if (opts.expr) {
-      addExpressionOptions(cmd);
-      cmd.action(function(expression, a, b, c) {
-        var userFn = getUserFn(expression, opts.expr);
-        processData(function(data) {
-          return fn(data, userFn, a, b, c);
-        });
+    cmd.action(function(a, b, c, d, e) {
+      if (opts.expr) {
+        var a = getUserFn(a, opts.expr);
+      }
+      if (opts.defaultOutputFormat) {
+        defaultOutputFormat = cmd.defaultOutputFormat;
+      }
+      if (opts.defaultInputFormat) {
+        defaultInputFormat = cmd.defaultInputFormat;
+      }
+      if(opts.defaults) {
+        _.defaults(program, opts.defaults);
+      }
+      processData(function (data) {
+        return opts.fn(data, a, b, c, d, e);
       });
-    } else {
-      cmd.action(function(a, b, c, d, e) {
-        if (cmd.defaultOutputFormat) {
-          defaultOutputFormat = cmd.defaultOutputFormat;
-        }
-        if (opts.defaultInputFormat) {
-          defaultInputFormat = cmd.defaultInputFormat;
-        }
-        processData(function (data) {
-          return fn(data, a, b, c, d, e);
-        });
-      });
-    }
+    });
+  }
+  
+  if (opts.expr) {
+    addExpressionOptions(cmd);
   }
   
   return cmd;
@@ -242,8 +253,12 @@ program.examples = {
     "reduce --data '[1, 2, 3, 4]' 'total+value'"              : 10,
 };
 
-program.command('*').action(function (cmd) {
-  printHelp("Unknown command: '%s'", cmd);
+program.command({
+  name: '*',
+  action: function (cmd) {
+    printHelp("Unknown command: '%s'", cmd);
+  },
+  hidden: true
 });
 
 defineCommand({
@@ -265,7 +280,8 @@ defineCommand({
 
 defineCommand({
   name: 'examples',
-  description: "Print an exhaustive list of ALL examples"
+  description: "Print an exhaustive list of ALL examples",
+  hidden: true
 }).action(function() {
   console.log(_.compact(_.map(program.commands, function (cmd) {
     return cmd.examplesHelp();
@@ -315,6 +331,24 @@ defineCommand({
   examples: {
     "print --data '[1, 2, 3, 4]'": [1, 2, 3, 4],
     "cat example-data/simple.json | underscore print": {foo: 'bar', baz: [1, 2, 3]},
+  }
+});
+
+defineCommand({
+  name: 'run <expression>',
+  description: "Runs arbitrary JS code. Use for CLI Javascripting.",
+  notes: ["Runs arbitrary JS code.  Note that globals like '_' and 'print' will still be defined."],
+  expr: ['data'],
+  fn: function (data, userFn) {
+    // 'data' is likely to be undefined
+    return userFn(data);
+  },
+  examples: [
+    { cmd: "run 'print(\"myString\")'", result: "myString", format: 'text' }
+  ],
+  defaults: {
+    nodata: true,
+    printUndefined: false
   }
 });
 
@@ -709,11 +743,20 @@ if (program.args.length === 0) {
 }
 
 function getUserFn(expression, args) {
-    var code = '(function (' + args.join() + '){' + 
+    
+    var code = '(function (' + args.join() + ') {' + 
       (program.nowrap ? expression : ('return (' + expression + ');')) + 
     '})';
+    
+    // global functions available to user expressions
+    var context = _.extend({}, _, {
+      print: _.bind(console.log, console)
+    });
+    
     try {
+      with (context) {
         var userFn = eval (code);
+      }
     } catch (e) {
       console.error("Error while compiling user expression '%s': %s", code, e.message);
       process.exit(-1);
@@ -818,7 +861,11 @@ function outputData(data) {
           
     var output;
     try {
-       output = outputFormats[format].stringify(data);
+      if (data === undefined && ! program.printUndefined) {
+        return;
+      } else {
+        output = outputFormats[format].stringify(data);
+      }
     } catch (e) {
       console.error("Error formatting output data in mode '%s': %s", format, e.message);
       process.exit(-1);
@@ -832,6 +879,7 @@ function outputData(data) {
         process.exit(-1);
       }
     } else {
+      output = output.replace(/\n$/, '');
       console.log(output);
     }
   }
