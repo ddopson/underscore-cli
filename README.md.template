@@ -65,8 +65,8 @@ Or if it's stored in a file, and you want to write the output to another file:
 
 # Installing Underscore-CLI
 
-### Installing Node (command-line javascript)
 <a id="installing_node" name="installing_node"></a>
+### Installing Node (command-line javascript)
 
 Installing Node is easy.  It's only a 4M download:
 
@@ -90,8 +90,8 @@ If you run the tool without any arguments, this is what prints out:
 
 <%= usage.replace(/^/gm, '  ') %>
 
-# Real World Example
 <a id="real_world_example" name="real_world_example"></a>
+# Real World Example
 
 Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  Let's say you want a list of all the image titles ...
 
