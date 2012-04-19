@@ -3,7 +3,7 @@
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
 Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.  
 
-<b>Why can't command-line Javascript / JSON be easy?</b>
+<b>Why can't command-line Javascript be easy?</b>
 
 Underscore-CLI can be a simple pretty printer:
 
@@ -11,11 +11,11 @@ Underscore-CLI can be a simple pretty printer:
 
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
     
-    curl -s http://www.reddit.com/r/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
+    cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
 
-See [Real World Example] (#real_world_example) for the output and a few other variants.  
+See [Real World Example] (#real_world_example) for the output and more examples.
 
-### Features
+### Underscore-CLI is:
 
  * **FLEXIBLE** - THE "swiss-army-knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered Javascript command-line
  * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string))
@@ -24,19 +24,72 @@ See [Real World Example] (#real_world_example) for the output and a few other va
  * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc [coming soon]
  * **DOCUMENTED** - Excellent command-line documentation with multiple examples for every command
 
-### Installing Underscore-CLI
+### A Bit More Explanation ...
 
-If you don't yet have [Node](http://nodejs.org/#download), see [Installing Node](#installing_node).
+Underscore-CLI is built on [Node.js](http://nodejs.org/#download), which is less than a 4M download and [very easy to install](#installing_node).  Node.js is rapidly gaining mindshare as a tool for writing scalable services in Javascript.
 
+Unfortutately, out-of-the-box, Node.js is a pretty horrible as a command-line tool.  This is what it takes to simply echo stdin:
+
+    cat foo.json | node -e '
+      var data = "";
+      process.stdin.setEncoding("utf8");
+      process.stdin.on("data", function (d) {
+        data = data + d;
+      });
+      process.stdin.on("end", function () {
+        // put all your code here
+        console.log(data);
+      });
+      process.stdin.resume();
+    '
+
+Ugly.  Underscore-CLI handles all the verbose boilerplate, making it easy to do simple data manipulations:
+
+    echo '[1, 2, 3, 4]' | underscore process 'map(data, function (value) { return value+1 })'
+
+If you are used to seeing "_.map", note that because we arn't worried about keeping the global namespace clean, [many useful functions](dead_link_for_now) (including all of underscore.js) are exposed as globals.
+
+Of course 'mapping' a function to a dataset is super common, so as a shortcut, it's exposed as a first-class command:
+
+    echo '[1, 2, 3, 4]' | underscore map 'value+1'
+
+Also, while you can pipe data in, if the data is just a string like the example above, there's a shortcut for that too:
+
+    underscore -d '[1, 2, 3, 4]' map 'value+1'
+
+Or if it's stored in a file, and you want to write the output to another file:
+
+    underscore -i data.json map 'value+1' -o output.json
+
+
+
+# Installing Underscore-CLI
+
+### Installing Node (command-line javascript)
+<a id="installing_node" name="installing_node"></a>
+
+Installing Node is easy.  It's only a 4M download:
+
+[Download Node](http://nodejs.org/#download)
+
+Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
+
+    brew install node
+
+For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
+
+### Installing 
     npm install -g underscore-cli
     underscore help
+
+# Documentation
 
 ### Usage
 
 If you run the tool without any arguments, this is what prints out:
 
   
-    Usage: underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--nowrap]
+    Usage: underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap]
   
   
     
@@ -88,6 +141,7 @@ If you run the tool without any arguments, this is what prints out:
       -n, --nodata          Input data is 'undefined'
       -q, --quiet           Suppress normal output.  'console.log' will still trigger output.
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
+      --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
       --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
   
   
@@ -140,7 +194,7 @@ Hmm, I think I'd like code-worthy names for those images.
 
 Underscore-CLI exposes the function from [underscore.js] (http://documentcloud.github.com/underscore/) and [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
 
-    cat earthporn.json | underscore select '.data .title' | underscore map '_.camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
+    cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
  
 Which prints ...
 
@@ -154,16 +208,6 @@ Which prints ...
 Try doing THAT with any other one-liner!
 
 
-# Installing Node (command-line javascript)
-<a id="installing_node" name="installing_node"></a>
-
-This tool makes heavy use of Javascript.  Node is very easy to install and rapidly becoming _the_ way to run javascript from the command-line: [Download Node](http://nodejs.org/#download)
-
-Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
-
-    brew install node
-
-For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
 
 # Alternatives
 
@@ -174,7 +218,7 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 * [json] (https://github.com/trentm/json) - Similar idea.
 * [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JS environment. Good technical documentation.
 * [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JS library.
-* [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea that I might add as annother command to Underscore-CLI
+* [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  <strike>Very interesting idea that I might add as annother command to Underscore-CLI</strike>
 
 Please add a Github issue if I've missed any.
 
