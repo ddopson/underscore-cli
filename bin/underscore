@@ -28,6 +28,7 @@ function addStandardOptions(command) {
     .option('-n, --nodata', "Input data is 'undefined'")
     .option('-q, --quiet', "Suppress normal output.  'console.log' will still trigger output.")
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
+    .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
 }
 
 var defaultInputFormat  = 'lax';
@@ -329,10 +330,11 @@ defineCommand({
   aliases: 'pretty',
   description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
   fn: function (data) { return data; },
-  examples: {
-    "print --data '[1, 2, 3, 4]'": [1, 2, 3, 4],
-    "cat example-data/simple.json | underscore print": {foo: 'bar', baz: [1, 2, 3]},
-  }
+  examples: [
+    { cmd: "print --data '[1, 2, 3, 4]'", result:  [1, 2, 3, 4] },
+    { cmd: "cat example-data/simple.json | underscore print", result: {foo: 'bar', baz: [1, 2, 3]}},
+    { cmd: "echo 'this is a sentence' | underscore print --text",        result: 'this is a sentence', format: 'text'}
+  ]
 });
 
 defineCommand({
@@ -360,10 +362,10 @@ defineCommand({
   fn: function (data, userFn) {
     return userFn(data);
   },
-  examples: {
-    "process --data '\"my-string\"' '_.camelize(data)'": "myString",
-    "process --data '[1, 2, 3, 4]' '_.max(data)'": 4
-  }
+  examples: [
+    { cmd: "process --data '\"my-string\"' 'camelize(data)'", result: "myString"},
+    { cmd: "process --data '[1, 2, 3, 4]' 'max(data)'",       result: 4},
+  ]
 });
 
 defineCommand({
@@ -397,7 +399,7 @@ defineCommand({
     "map --data '[1, 2, 3, 4]' 'value+1'":  [2, 3, 4, 5],
     "map --data '{\"a\": 1, \"b\": 2}' 'key === \"a\" ? value+1 : value-1'":  [2, 1],
     "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' 'value[1]/value[0]'":  [4, 4],
-    "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' '_.max(value)'":  [4, 8],
+    "map --data '{\"a\": [1, 4], \"b\": [2, 8]}' 'max(value)'":  [4, 8],
   }
 });
 
@@ -751,7 +753,10 @@ function getUserFn(expression, args) {
     
     // global functions available to user expressions
     var context = _.extend({}, _, {
-      print: _.bind(console.log, console)
+      print: _.bind(console.log, console),
+      read: function (filename) {
+        return fs.readFileSync(filename, 'utf8');
+      }
     });
     
     try {
@@ -785,6 +790,8 @@ function parseInput(text, source) {
   var format;
   if (program.infmt) {
     format = program.infmt;
+  } else if (program.text) {
+    format = 'text';
   } else if (program.strict) {
     format = 'strict';
   } else {
@@ -848,6 +855,8 @@ function outputData(data) {
     var format;
     if (program.outfmt) {
       format = program.outfmt;
+    } else if (program.text) {
+      format = 'text';
     } else if (program.strict) {
       format = 'json';
     } else {
