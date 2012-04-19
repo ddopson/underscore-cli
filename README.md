@@ -49,7 +49,7 @@ Ugly.  Underscore-CLI handles all the verbose boilerplate, making it easy to do 
 
 If you are used to seeing "_.map", note that because we arn't worried about keeping the global namespace clean, [many useful functions](dead_link_for_now) (including all of underscore.js) are exposed as globals.
 
-Of course 'mapping' a function to a dataset is super common, so as a shortcut, it's exposed as a first-class command:
+Of course 'mapping' a function to a dataset is super common, so as a shortcut, it's exposed as a first-class command where your expression is auto-wrapped in "function (value, key, list) { return ... }".
 
     echo '[1, 2, 3, 4]' | underscore map 'value+1'
 
@@ -60,7 +60,6 @@ Also, while you can pipe data in, if the data is just a string like the example 
 Or if it's stored in a file, and you want to write the output to another file:
 
     underscore -i data.json map 'value+1' -o output.json
-
 
 
 # Installing Underscore-CLI
