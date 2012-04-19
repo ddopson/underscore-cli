@@ -21,8 +21,8 @@ NOCOLOR         ?= \033[39;0m
 .PHONY: build
 build: lint test readme
 
-.PHONY: readme
-readme:
+.PHONY: readme rme
+readme rme:
 	@$(ECHO_E) "$(YELLOW)Generating README.md from README.md.template$(NOCOLOR)"
 	$(UNDERSCORE) --data null process '{usage: program.helpInformation()}' | $(UNDERSCORE) template README.md.template > README.md
 

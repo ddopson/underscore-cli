@@ -49,7 +49,7 @@ Ugly.  Underscore-CLI handles all the verbose boilerplate, making it easy to do 
 
 If you are used to seeing "_.map", note that because we arn't worried about keeping the global namespace clean, [many useful functions](dead_link_for_now) (including all of underscore.js) are exposed as globals.
 
-Of course 'mapping' a function to a dataset is super common, so as a shortcut, it's exposed as a first-class command where your expression is auto-wrapped in "function (value, key, list) { return ... }".
+Of course 'mapping' a function to a dataset is super common, so as a shortcut, it's exposed as a first-class command, and the expression you provide is auto-wrapped in "function (value, key, list) { return ... }".
 
     echo '[1, 2, 3, 4]' | underscore map 'value+1'
 
