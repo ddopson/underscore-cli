@@ -23,8 +23,8 @@ build: lint test readme
 
 .PHONY: readme rme
 readme rme:
-	@$(ECHO_E) "$(YELLOW)Generating README.md from README.md.template$(NOCOLOR)"
-	$(UNDERSCORE) --data null process '{usage: program.helpInformation()}' | $(UNDERSCORE) template README.md.template > README.md
+	@$(ECHO_E) "$(YELLOW)Generating README.md from README.template$(NOCOLOR)"
+	$(UNDERSCORE) --data null process '{usage: program.helpInformation()}' | $(UNDERSCORE) template README.template > README.md
 
 .PHONY: dist
 VERSION = $(shell $(UNDERSCORE) -i package.json extract version --outfmt text)
