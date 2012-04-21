@@ -61,6 +61,9 @@ Or if it's stored in a file, and you want to write the output to another file:
 
     underscore -i data.json map 'value+1' -o output.json
 
+Here's what it takes to increment the minor version number for an NPM package (straight from our Makefile):
+
+    underscore -i package.json process 'vv=data.version.split("."),vv[2]++,data.version=vv.join("."),data' -o package.json
 
 # Installing Underscore-CLI
 
@@ -88,47 +91,45 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 If you run the tool without any arguments, this is what prints out:
 
   
-    Usage: underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap]
-  
+  [1;37m  Usage: [0m
+      underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap]
   
     
-    Commands:
+  
+  [1;37m  Commands:[0m
+  
+      help [command]      Print more detailed help and examples for a specific command
+      type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
+      print               Output the data without any transformations. Can be used to pretty-print JSON data.
+      run <exp>           Runs arbitrary JS code. Use for CLI Javascripting.
+      process <exp>       Run arbitrary JS against the input data.  Expression Args: (data)
+      extract <field>     Extract a field from the input data.  Also supports field1.field2.field3
+      map <exp>           Map each value from a list/object through a transformation expression whose arguments are (value, key, list).'
+      reduce <exp>        Boil a list down to a single value by successively combining each element with a running total.  Expression args: (total, value, key, list)
+      reduceRight <exp>   Right-associative version of reduce. ie, 1 + (2 + (3 + 4)). Expression args: (total, value, key, list)
+      select <jselexp>    Run a 'JSON Selector' query against the input data. See jsonselect.org.
+      find <exp>          Return the first value for which the expression Return a truish value.  Expression args: (value, key, list)
+      filter <exp>        Return an array of all values that make the expression true.  Expression args: (value, key, list)
+      reject <exp>        Return an array of all values that make the expression false.  Expression args: (value, key, list)
+      flatten             Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.
+      pluck <key>         Extract a single property from a list of objects
+      keys                Retrieve all the names of an object's properties.
+      values              Retrieve all the values of an object's properties.
+      extend <object>     Override properties in the input data.
+      defaults <object>   Fill in missing properties in the input data.
+      any <exp>           Return 'true' if any of the values in the input make the expression true.  Expression args: (value, key, list)
+      all <exp>           Return 'true' if all values in the input make the expression true.  Expression args: (value, key, list)
+      isObject            Return 'true' if the input data is an object with named properties
+      isArray             Return 'true' if the input data is an array
+      isString            Return 'true' if the input data is a string
+      isNumber            Return 'true' if the input data is a number
+      isBoolean           Return 'true' if the input data is a boolean, ie {true, false}
+      isNull              Return 'true' if the input data is the 'null' value
+      isUndefined         Return 'true' if the input data is undefined
+      template <filename> Process an underscore template and print the results. See 'help template'
   
   
-       help [command]      Print more detailed help and examples for a specific command
-       type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
-       print               Output the data without any transformations. Can be used to pretty-print JSON data.
-       run <exp>           Runs arbitrary JS code. Use for CLI Javascripting.
-       process <exp>       Run arbitrary JS against the input data.  Expression Args: (data)
-       extract <field>     Extract a field from the input data.  Also supports field1.field2.field3
-       map <exp>           Map each value from a list/object through a transformation expression whose arguments are (value, key, list).'
-       reduce <exp>        Boil a list down to a single value by successively combining each element with a running total.  Expression args: (total, value, key, list)
-       reduceRight <exp>   Right-associative version of reduce. ie, 1 + (2 + (3 + 4)). Expression args: (total, value, key, list)
-       select <jselexp>    Run a 'JSON Selector' query against the input data. See jsonselect.org.
-       find <exp>          Return the first value for which the expression Return a truish value.  Expression args: (value, key, list)
-       filter <exp>        Return an array of all values that make the expression true.  Expression args: (value, key, list)
-       reject <exp>        Return an array of all values that make the expression false.  Expression args: (value, key, list)
-       flatten             Flattens a nested array (the nesting can be to any depth). If you pass '--shallow', the array will only be flattened a single level.
-       pluck <key>         Extract a single property from a list of objects
-       keys                Retrieve all the names of an object's properties.
-       values              Retrieve all the values of an object's properties.
-       extend <object>     Override properties in the input data.
-       defaults <object>   Fill in missing properties in the input data.
-       any <exp>           Return 'true' if any of the values in the input make the expression true.  Expression args: (value, key, list)
-       all <exp>           Return 'true' if all values in the input make the expression true.  Expression args: (value, key, list)
-       isObject            Return 'true' if the input data is an object with named properties
-       isArray             Return 'true' if the input data is an array
-       isString            Return 'true' if the input data is a string
-       isNumber            Return 'true' if the input data is a number
-       isBoolean           Return 'true' if the input data is a boolean, ie {true, false}
-       isNull              Return 'true' if the input data is the 'null' value
-       isUndefined         Return 'true' if the input data is undefined
-       template <filename> Process an underscore template and print the results. See 'help template'
-  
-  
-  
-    Options:
-  
+  [1;37m  Options:[0m
   
       -h, --help            output usage information
       -V, --version         output the version number
@@ -144,27 +145,42 @@ If you run the tool without any arguments, this is what prints out:
       --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
   
   
-    Examples:
-  
+  [1;37m  Examples:[0m
   
       underscore map --data '[1, 2, 3, 4]' 'value+1'
-      # [ 2, 3, 4, 5 ]
+      # [
+      #   2,
+      #   3,
+      #   4,
+      #   5
+      # ]
       
       underscore map --data '{"a": [1, 4], "b": [2, 8]}' '_.max(value)'
-      # [ 4, 8 ]
+      # [
+      #   4,
+      #   8
+      # ]
       
       echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
-      # 'key = foo\nkey = bar'
+      # "key = foo\nkey = bar"
       
       underscore pluck --data "[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]" name
-      # [ 'moe', 'larry', 'curly' ]
+      # [
+      #   "moe",
+      #   "larry",
+      #   "curly"
+      # ]
       
       underscore keys --data '{name : "larry", age : 50}'
-      # [ 'name', 'age' ]
+      # [
+      #   "name",
+      #   "age"
+      # ]
       
       underscore reduce --data '[1, 2, 3, 4]' 'total+value'
       # 10
       
+  
 
 <a id="real_world_example" name="real_world_example"></a>
 # Real World Example

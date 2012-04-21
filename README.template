@@ -61,6 +61,9 @@ Or if it's stored in a file, and you want to write the output to another file:
 
     underscore -i data.json map 'value+1' -o output.json
 
+Here's what it takes to increment the minor version number for an NPM package (straight from our Makefile):
+
+    underscore -i package.json process 'vv=data.version.split("."),vv[2]++,data.version=vv.join("."),data' -o package.json
 
 # Installing Underscore-CLI
 
