@@ -44,6 +44,11 @@ function addExpressionOptions(command) {
   command.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
 }
 
+function bold (string) {
+  // bold white.  see https://github.com/gf3/coloured/blob/master/lib/coloured.js
+  return "\033[1;37m" + string + "\033[0m";
+}
+
 addStandardOptions(program);
 addExpressionOptions(program);
 
@@ -67,7 +72,7 @@ Command.prototype.commandHelp = function () {
 
   return _.map(cmds, function (cmd) {
     return _.sprintf('%-' + maxlen + 's %s', cmd[0], cmd[1]);
-  }).join('\n').replace(/^/gm, ' ');
+  }).join('\n');
 };
 
 Command.prototype.examplesHelp = function () {
@@ -141,37 +146,38 @@ function indent(str, spaces) {
   // See http://stackoverflow.com/questions/10150139/bug-in-javascript-regexp-parser-when-matching-beginning-of-line
   // See http://code.google.com/p/v8/source/browse/branches/bleeding_edge/test/mjsunit/regress/regress-1748.js?spec=svn9504&r=9504
 
-  return str.replace(/^|\n/g, '\n' + spaces);
+  return str.replace(/(^|\n)/g, '$1' + spaces);
 }
 
 Command.prototype.helpInformation = function () {
-  
+
   var help = [
       ''
-    , '  Usage: ' + this.fullName() + ' ' + this.usage()
+    , bold('  Usage: ')
+    , '    ' + this.fullName() + ' ' + this.usage()
     , ''
     , '' + indent(this.notesHelp(), '  ')
   ];
 
   help = help.concat(this.commands.length == 0 ? [] : [
-      '  Commands:'
+    , bold('  Commands:')
     , ''
     , '' + indent(this.commandHelp(), '    ')
     , ''
   ]);
   
   help = help.concat([
-    , ''
-    , '  Options:'
+    , bold('  Options:')
     , ''
     , '' + indent(this.optionHelp(), '    ')
+    , ''
   ]);
     
   help = help.concat([
-    , ''
-    , '  Examples:'
+    , bold('  Examples:')
     , ''
     , '' + indent(this.examplesHelp(), '    ')
+    , ''
   ]);
   
   return help.join('\n');
