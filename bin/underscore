@@ -9,6 +9,7 @@ var JSONSelect    = require('JSONSelect');
 var inputFormats  = require('../lib/input-formats');
 var outputFormats = require('../lib/output-formats');
 
+var version;
 try {
   version = JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version;
 } catch(e) {
