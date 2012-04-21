@@ -32,11 +32,11 @@ function addStandardOptions(command) {
 }
 
 var defaultInputFormat  = 'lax';
-var defaultOutputFormat = 'lax';
+var defaultOutputFormat = 'json-pretty';
 // TODO: convert to using program.defaults
 program.defaults = {
   infmt: 'lax',
-  outfmt: 'lax',
+  outfmt: 'json-pretty',
   printUndefined: true,
 };
 
