@@ -91,12 +91,12 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 If you run the tool without any arguments, this is what prints out:
 
   
-  [1;37m  Usage: [0m
+    Usage: 
       underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap]
   
     
   
-  [1;37m  Commands:[0m
+    Commands:
   
       help [command]      Print more detailed help and examples for a specific command
       type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
@@ -129,7 +129,7 @@ If you run the tool without any arguments, this is what prints out:
       template <filename> Process an underscore template and print the results. See 'help template'
   
   
-  [1;37m  Options:[0m
+    Options:
   
       -h, --help            output usage information
       -V, --version         output the version number
@@ -145,7 +145,7 @@ If you run the tool without any arguments, this is what prints out:
       --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
   
   
-  [1;37m  Examples:[0m
+    Examples:
   
       underscore map --data '[1, 2, 3, 4]' 'value+1'
       # [
