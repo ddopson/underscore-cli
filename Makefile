@@ -30,7 +30,8 @@ readme rme:
 VERSION = $(shell $(UNDERSCORE) -i package.json extract version --outfmt text)
 dist:
 	@$(ECHO_E) "$(YELLOW)Packing up tarball$(NOCOLOR)"
-	cp -R bin/ lib/ example-data/ Makefile README.md README.md.template package.json index.js package/
+	rm -rf ${shell ls -d package/* | grep -v node_modules}
+	cp -R bin/ lib/ example-data/ Makefile README.md README.template package.json index.js package/
 	tar -czf underscore-cli-$(VERSION).tgz package/
 
 .PHONY: lint
