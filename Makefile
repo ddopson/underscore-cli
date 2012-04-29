@@ -8,6 +8,7 @@
 UNDERSCORE      ?= $(shell PATH=./bin:$$PATH which underscore)
 ECHO            ?= echo  # MacOS compat: using abs path for 'echo' breaks. Alternatively, this gets fixed when using bash as the shell (vs 'sh')
 ECHO_E          ?= $(ECHO) $(shell $(ECHO) -e foo | perl -ne '/^foo/ and print "-e"')
+PERL            ?= $(shell which perl)
 
 # Variables - Colors
 GREEN           ?= \033[32m
@@ -24,7 +25,16 @@ build: lint test readme
 .PHONY: readme rme
 readme rme:
 	@$(ECHO_E) "$(YELLOW)Generating README.md from README.template$(NOCOLOR)"
-	$(UNDERSCORE) --data null process '{usage: program.helpInformation().replace(/\033\[[;0-9]*m/g, "")}' | $(UNDERSCORE) template README.template > README.md
+	$(UNDERSCORE) run '{usage: program.helpInformation()}' | $(UNDERSCORE) template README.template > README.md
+	@$(ECHO_E) "$(YELLOW)Generating Examples.md$(NOCOLOR)"
+	$(UNDERSCORE) examples | $(PERL) -pe '\
+		/^underscore (\w+)/ and $$c=$$1; \
+		if ($$c ne $$l) { \
+			print "</code></pre>\n" if $$l; \
+			print "### $$c\n<pre><code>"; \
+			$$l=$$c; \
+		}; \
+		print "</code></pre>\n" if eof' > Examples.md
 
 .PHONY: dist
 VERSION = $(shell $(UNDERSCORE) -i package.json extract version --outfmt text)

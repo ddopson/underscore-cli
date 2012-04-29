@@ -9,6 +9,7 @@ var inputFormats    = require('../lib/input-formats');
 var outputFormats   = require('../lib/output-formats');
 var globalFunctions = require('../lib/functions');
 var coffee          = require('coffee-script');
+var Template        = require('../lib/template');
 
 var version;
 try {
@@ -679,22 +680,21 @@ defineCommand({
   ],
   fn: function (data, filename) {
     try {
-      var template = fs.readFileSync(filename, 'utf8');
+      var text = fs.readFileSync(filename, 'utf8');
     } catch (e) {
       console.error("Error reading template file '%s': %s", filename, e.message);
       process.exit(-1);
     }
 
     try {
-        if(data) {
-          data = _.defaults(data, globalFunctions);
-        }
-
-        var output = _.template(template, data);
-        if (typeof output === 'function') {
-          // the 'compile' case
-          output = output.source;
-        }
+      var output;
+      var compiledTemplate = Template.compile(filename, text);
+      if(data) {
+        data = _.defaults(data, globalFunctions);
+        output = compiledTemplate(data);
+      } else {
+        output = compiledTemplate.source;
+      }
     } catch (e) {
       console.error("Error processing template file '%s': %s", filename, e.message);
       process.exit(-1);
@@ -706,15 +706,8 @@ defineCommand({
   examples: {
     "template --data '{name: \"moe\"}' example-data/trivial.template": "hello moe",
     "template --nodata example-data/trivial.template": [
-      "function(obj){",
-      "var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};",
-      "with(obj||{}){",
-      "__p+='hello '+",
-      "( name )+",
-      "'\\n';",
-      "}",
-      "return __p;",
-      "}"
+      "module.exports = function(obj){var __p='', print=function(){__p+=Array.prototype.join.call(arguments, '')};with(obj||{}){__p+='hello '+( name )+'\\n'+",
+      "'';} return __p; }"
     ]
   }
 });

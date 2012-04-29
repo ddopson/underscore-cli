@@ -21,7 +21,7 @@ See [Real World Example] (#real_world_example) for the output and more examples.
  * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string))
  * **SIMPLE** - Makes it simple to write JS one-liners similar to using "perl -pe"
  * **CHAINED** - Multiple command invokations can be chained together to create a data processing pipeline
- * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc [coming soon]
+ * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc.  See [Data Formats] (#data_formats)
  * **DOCUMENTED** - Excellent command-line documentation with multiple examples for every command
 
 ### A Bit More Explanation ...
@@ -86,13 +86,14 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 
 # Documentation
 
+<a id="usage"/>
 ### Usage
 
 If you run the tool without any arguments, this is what prints out:
 
   
     Usage: 
-      underscore [undefined] [process] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap]
+      underscore [undefined] [run] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap] [--coffee]
   
     
   
@@ -143,6 +144,7 @@ If you run the tool without any arguments, this is what prints out:
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
       --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
       --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
+      --coffee              Interpret expression as CoffeeScript. See http://coffeescript.org/
   
   
     Examples:
@@ -182,7 +184,57 @@ If you run the tool without any arguments, this is what prints out:
       
   
 
-<a id="real_world_example" name="real_world_example"></a>
+<a id="data_formats"/>
+### Data Formats
+
+
+#### json
+
+Output dense JSON
+
+<pre><code>{"foo":"bar","baz":[1,2,3]}</code></pre>
+
+#### json-pretty
+
+Output JSON with whitespace (still strict JSON)
+
+<pre><code>{
+  "foo": "bar",
+  "baz": [
+    1,
+    2,
+    3
+  ]
+}</code></pre>
+
+#### json-pretty2
+
+Output JSON with whitespace and strip quotes off key names where possible
+
+<pre><code>{
+  foo: "bar",
+  baz: [
+    1,
+    2,
+    3
+  ]
+}</code></pre>
+
+#### text
+
+If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line
+
+<pre><code>{"foo":"bar","baz":[1,2,3]}</code></pre>
+
+#### lax
+
+Uses 'util.inspect' to print valid Javascript
+
+<pre><code>{ foo: 'bar',
+  baz: [ 1, 2, 3 ] }</code></pre>
+
+
+<a id="real_world_example"/>
 # Real World Example
 
 Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  Let's say you want a list of all the image titles ...
@@ -222,7 +274,7 @@ Which prints ...
 
 Try doing THAT with any other one-liner!
 
-
+Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Examples.md) for a more comprehensive list of examples.
 
 # Alternatives
 
