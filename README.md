@@ -285,7 +285,7 @@ Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Exam
 * [json] (https://github.com/trentm/json) - Similar idea.
 * [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JS environment. Good technical documentation.
 * [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JS library.
-* [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  <strike>Very interesting idea that I might add as annother command to Underscore-CLI</strike>
+* [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea.... now available as an Underscore-CLI command.
 
 Please add a Github issue if I've missed any.
 
