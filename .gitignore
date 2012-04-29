@@ -1,4 +1,4 @@
-node_modules
+/node_modules
 /package/*
 npm-debug.log
 /actual.txt
