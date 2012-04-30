@@ -2,6 +2,7 @@
 
 var formats = require('./lib/output-formats.js');
 var sample = require('./example-data/simple.json');
+var program = require('./bin/underscore');
 
 %># Overview
 
@@ -96,7 +97,7 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
 
 If you run the tool without any arguments, this is what prints out:
 
-<%= usage.replace(/^/gm, '  ').replace(/\033\[[;0-9]*m/g, "") %>
+<%= program.helpInformation().replace(/^/gm, '  ').replace(/\033\[[;0-9]*m/g, "") %>
 
 <a id="data_formats"/>
 ### Data Formats

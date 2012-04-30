@@ -10,6 +10,7 @@ var outputFormats   = require('../lib/output-formats');
 var globalFunctions = require('../lib/functions');
 var coffee          = require('coffee-script');
 var Template        = require('../lib/template');
+var VM              = require('vm');
 
 var version;
 try {
@@ -34,17 +35,14 @@ function addStandardOptions(command) {
     .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
 }
 
-var defaultInputFormat  = 'lax';
-var defaultOutputFormat = 'json-pretty';
-// TODO: convert to using program.defaults
+program.defaultInputFormat = 'lax';
+program.defaultOutputFormat = 'json-pretty';
+
 program.defaults = {
-  infmt: 'lax',
-  outfmt: 'json-pretty',
   printUndefined: true,
 };
 
 function addExpressionOptions(command) {
-  command.option('--nowrap', "Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.");
   command.option('--coffee', "Interpret expression as CoffeeScript. See http://coffeescript.org/")
 }
 
@@ -81,7 +79,7 @@ Command.prototype.commandHelp = function () {
 
 Command.prototype.examplesHelp = function () {
   var examples = this.examples;
-  var format = this.defaultOutputFormat ? this.defaultOutputFormat : defaultOutputFormat;
+  var format = this.defaultOutputFormat ? this.defaultOutputFormat : program.defaultOutputFormat;
   var formatter = outputFormats[format];
   if (!_.isArray(examples)) {
     examples = [examples];
@@ -118,14 +116,23 @@ Command.prototype.notesHelp = function () {
 }
 
 Command.prototype.usage = function(str){
-  var opts = _.reject(program.options, function (o) { return o.flags.match(/--in\b|--data|--nodata|--version/); });
-  var optsStr = '[--in <filename>|--data <JSON>|--nodata] ' + _.compact(opts.map(function (o) { return '[' + o.flags.replace(/.*, */, '') + ']' })).join(' ');
-
-  var args = this.args.map(function(arg){
-    return arg.required
-      ? '<' + arg.name + '>'
-      : '[' + arg.name + ']';
+  var opts = _.reject(program.options, function (o) {
+    return o.flags.match(/--in\b|--data|--nodata|--version/);
   });
+  var optsStr = '[--in <filename>|--data <JSON>|--nodata] ' + 
+    _.compact(opts.map(function (o) {
+      return '[' + o.flags.replace(/.*, */, '') + ']';
+    })).join(' ');
+
+  if (this === program) {
+    var args = [];
+  } else {
+    var args = this.args.map(function(arg){
+      return arg.required
+        ? '<' + arg.name + '>'
+        : '[' + arg.name + ']';
+    });
+  }
 
   if (this.commands.length > 0) {
     args.push('<command>');
@@ -209,14 +216,9 @@ function defineCommand(opts) {
   if (opts.fn) {
     addStandardOptions(cmd);
     cmd.action(function(a, b, c, d, e) {
+      program.command = cmd;
       if (opts.expr) {
         var a = getUserFn(a, opts.expr);
-      }
-      if (opts.defaultOutputFormat) {
-        defaultOutputFormat = cmd.defaultOutputFormat;
-      }
-      if (opts.defaultInputFormat) {
-        defaultInputFormat = cmd.defaultInputFormat;
       }
       if(opts.defaults) {
         _.defaults(program, opts.defaults);
@@ -734,11 +736,13 @@ defineCommand({
 // first
 
 
-program
-  .parse(process.argv);
+function main () {
+  program
+    .parse(process.argv);
 
-if (program.args.length === 0) {
-  printHelp();
+  if (program.args.length === 0) {
+    printHelp();
+  }
 }
 
 function getUserFn(expression, args) {
@@ -746,21 +750,28 @@ function getUserFn(expression, args) {
     var code = '(' + args.join() + ') ->\n' + _.indent(expression, '  ');
     return coffee.eval(code);
   } else {
-    var code = '(function (' + args.join() + ') {' +
-      (program.nowrap ? expression : ('return (' + expression + ');')) +
-    '})';
-
-    // global functions available to user expressions
-
+    var code = expression;
     try {
-      with (globalFunctions) {
-        var userFn = eval (code);
-      }
+      var script = VM.createScript(code);
+      var context = VM.createContext(globalFunctions);
     } catch (e) {
       console.error("Error while compiling user expression '%s': %s", code, e.message);
       process.exit(-1);
     }
-    return userFn;
+
+    return function () {
+      try {
+        for(var i = 0; i < args.length; i++) {
+          var name = args[i];
+          context[name] = arguments[i];
+        }
+        var ret = script.runInContext(context);
+        return ret;
+      } catch (e) {
+        console.error("Error while evaluating user expression '%s': %s", code, e.message);
+        process.exit(-1);
+      }
+    };
   }
 }
 
@@ -782,14 +793,17 @@ function parseInput(text, source) {
     return undefined;
   }
   var format;
+  var command = program.command;
   if (program.infmt) {
     format = program.infmt;
   } else if (program.text) {
     format = 'text';
   } else if (program.strict) {
     format = 'strict';
+  } else if (command.defaultInputFormat) {
+    format = command.defaultInputFormat;
   } else {
-    format = 'lax';
+    format = program.defaultInputFormat;
   }
 
   if (! inputFormats[format]) {
@@ -847,14 +861,17 @@ function outputData(data) {
   if(!program.quiet) {
 
     var format;
+    var command = program.command;
     if (program.outfmt) {
       format = program.outfmt;
     } else if (program.text) {
       format = 'text';
     } else if (program.strict) {
       format = 'json';
+    } else if (command.defaultOutputFormat) {
+      format = command.defaultOutputFormat;
     } else {
-      format = defaultOutputFormat;
+      format = program.defaultOutputFormat;
     }
 
     if (! outputFormats[format]) {
@@ -888,5 +905,11 @@ function outputData(data) {
       console.log(output);
     }
   }
+}
+
+module.exports = program;
+
+if(module.parent === null) {
+  main();
 }
 

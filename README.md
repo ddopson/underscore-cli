@@ -93,7 +93,7 @@ If you run the tool without any arguments, this is what prints out:
 
   
     Usage: 
-      underscore [undefined] [run] <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--nowrap] [--coffee]
+      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--coffee]
   
     
   
@@ -143,7 +143,6 @@ If you run the tool without any arguments, this is what prints out:
       -q, --quiet           Suppress normal output.  'console.log' will still trigger output.
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
       --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
-      --nowrap              Instead of an expression like 'value+1', provide a full function body like 'return value+1;'.
       --coffee              Interpret expression as CoffeeScript. See http://coffeescript.org/
   
   
@@ -162,7 +161,7 @@ If you run the tool without any arguments, this is what prints out:
       #   4,
       #   8
       # ]
-      
+        
       echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
       # "key = foo\nkey = bar"
       
