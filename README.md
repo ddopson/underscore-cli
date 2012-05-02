@@ -18,7 +18,7 @@ See [Real World Example] (#real_world_example) for the output and more examples.
 ### Underscore-CLI is:
 
  * **FLEXIBLE** - THE "swiss-army-knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered Javascript command-line
- * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string))
+ * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string), [json:select](http://jsonselect.org/#overview), and [CoffeeScript](http://coffeescript.org/))
  * **SIMPLE** - Makes it simple to write JS one-liners similar to using "perl -pe"
  * **CHAINED** - Multiple command invokations can be chained together to create a data processing pipeline
  * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc.  See [Data Formats] (#data_formats)
