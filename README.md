@@ -1,7 +1,7 @@
 # Overview
 
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
-Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.  
+Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.
 
 <b>Why can't command-line Javascript be easy?</b>
 
@@ -10,7 +10,7 @@ Underscore-CLI can be a simple pretty printer:
     cat data.json | underscore print
 
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
-    
+
     cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
 
 See [Real World Example] (#real_world_example) for the output and more examples.
@@ -67,7 +67,7 @@ Here's what it takes to increment the minor version number for an NPM package (s
 
 # Installing Underscore-CLI
 
-<a id="installing_node" name="installing_node"></a>
+<a name="installing_node"></a>
 ### Installing Node (command-line javascript)
 
 Installing Node is easy.  It's only a 4M download:
@@ -80,13 +80,13 @@ Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
 
 For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
 
-### Installing 
+### Installing
     npm install -g underscore-cli
     underscore help
 
 # Documentation
 
-<a id="usage"/>
+<a name="usage"/>
 ### Usage
 
 If you run the tool without any arguments, this is what prints out:
@@ -183,7 +183,7 @@ If you run the tool without any arguments, this is what prints out:
       
   
 
-<a id="data_formats"/>
+<a name="data_formats"/>
 ### Data Formats
 
 
@@ -229,11 +229,10 @@ If data is a string, it is printed directly without quotes.  If data is an array
 
 Uses 'util.inspect' to print valid Javascript
 
-<pre><code>{ foo: 'bar',
-  baz: [ 1, 2, 3 ] }</code></pre>
+<pre><code>{ foo: 'bar', baz: [ 1, 2, 3 ] }</code></pre>
 
 
-<a id="real_world_example"/>
+<a name="real_world_example"/>
 # Real World Example
 
 Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  Let's say you want a list of all the image titles ...
@@ -241,7 +240,7 @@ Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.
 Using JSONSelect, this is trivial:
 
     cat example-data/earthporn.json | underscore select '.data .title'
- 
+
 Alternatively, you could do it the traditional way:
 
     cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
@@ -261,7 +260,7 @@ Hmm, I think I'd like code-worthy names for those images.
 Underscore-CLI exposes the function from [underscore.js] (http://documentcloud.github.com/underscore/) and [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
 
     cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
- 
+
 Which prints ...
 
     [ 'FjarrgljfurCanyonIceland',
