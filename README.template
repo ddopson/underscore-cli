@@ -119,7 +119,9 @@ _.map(formats, function (f, name) {
 %>
 
 <a name="real_world_example"/>
-# Real World Example
+# Real World Examples
+
+### Playing with data from a webservice
 
 Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  Let's say you want a list of all the image titles ...
 
@@ -145,20 +147,73 @@ Hmm, I think I'd like code-worthy names for those images.
 
 Underscore-CLI exposes the function from [underscore.js] (http://documentcloud.github.com/underscore/) and [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
 
-    cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")'
+    cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")' --outfmt text
 
 Which prints ...
 
-    [ 'FjarrgljfurCanyonIceland',
-      'NewTownEdinburghScotland',
-      'SunriseInBryceCanyonUT',
-      'KariegaGameReserveSouthAfrica',
-      'ValleDeLaLunaChile',
-      'FrostedTreesAfterASnowstormInLaaxSwitzerland' ]
+    FjarrgljfurCanyonIceland
+    NewTownEdinburghScotland
+    SunriseInBryceCanyonUT
+    KariegaGameReserveSouthAfrica
+    ValleDeLaLunaChile
+    FrostedTreesAfterASnowstormInLaaxSwitzerland
 
-Try doing THAT with any other one-liner!
+Try doing THAT with any other CLI one-liner!
+
+### Version-bump in package.json
+
+This one is straight out of our own [Makefile](https://github.com/ddopson/underscore-cli/blob/master/Makefile):
+
+    underscore -i package.json process 'vv=data.version.split("."); vv[2]++; data.version=vv.join("."); data;' -o package.json
+
+### Getting a greppable list of URLs fetched during the load of a website
+
+This is one I did at work the other day.  Chrome --> Dev Console (CMD-OPT-J) --> Network Tab --> (right click context menu) --> Save All as HAR.  I have no idea why it's called a "HAR" file, but it's pure JSON data ... pretty verbose stuff, but I just want the urls ...
+
+    cat site.har | underscore select '.url' --outfmt text | grep mydomain > urls.txt
+
+Well, I'd also like to [ack](http://betterthangrep.com) through the contents of all those files.  Best to get a local snapshot of it all:
+
+    cat urls.txt | while read line; do curl $line > $(echo $line | perl -pe 's/https?://([^?]*)[?]?.*/$1'); done
+
+And I'm off to the races analyzing the behavior and load ordering of a complex production site that dynamically loads (literally) hundreds of individual resources off the network.  Sure, I could have viewed all that stuff inside Chrome, but I wanted a local directory-structured snapshot that I could serve on a local Nginx instance by adding entries in /etc/hosts that mapped the production domains to 127.0.0.1.  Now I can run the exact production site locally, make changes, and see what they would do.
+
 
 Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Examples.md) for a more comprehensive list of examples.
+# Polish: 1001 Little Conveniences
+
+### Templates as first class NPM modules - ie, real stack traces
+* When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JS and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JS code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
+
+### Expressions auto-return the last value
+* This one is a bit [CoffeeScript](http://coffee-script.org) inspired.  When we parse command-line expressions for commands like 'map', they are evaluated as NodeScript objects.  This allows us to retrieve the last value in the expression.  In a previous version we wrapped expressions in function boilerplate; however this blocked the use of semicolons within an expression.  With first class Script objects, we can evaluate multiple semicolon delimited expressions and still capture the value from the last expression evaluated.  Thus, all of the following expressions will return "10".
+
+    underscore run '5 + 5'
+    underscore run 'x=5; y=5; x+y;'
+    underscore run 'x=5, y=5, x+y;'
+
+This even works to find the last evaluated value inside conditional branches (these also return 10):
+
+    underscore run 'x=5; if (x > 0) { 10; } else { 0; }'           # last value is 10
+    underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y' 
+
+In general, the principle here is that you shouldn't have think to hard because the code should just return what you intuitively expect.
+
+### Autodetection of CoffeeScript
+
+TBI - as of this version, still need the '--coffee' flag :(
+
+### Smart auto-consumption of STDIN
+
+TBI - as of this version, if there is no data, we will block for reading STDIN.  We should only do this if the user expression refers to the well-known 'data' variable.  This would unify the 'process' and 'run' commands.
+
+### Smart auto-detection of return value
+
+TBI - as of this version, the last evaluated expression value is always returned.  However, sometimes, you want to mutate the existing data instead of returning a new value.  This should be easy.  If the expression does something like 'data.key = value', then the return value should be 'data'.  Today, you have to write 'data.key = value; data'.  I want that last part to be implicit, but only if you mutate the data variable.  And there should be a command-line flag "--retval={expr,data,auto}", with 'auto' being the default.
+
+### Efficienct stream processing for set-oriented commands like 'map'
+
+TBI - as of this version, all commands slurp the entire input stream and parse it before doing any data manipulation.  This works fine for the vast majority of scenarios, but if you actually had a 30GB JSON file, it would be a bit clunky.  For set-oriented commands like 'map', a smarter core engine plus a smarter JSON parser could enable stream-oriented processing where data processing occurs continuously as the input is read and streamed to the output without ever needing to store the entire dataset in memory at once.  This feature requires a custom JSON-parser and some serious fancy, but I'll get to it eventually.  If you have any performance-sensitive use-cases, post an issue on Github, and I'd be glad to work with you.
 
 # Alternatives
 
