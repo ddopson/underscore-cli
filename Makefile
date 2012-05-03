@@ -63,4 +63,4 @@ test:
 
 .PHONY: bump
 bump:
-	$(UNDERSCORE) -i package.json process 'vv=data.version.split("."),vv[2]++,data.version=vv.join("."),data' -o package.json
+	$(UNDERSCORE) -i package.json process 'vv=data.version.split("."); vv[2]++; data.version=vv.join("."); data' -o package.json
