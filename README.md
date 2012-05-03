@@ -297,10 +297,12 @@ Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Exam
 # Polish: 1001 Little Conveniences
 
 ### Templates as first class NPM modules - ie, real stack traces
-* When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JS and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JS code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
+
+When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JS and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JS code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
 
 ### Expressions auto-return the last value
-* This one is a bit [CoffeeScript](http://coffee-script.org) inspired.  When we parse command-line expressions for commands like 'map', they are evaluated as NodeScript objects.  This allows us to retrieve the last value in the expression.  In a previous version we wrapped expressions in function boilerplate; however this blocked the use of semicolons within an expression.  With first class Script objects, we can evaluate multiple semicolon delimited expressions and still capture the value from the last expression evaluated.  Thus, all of the following expressions will return "10".
+
+This one is a bit [CoffeeScript](http://coffee-script.org) inspired.  When we parse command-line expressions for commands like 'map', they are evaluated as NodeScript objects.  This allows us to retrieve the last value in the expression.  In a previous version we wrapped expressions in function boilerplate; however this blocked the use of semicolons within an expression.  With first class Script objects, we can evaluate multiple semicolon delimited expressions and still capture the value from the last expression evaluated.  Thus, all of the following expressions will return "10".
 
     underscore run '5 + 5'
     underscore run 'x=5; y=5; x+y;'
