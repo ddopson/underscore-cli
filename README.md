@@ -65,6 +65,12 @@ Here's what it takes to increment the minor version number for an NPM package (s
 
     underscore -i package.json process 'vv=data.version.split("."),vv[2]++,data.version=vv.join("."),data' -o package.json
 
+
+
+
+
+
+<a name="installing" />
 # Installing Underscore-CLI
 
 <a name="installing_node"></a>
@@ -84,6 +90,15 @@ For more details on what node is, see [this StackOverflow thread](http://stackov
     npm install -g underscore-cli
     underscore help
 
+
+
+
+
+
+
+
+
+<a name="documentation" />
 # Documentation
 
 <a name="usage"/>
@@ -232,20 +247,46 @@ Uses 'util.inspect' to print valid Javascript
 <pre><code>{ foo: 'bar', baz: [ 1, 2, 3 ] }</code></pre>
 
 
+
+
+
+
+
+
+
 <a name="real_world_example"/>
 # Real World Examples
 
 ### Playing with data from a webservice
 
-Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  Let's say you want a list of all the image titles ...
+Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  
 
-Using JSONSelect, this is trivial:
+First of all, note how raw unformatted JSON is really hard to parse with your eyes ...
 
-    cat example-data/earthporn.json | underscore select '.data .title'
+    {"kind":"Listing","data":{"modhash":"","children":[{"kind":"t3","data":{"domain":"i.imgur.com","banned_by":null,"media_e
+    mbed":{},"subreddit":"EarthPorn","selftext_html":null,"selftext":"","likes":null,"saved":false,"id":"rwoa4","clicked":fa
+    lse,"title":"Eating breakfast in the Norwegian woods! Captured with my phone [2448x3264] ","num_comments":70,"score":960
+    ,"approved_by":null,"over_18":false,"hidden":false,"thumbnail":"http://b.thumbs.redditmedia.com/mytr7zvc0zZdPVV7.jpg","s
+    ubreddit_id":"t5_2sbq3","author_flair_css_class":null,"downs":352,"is_self":false,"permalink":"/r/EarthPorn/comments/rwo
+    a4/eating_breakfast_in_the_norwegian_woods_captured/","name":"t3_rwoa4","created":1333763527,"url":"http://i.imgur.com/R
+    hBFe.jpg","author_flair_text":null,"author":"pansermannen","created_utc":1333738327,"media":null,"num_reports":null,"ups
+    ":1312}},{"kind":"t3","data":{"domain":"imgur.com","banned_by":null,"media_embed":{},"subreddit":"EarthPorn","selftext_h
+    tml":null,"selftext":"","likes":null,"saved":false,"id":"rwgmb","clicked":false,"title":"The Rugged Beauty of Zion NP Ut
+    ah at Sunrise [OC] (1924x2579)","num_comments":5,"score":72,"approved_by":null,"over_18":false,"hidden":false,"thumbnail
+    ":"http://f.thumbs.redditmedia.com/0v2GKlqrj35YUaVw.jpg","subreddit_id":"t5_2sbq3","author_flair_css_class":null,"downs"
+    :20,"is_self":false,"permalink":"/r/EarthPorn/comments/rwgmb/the_rugged_beauty_of_zion_np_utah_at_sunrise_oc/","name":"t
+    3_rwgmb","created":1333755348,"url":"http://imgur.com/veRJD","author_flair_text":null,"author":"TeamLaws","created_utc":
+    1333730148,"media":null,"num_reports":null,"ups":92}},{"kind":"t3","data":{"domain":"flickr.com","banned_by":null,"media
+    _embed":{},"subreddit":"EarthPorn","selftext_html":null,"selftext":"","likes":null,"saved":false,"id":"rvuiu","clicked":
+    false,"title":"Falls and island near Valdez, AK on a rainy day [4200 x 3000]","num_comments":10,"score":573,"approved_by
 
-Alternatively, you could do it the traditional way:
+As I've already mentioned, it would be trivial to pretty print the data with 'underscore print'.  However, if we are just trying to get a sense of the structure of the data, we can do one better:
 
-    cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
+    TODO: working on a 'summarize' command -- INSERT_THAT_HERE (2012-05-04)
+
+Now, let's say that we want a list of all the image titles; using a [json:select](http://jsonselect.org#overview) query, this is downright trivial:
+
+    cat example-data/earthporn.json | underscore select .title
 
 Which prints:
 
@@ -256,10 +297,18 @@ Which prints:
       'Valle de la Luna, Chile [OS] [1024x683]',
       'Frosted trees after a snowstorm in Laax, Switzerland [OC] [1072x712]' ]
 
+If we want to grep the results, 'text' is a better format choice:
 
-Hmm, I think I'd like code-worthy names for those images.
+    cat example-data/earthporn.json | underscore select .title --outfmt text
 
-Underscore-CLI exposes the function from [underscore.js] (http://documentcloud.github.com/underscore/) and [underscore.string] (https://github.com/epeli/underscore.string)) not only as first-class commands, but also within command-line Javascript expressions:
+    Fjaðrárgljúfur canyon, Iceland [OC] [683x1024]
+    New town, Edinburgh, Scotland [4320 x 3240]
+    Sunrise in Bryce Canyon, UT [1120x700] [OC]
+    Kariega Game Reserve, South Africa [3584x2688]
+    Valle de la Luna, Chile [OS] [1024x683]
+    Frosted trees after a snowstorm in Laax, Switzerland [OC] [1072x712]
+
+Let's create code-style names for those images using the 'camelize' function from [underscore.string] (https://github.com/epeli/underscore.string).
 
     cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")' --outfmt text
 
@@ -294,6 +343,18 @@ And I'm off to the races analyzing the behavior and load ordering of a complex p
 
 
 Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Examples.md) for a more comprehensive list of examples.
+
+
+
+
+
+
+
+
+
+
+
+<a name="polish" />
 # Polish: 1001 Little Conveniences
 
 ### Templates as first class NPM modules - ie, real stack traces
@@ -331,6 +392,13 @@ TBI - as of this version, the last evaluated expression value is always returned
 
 TBI - as of this version, all commands slurp the entire input stream and parse it before doing any data manipulation.  This works fine for the vast majority of scenarios, but if you actually had a 30GB JSON file, it would be a bit clunky.  For set-oriented commands like 'map', a smarter core engine plus a smarter JSON parser could enable stream-oriented processing where data processing occurs continuously as the input is read and streamed to the output without ever needing to store the entire dataset in memory at once.  This feature requires a custom JSON-parser and some serious fancy, but I'll get to it eventually.  If you have any performance-sensitive use-cases, post an issue on Github, and I'd be glad to work with you.
 
+
+
+
+
+
+
+<a name="alternatives" />
 # Alternatives
 
 * [jsonpipe] (https://github.com/dvxhouse/jsonpipe) - Python focused, w/ a featureset centered around a single scenario

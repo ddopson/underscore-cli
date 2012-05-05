@@ -8,6 +8,10 @@
 # Nits and Nuance
 * for 'process' if 'data' is mutated, that should be considered the return value.  Thus "data.version++" works, and "fn_of(data)" works as well
 * unify 'run' + 'process' - if 'data' is not referenced, then don't bother reading input.
+* pluck should support the dot notation "field1.field2"
+* add the 'summarize' command
+
+* custom formatter that does smart-whitespace
 
 # Docs
  * Implement 'underscore help strict' and 'underscore help json' that display detailed info on data input / output
