@@ -44,11 +44,7 @@ program.defaults = {
 
 function addExpressionOptions(command) {
   command.option('--coffee', "Interpret expression as CoffeeScript. See http://coffeescript.org/")
-}
-
-function bold (string) {
-  // bold white.  see https://github.com/gf3/coloured/blob/master/lib/coloured.js
-  return "\033[1;37m" + string + "\033[0m";
+  command.option('--js', "Interpret expression as JavaScript. (default is \"auto\")");
 }
 
 addStandardOptions(program);
@@ -149,33 +145,58 @@ Command.prototype.fullName = function () {
   }
 };
 
+Command.prototype.stylize = function (str, style) {
+  return str;
+};
+
+function log_warn() {
+  arguments[0] = 'Warning: ' + arguments[0];
+  console.error.apply(console, arguments);
+}
+
+function red (string) {
+  return "\033[34m" + string + "\033[0m";
+}
+
+function bold (string) {
+  // bold white.  see https://github.com/gf3/coloured/blob/master/lib/coloured.js
+  return "\033[1;37m" + string + "\033[0m";
+}
+
+function stylize (str, style) {
+  switch(style) {
+    case 'expr':  return bold(str);
+    case 'error': return red(str);
+    default:      return str;
+  }
+}
 
 Command.prototype.helpInformation = function () {
 
   var help = [
       ''
-    , bold('  Usage: ')
+    , this.stylize('  Usage: ', 'header')
     , '    ' + this.fullName() + ' ' + this.usage()
     , ''
     , '' + _.indent(this.notesHelp(), '  ')
   ];
 
   help = help.concat(this.commands.length == 0 ? [] : [
-    , bold('  Commands:')
+    , this.stylize('  Commands:', 'header')
     , ''
     , '' + _.indent(this.commandHelp(), '    ')
     , ''
   ]);
 
   help = help.concat([
-    , bold('  Options:')
+    , this.stylize('  Options:', 'header')
     , ''
     , '' + _.indent(this.optionHelp(), '    ')
     , ''
   ]);
 
   help = help.concat([
-    , bold('  Examples:')
+    , this.stylize('  Examples:', 'header')
     , ''
     , '' + _.indent(this.examplesHelp(), '    ')
     , ''
@@ -745,33 +766,81 @@ function main () {
   }
 }
 
-function getUserFn(expression, args) {
-  if (program.coffee) {
-    var code = '(' + args.join() + ') ->\n' + _.indent(expression, '  ');
-    return coffee.eval(code);
-  } else {
-    var code = expression;
+function getUserFn_coffee(expression, args) {
+  var code = expression;
+  try {
+    var js = coffee.compile(code, {filename: 'expression', bare: true});
+    console.log("JS: ", js);
+    var script = VM.createScript(js);
+    var context = VM.createContext(globalFunctions);
+  } catch (e) {
+    return util.format("Error while compiling user expression '%s' as CoffeeScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
+  }
+  return function () {
     try {
-      var script = VM.createScript(code);
-      var context = VM.createContext(globalFunctions);
+      for(var i = 0; i < args.length; i++) {
+        var name = args[i];
+        context[name] = arguments[i];
+      }   
+      var ret = script.runInContext(context);
+      return ret; 
     } catch (e) {
-      console.error("Error while compiling user expression '%s': %s", code, e.message);
+      console.error("Error while evaluating user expression '%s' as CoffeeScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
       process.exit(-1);
     }
+  };
+}
 
-    return function () {
-      try {
-        for(var i = 0; i < args.length; i++) {
-          var name = args[i];
-          context[name] = arguments[i];
-        }
-        var ret = script.runInContext(context);
-        return ret;
-      } catch (e) {
-        console.error("Error while evaluating user expression '%s': %s", code, e.message);
-        process.exit(-1);
+function getUserFn_js(expression, args) {
+  var code = expression;
+  try {
+    var script = VM.createScript(code);
+    var context = VM.createContext(globalFunctions);
+  } catch (e) {
+    return util.format("Error while compiling user expression '%s' as JavaScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
+  }
+
+  return function () {
+    try {
+      for(var i = 0; i < args.length; i++) {
+        var name = args[i];
+        context[name] = arguments[i];
       }
-    };
+      var ret = script.runInContext(context);
+      return ret;
+    } catch (e) {
+      console.error("Error while evaluating user expression '%s' as JavaScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
+      process.exit(-1);
+    }
+  };
+}
+
+function getUserFn(expression, args) {
+  var js, coffee;
+  if (program.coffee) {
+    coffee = getUserFn_coffee(expression, args);
+  } else if (program.js) {
+    js = getUserFn_js(expression, args);
+  } else {
+    js = getUserFn_js(expression, args);
+    if (typeof js !== 'function') {
+      log_warn("Parsing user expression '%s' as CoffeeScript.  Use '--coffee' to be more explicit.", stylize(expression, 'expr'));
+      coffee = getUserFn_coffee(expression, args);
+    }
+  }
+
+  if (typeof js === 'function') {
+    return js;
+  } else if (typeof coffee === 'function') {
+    return coffee;
+  } else {
+    if (js) {
+      console.error(js);
+    }
+    if (coffee) {
+      console.error(coffee);
+    }
+    process.exit(-1);
   }
 }
 

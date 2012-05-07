@@ -108,7 +108,7 @@ If you run the tool without any arguments, this is what prints out:
 
   
     Usage: 
-      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--coffee]
+      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--coffee] [--js]
   
     
   
@@ -159,6 +159,7 @@ If you run the tool without any arguments, this is what prints out:
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
       --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
       --coffee              Interpret expression as CoffeeScript. See http://coffeescript.org/
+      --js                  Interpret expression as JavaScript. (default is "auto")
   
   
     Examples:
@@ -176,7 +177,7 @@ If you run the tool without any arguments, this is what prints out:
       #   4,
       #   8
       # ]
-        
+      
       echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
       # "key = foo\nkey = bar"
       
@@ -378,7 +379,16 @@ In general, the principle here is that you shouldn't have think to hard because 
 
 ### Autodetection of CoffeeScript
 
-TBI - as of this version, still need the '--coffee' flag :(
+If you type a CoffeeScript expression and forget to use the '--coffee' flag, Underscore-CLI will first attempt to parse it as JavaScript, and if that fails, parse it as CoffeeScript.  
+
+However, a warning is emitted:
+
+    "Warning: Parsing user expression 'foo?.bar?.baz' as CoffeeScript.  Use '--coffee' to be more explicit."
+
+Why do we print a warning?  Unfortunately, there are a number of language features that are ambiguous between JS and Coffee.  ie, expressions that are valid in both languages but with different meaning.  For example:
+
+    test ? 10 : 20;  // JS: if test is true, then 10, else 20
+    test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
 
 ### Smart auto-consumption of STDIN
 
