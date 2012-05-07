@@ -63,4 +63,7 @@ test:
 
 .PHONY: bump
 bump:
+	@git diff package.json lib  | grep . -q; if [ $$? == 0 ] ; then echo "package.json has been modified"; false; else true; fi
 	$(UNDERSCORE) -i package.json process 'vv=data.version.split("."); vv[2]++; data.version=vv.join("."); data' -o package.json
+	git commit package.json -m "version bump $$($(UNDERSCORE) -i package.json process 'data.version')"
+
