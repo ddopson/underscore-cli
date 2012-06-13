@@ -15,7 +15,8 @@ var obj = {
   date: new Date(),
   date2: (v=new Date(), v.prop1=8, v.prop2=9, v),
 
-
+  error: new Error('my err msg'),
+  error2: (v=new Error('my err msg'), v.prop1=8, v.prop2=9, v),
 
   fn1: function () { },
   fn2: function fn_name () { },
@@ -24,19 +25,29 @@ var obj = {
   re1: /^78/,
   re2: (v=/^78/,v.bar=2,v),
 
+  nll: null,
 
   ar1: [1, 2, 3, 4],
   ar2: (v=[1, 2, 3, 4], v.bar=33, v[6]=8,v),
 
   longstr: 'aoseuthaoesnuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonethuasoentuhaoseu',
   deep: {a: {b: {c: {}}}},
+
+  circular: { deeper: { still_deeper: {}}},
 };
+
 
 console.log("\n\nJSON:");
 console.log(JSON.stringify(obj, null, ' '));
+
+obj.circular.deeper.still_deeper.obj = obj;
+
 console.log("\n\nINSPECT:");
 console.log(util.inspect(obj, false, 1, true));
+
 console.log("\n\nINSPECT2:");
 console.log(util2.inspect(obj, false, -1));
 
+console.log("\n\nINSPECT2(dense):");
+console.log(util2.inspect(obj, false, -1));
 
