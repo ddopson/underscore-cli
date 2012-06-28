@@ -188,6 +188,12 @@ If you run the tool without any arguments, this is what prints out:
 ### Data Formats
 
 
+#### dense
+
+Output dense JSON using JSON.stringify
+
+<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}],"g":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"}}}</code></pre>
+
 #### json
 
 Output strictly correct, human-readible JSON w/ smart whitespace
@@ -201,7 +207,7 @@ Output strictly correct, human-readible JSON w/ smart whitespace
   "object2": { "3": 3, "a": 1, "b": 2, "prop1": 1, "prop2": 2 },
   "array0": [ ],
   "array1": [1, 2, 3, 4],
-  "array2": [1, 2, null, undefined, , 6],
+  "array2": [1, 2, null, null, null, 6],
   "array3": [1, 2, 3, 3, "prop1": 1, "prop2": 2],
   "date1": "2012-06-28T22:02:25.993Z",
   "date2": "2012-06-28T22:02:25.993Z",
@@ -210,22 +216,18 @@ Output strictly correct, human-readible JSON w/ smart whitespace
   "regex1": { },
   "regex2": { "3": 3, "prop1": 1, "prop2": 2 },
   "null1": null,
-  "undef1": undefined,
-  "deep": 
-  {
-    "a": 
-    {
-      "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu",
-      "b": { "c": { } }
+  "deep": {
+    "a": [
+      {
+        "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu",
+        "b": { "c": { } }
+      }
+    ],
+    "g": {
+      "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"
     }
   }
 }</code></pre>
-
-#### dense
-
-Output dense JSON using JSON.stringify
-
-<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}}}</code></pre>
 
 #### pretty
 
@@ -250,21 +252,18 @@ Output lax JSON (output is valid JS object syntax, but not strict JSON).
   regex2: { '3': 3, prop1: 1, prop2: 2 },
   null1: null,
   undef1: undefined,
-  deep: 
-  {
-    a: 
-    {
-      longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
-      b: { c: { } }
+  deep: {
+    a: [
+      {
+        longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+        b: { c: { } }
+      }
+    ],
+    g: {
+      longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu'
     }
   }
 }</code></pre>
-
-#### text
-
-If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line
-
-<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}}}</code></pre>
 
 #### inspect
 
@@ -293,8 +292,15 @@ Uses Node's 'util.inspect' to print the output
   undef1: undefined,
   deep: 
    { a: 
-      { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
-        b: { c: {} } } } }</code></pre>
+      [ { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+          b: { c: {} } } ],
+     g: { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu' } } }</code></pre>
+
+#### text
+
+If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line
+
+<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}],"g":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"}}}</code></pre>
 
 
 
