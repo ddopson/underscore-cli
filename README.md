@@ -165,34 +165,19 @@ If you run the tool without any arguments, this is what prints out:
     Examples:
   
       underscore map --data '[1, 2, 3, 4]' 'value+1'
-      # [
-      #   2,
-      #   3,
-      #   4,
-      #   5
-      # ]
+      # [2, 3, 4, 5]
       
       underscore map --data '{"a": [1, 4], "b": [2, 8]}' '_.max(value)'
-      # [
-      #   4,
-      #   8
-      # ]
+      # [4, 8]
       
       echo '{"foo":1, "bar":2}' | underscore map -q 'console.log("key = ", key)'
       # "key = foo\nkey = bar"
       
       underscore pluck --data "[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]" name
-      # [
-      #   "moe",
-      #   "larry",
-      #   "curly"
-      # ]
+      # ["moe", "larry", "curly"]
       
       underscore keys --data '{name : "larry", age : 50}'
-      # [
-      #   "name",
-      #   "age"
-      # ]
+      # ["name", "age"]
       
       underscore reduce --data '[1, 2, 3, 4]' 'total+value'
       # 10
@@ -213,27 +198,13 @@ Output dense JSON
 
 Output JSON with whitespace (still strict JSON)
 
-<pre><code>{
-  "foo": "bar",
-  "baz": [
-    1,
-    2,
-    3
-  ]
-}</code></pre>
+<pre><code>{ "foo": "bar", "baz": [1, 2, 3] }</code></pre>
 
 #### json-pretty2
 
 Output JSON with whitespace and strip quotes off key names where possible
 
-<pre><code>{
-  foo: "bar",
-  baz: [
-    1,
-    2,
-    3
-  ]
-}</code></pre>
+<pre><code>{ foo: 'bar', baz: [1, 2, 3] }</code></pre>
 
 #### text
 

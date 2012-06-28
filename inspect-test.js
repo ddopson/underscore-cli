@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var util = require('util');
-var util2 = require('./lib/util');
+var Formatter = require('./lib/formatter');
 
 var obj = {
   num: 9,
@@ -40,14 +40,17 @@ var obj = {
 console.log("\n\nJSON:");
 console.log(JSON.stringify(obj, null, ' '));
 
-obj.circular.deeper.still_deeper.obj = obj;
+//obj.circular.deeper.still_deeper.obj = obj;
 
-console.log("\n\nINSPECT:");
+/*console.log("\n\nINSPECT:");
 console.log(util.inspect(obj, false, 1, true));
 
 console.log("\n\nINSPECT2:");
-console.log(util2.inspect(obj, false, -1));
-
+console.log(util2.format(obj));
+*/
 console.log("\n\nINSPECT2(dense):");
-console.log(util2.inspect(obj, false, -1));
+
+var FormatterJson = Formatter.withConfig({color: false, wrapWidth: 100, quoteKeys: true, quotes: '"'})
+var FormatterPretty = Formatter.withConfig({color: true, wrapWidth: 100, quoteKeys: false, quotes: "'"})
+console.log(FormatterPretty(obj));
 

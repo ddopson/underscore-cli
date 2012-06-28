@@ -29,22 +29,10 @@ underscore type --nodata
 </code></pre>
 ### print
 <pre><code>underscore print --data '[1, 2, 3, 4]'
-# [
-#   1,
-#   2,
-#   3,
-#   4
-# ]
+# [1, 2, 3, 4]
 
 cat example-data/simple.json | underscore print
-# {
-#   "foo": "bar",
-#   "baz": [
-#     1,
-#     2,
-#     3
-#   ]
-# }
+# { "foo": "bar", "baz": [1, 2, 3] }
 
 echo 'this is a sentence' | underscore print --text
 # this is a sentence
@@ -70,30 +58,16 @@ underscore process --data '[1, 2, 3, 4]' 'max(data)'
 </code></pre>
 ### map
 <pre><code>underscore map --data '[1, 2, 3, 4]' 'value+1'
-# [
-#   2,
-#   3,
-#   4,
-#   5
-# ]
+# [2, 3, 4, 5]
 
 underscore map --data '{"a": 1, "b": 2}' 'key === "a" ? value+1 : value-1'
-# [
-#   2,
-#   1
-# ]
+# [2, 1]
 
 underscore map --data '{"a": [1, 4], "b": [2, 8]}' 'value[1]/value[0]'
-# [
-#   4,
-#   4
-# ]
+# [4, 4]
 
 underscore map --data '{"a": [1, 4], "b": [2, 8]}' 'max(value)'
-# [
-#   4,
-#   8
-# ]
+# [4, 8]
 
 </code></pre>
 ### reduce
@@ -138,104 +112,57 @@ underscore find --data '{"foo": 1, "bar": 2}' 'key == "bar"'
 </code></pre>
 ### filter
 <pre><code>underscore filter --data '[1, 2, 3, 4]' 'value > 2'
-# [
-#   3,
-#   4
-# ]
+# [3, 4]
 
 underscore filter --data '{"foo": 1, "bar": 2}' 'key == "bar"'
-# [
-#   2
-# ]
+# [2]
 
 </code></pre>
 ### reject
 <pre><code>underscore reject --data '[1, 2, 3, 4]' 'value > 2'
-# [
-#   1,
-#   2
-# ]
+# [1, 2]
 
 underscore reject --data '{"foo": 1, "bar": 2}' 'key == "bar"'
-# [
-#   1
-# ]
+# [1]
 
 </code></pre>
 ### flatten
 <pre><code>underscore flatten --data '[1, [2, [3]], 4]'
-# [
-#   1,
-#   2,
-#   3,
-#   4
-# ]
+# [1, 2, 3, 4]
 
 underscore flatten --shallow --data '[1, [2, [3]], 4]'
-# [
-#   1,
-#   2,
-#   [
-#     3
-#   ],
-#   4
-# ]
+# [1, 2, [3], 4]
 
 </code></pre>
 ### pluck
 <pre><code>underscore pluck --data "[{name : 'moe', age : 40}, {name : 'larry', age : 50}, {name : 'curly', age : 60}]" name
-# [
-#   "moe",
-#   "larry",
-#   "curly"
-# ]
+# ["moe", "larry", "curly"]
 
 </code></pre>
 ### keys
 <pre><code>underscore keys --data '{name : "larry", age : 50}'
-# [
-#   "name",
-#   "age"
-# ]
+# ["name", "age"]
 
 underscore keys --data '[8, 9, 10]'
-# [
-#   "0",
-#   "1",
-#   "2"
-# ]
+# ["0", "1", "2"]
 
 </code></pre>
 ### values
 <pre><code>underscore values --data '{name : "larry", age : 50}'
-# [
-#   "larry",
-#   50
-# ]
+# ["larry", 50]
 
 underscore values --data '[8, 9, 10]'
-# [
-#   8,
-#   9,
-#   10
-# ]
+# [8, 9, 10]
 
 </code></pre>
 ### extend
 <pre><code>underscore extend --data '{name : "larry", age : 50}' '{age: 65}'
-# {
-#   "name": "larry",
-#   "age": 65
-# }
+# { "name": "larry", "age": 65 }
 
 </code></pre>
 ### defaults
 <pre><code>underscore defaults --data '{name : "larry", age : 50}' '{name: "unknown", salary: 100}'
-# {
-#   "name": "larry",
-#   "age": 50,
-#   "salary": 100
-# }
+# { "name": "larry", "age": 50, "salary": 100 }
 
 </code></pre>
 ### any
