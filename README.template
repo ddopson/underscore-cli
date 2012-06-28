@@ -1,7 +1,7 @@
 <%
 
 var formats = require('./lib/output-formats.js');
-var sample = require('./example-data/simple.json');
+var sample = require('./example-data/complex.js');
 var program = require('./bin/underscore');
 
 %># Overview

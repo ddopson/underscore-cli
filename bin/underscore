@@ -36,7 +36,7 @@ function addStandardOptions(command) {
 }
 
 program.defaultInputFormat = 'lax';
-program.defaultOutputFormat = 'json-pretty';
+program.defaultOutputFormat = 'json';
 
 program.defaults = {
   printUndefined: true,

@@ -190,33 +190,111 @@ If you run the tool without any arguments, this is what prints out:
 
 #### json
 
-Output dense JSON
+Output strictly correct, human-readible JSON w/ smart whitespace
 
-<pre><code>{"foo":"bar","baz":[1,2,3]}</code></pre>
+<pre><code>{
+  "num": 9,
+  "str1": "Hello World",
+  "str2": "Hello World",
+  "object0": { },
+  "object1": { "a": 1, "b": 2 },
+  "object2": { "3": 3, "a": 1, "b": 2, "prop1": 1, "prop2": 2 },
+  "array0": [ ],
+  "array1": [1, 2, 3, 4],
+  "array2": [1, 2, null, undefined, , 6],
+  "array3": [1, 2, 3, 3, "prop1": 1, "prop2": 2],
+  "date1": "2012-06-28T22:02:25.993Z",
+  "date2": "2012-06-28T22:02:25.993Z",
+  "err1": { },
+  "err2": { "3": 3, "prop1": 1, "prop2": 2 },
+  "regex1": { },
+  "regex2": { "3": 3, "prop1": 1, "prop2": 2 },
+  "null1": null,
+  "undef1": undefined,
+  "deep": 
+  {
+    "a": 
+    {
+      "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu",
+      "b": { "c": { } }
+    }
+  }
+}</code></pre>
 
-#### json-pretty
+#### dense
 
-Output JSON with whitespace (still strict JSON)
+Output dense JSON using JSON.stringify
 
-<pre><code>{ "foo": "bar", "baz": [1, 2, 3] }</code></pre>
+<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}}}</code></pre>
 
-#### json-pretty2
+#### pretty
 
-Output JSON with whitespace and strip quotes off key names where possible
+Output lax JSON (output is valid JS object syntax, but not strict JSON).
 
-<pre><code>{ foo: 'bar', baz: [1, 2, 3] }</code></pre>
+<pre><code>{
+  num: 9,
+  str1: 'Hello World',
+  str2: 'Hello World',
+  object0: { },
+  object1: { a: 1, b: 2 },
+  object2: { '3': 3, a: 1, b: 2, prop1: 1, prop2: 2 },
+  array0: [ ],
+  array1: [1, 2, 3, 4],
+  array2: [1, 2, null, undefined, , 6],
+  array3: [1, 2, 3, 3, prop1: 1, prop2: 2],
+  date1: "2012-06-28T22:02:25.993Z",
+  date2: "2012-06-28T22:02:25.993Z",
+  err1: { },
+  err2: { '3': 3, prop1: 1, prop2: 2 },
+  regex1: { },
+  regex2: { '3': 3, prop1: 1, prop2: 2 },
+  null1: null,
+  undef1: undefined,
+  deep: 
+  {
+    a: 
+    {
+      longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+      b: { c: { } }
+    }
+  }
+}</code></pre>
 
 #### text
 
 If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line
 
-<pre><code>{"foo":"bar","baz":[1,2,3]}</code></pre>
+<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}}}</code></pre>
 
-#### lax
+#### inspect
 
-Uses 'util.inspect' to print valid Javascript
+Uses Node's 'util.inspect' to print the output
 
-<pre><code>{ foo: 'bar', baz: [ 1, 2, 3 ] }</code></pre>
+<pre><code>{ num: 9,
+  str1: 'Hello World',
+  str2: 'Hello World',
+  object0: {},
+  object1: { a: 1, b: 2 },
+  object2: { '3': 3, a: 1, b: 2, prop1: 1, prop2: 2 },
+  array0: [],
+  array1: [ 1, 2, 3, 4 ],
+  array2: [ 1, 2, null, undefined, , 6 ],
+  array3: [ 1, 2, 3, 3, prop1: 1, prop2: 2 ],
+  date1: Thu, 28 Jun 2012 22:02:25 GMT,
+  date2: { Thu, 28 Jun 2012 22:02:25 GMT '3': 3, prop1: 1, prop2: 2 },
+  err1: [Error: my err msg],
+  err2: { [Error: my err msg] '3': 3, prop1: 1, prop2: 2 },
+  regex1: /^78/,
+  regex2: { /^78/ '3': 3, prop1: 1, prop2: 2 },
+  fn1: [Function],
+  fn2: [Function: fn_name],
+  fn3: { [Function: fn_name] '3': 3, prop1: 1, prop2: 2 },
+  null1: null,
+  undef1: undefined,
+  deep: 
+   { a: 
+      { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+        b: { c: {} } } } }</code></pre>
 
 
 
