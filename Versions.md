@@ -1,3 +1,5 @@
+* ground-up rewrite of Formatter code for optimal semi-dense JSON output
+
 ### 0.2.9
 * autodetect CoffeeScript expressions
 
