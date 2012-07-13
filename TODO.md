@@ -12,11 +12,10 @@
 
 
 
-Add Some Fancy
-* add the 'summarize' command
+Add Some Serious Fancy
+* add the 'summarize' command.  With the new Formatter class, we are 1/2way there
 * add the 'compile' magikness - flow a magic value through a bash pipe chain and emit a full JS script out the other side that does what the one-liner did
 
-* custom formatter that does smart-whitespace
 
 # Docs
  * Implement 'underscore help strict' and 'underscore help json' that display detailed info on data input / output
@@ -37,6 +36,7 @@ Add Some Fancy
 
 
 # Done:
+ * Fancy - custom formatter that does smart-whitespace
  * Nuance - autodetect CoffeeScript
  * Docs - examples for data formats
  * Nuance - eliminate --nowrap.
