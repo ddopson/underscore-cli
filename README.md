@@ -279,7 +279,7 @@ Uses Node's 'util.inspect' to print the output
   array1: [ 1, 2, 3, 4 ],
   array2: [ 1, 2, null, undefined, , 6 ],
   array3: [ 1, 2, 3, 3, prop1: 1, prop2: 2 ],
-  date1: Thu, 28 Jun 2012 22:02:25 GMT,
+  date1: Thu Jun 28 2012 15:02:25 GMT-0700 (PDT),
   date2: { Thu, 28 Jun 2012 22:02:25 GMT '3': 3, prop1: 1, prop2: 2 },
   err1: [Error: my err msg],
   err2: { [Error: my err msg] '3': 3, prop1: 1, prop2: 2 },
