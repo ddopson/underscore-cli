@@ -1,11 +1,17 @@
 # Overview
 ````json
-    :::pythonx
-    "3": <span style="color:yellow">3</span>,
-    "a": <span style="color:yellow">1</span>,
-<font color="green">"b": <span style="color:yellow">2</span>,</font>
-"prop1": <span style="color:yellow">1</span>,
-"prop2":```` <span style="color:yellow">2</span>
+{
+  "num": 9,
+  "str1": "Hello World",
+  "str2": "Hello World",
+  "object0": { },
+  "object1": { "a": 1, "b": 2 },
+  "object2": { "3": 3, "a": 1, "b": 2, "prop1": 1, "prop2": 2 },
+  "array0": [ ],
+  "array1": [1, 2, 3, 4],
+  "array2": [1, 2, null, null, null, 6],
+  "array3": [1, 2, 3, 3]
+}
 ````
 
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
