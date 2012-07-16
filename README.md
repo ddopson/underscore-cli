@@ -231,7 +231,7 @@ Output strictly correct, human-readible JSON w/ smart whitespace
 
 #### pretty
 
-Output lax JSON (output is valid JS object syntax, but not strict JSON).
+Output a richer 'inspection' syntax.
 
 <pre><code>{
   num: 9,
