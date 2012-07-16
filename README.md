@@ -1,6 +1,5 @@
 # Overview
 
-    #!/usr/bin/python
     :::pythonx
     "3": <span style="color:yellow">3</span>,
     "a": <span style="color:yellow">1</span>,
