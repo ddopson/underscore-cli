@@ -32,6 +32,7 @@ function addStandardOptions(command) {
     .option('-n, --nodata', "Input data is 'undefined'")
     .option('-q, --quiet', "Suppress normal output.  'console.log' will still trigger output.")
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
+    .option('--color', "Colorize output")
     .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
 }
 
@@ -350,7 +351,6 @@ defineCommand({
 
 defineCommand({
   name: 'print',
-  aliases: 'pretty',
   description: "Output the data without any transformations. Can be used to pretty-print JSON data.",
   fn: function (data) { return data; },
   examples: [
@@ -358,6 +358,14 @@ defineCommand({
     { cmd: "cat example-data/simple.json | underscore print", result: {foo: 'bar', baz: [1, 2, 3]}},
     { cmd: "echo 'this is a sentence' | underscore print --text",        result: 'this is a sentence', format: 'text'}
   ]
+});
+
+defineCommand({
+  name: 'pretty',
+  description: "Output the data without any transformations. Can be used to pretty-print JSON data. (defaults output format to 'pretty')",
+  fn: function (data) { return data; },
+  defaultOutputFormat: 'pretty',
+  examples: []
 });
 
 defineCommand({
@@ -935,8 +943,6 @@ function outputData(data) {
       format = program.outfmt;
     } else if (program.text) {
       format = 'text';
-    } else if (program.strict) {
-      format = 'json';
     } else if (command.defaultOutputFormat) {
       format = command.defaultOutputFormat;
     } else {
@@ -949,12 +955,18 @@ function outputData(data) {
       process.exit(-1);
     }
 
+    var formatter = outputFormats[format].stringify;
+
+    if (program.color && typeof formatter.withConfig == 'function') {
+      formatter = formatter.withConfig({color: true});
+    }
+    
     var output;
     try {
       if (data === undefined && ! program.printUndefined) {
         return;
       } else {
-        output = outputFormats[format].stringify(data);
+        output = formatter(data);
       }
     } catch (e) {
       console.error("Error formatting output data in mode '%s': %s", format, e.message);

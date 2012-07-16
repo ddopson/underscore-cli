@@ -7,7 +7,7 @@ Thusfar, most of the tools to process it are very limited.  Yet, when working in
 
 Underscore-CLI can be a simple pretty printer:
 
-    cat data.json | underscore print
+    cat data.json | underscore print --color
 
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
 
@@ -108,7 +108,7 @@ If you run the tool without any arguments, this is what prints out:
 
   
     Usage: 
-      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--text] [--coffee] [--js]
+      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--color] [--text] [--coffee] [--js]
   
     
   
@@ -158,6 +158,7 @@ If you run the tool without any arguments, this is what prints out:
       -n, --nodata          Input data is 'undefined'
       -q, --quiet           Suppress normal output.  'console.log' will still trigger output.
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
+      --color               Colorize output
       --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
       --coffee              Interpret expression as CoffeeScript. See http://coffeescript.org/
       --js                  Interpret expression as JavaScript. (default is "auto")
@@ -193,7 +194,7 @@ If you run the tool without any arguments, this is what prints out:
 
 Output dense JSON using JSON.stringify
 
-<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}],"g":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"}}}</code></pre>
+<pre><code>{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}</code></pre>
 
 #### json
 
@@ -201,31 +202,29 @@ Output strictly correct, human-readible JSON w/ smart whitespace
 
 <pre><code>{
   "num": 9,
+  "bool": true,
   "str1": "Hello World",
-  "str2": "Hello World",
   "object0": { },
   "object1": { "a": 1, "b": 2 },
-  "object2": { "3": 3, "a": 1, "b": 2, "prop1": 1, "prop2": 2 },
   "array0": [ ],
   "array1": [1, 2, 3, 4],
   "array2": [1, 2, null, null, null, 6],
-  "array3": [1, 2, 3, 3, "prop1": 1, "prop2": 2],
   "date1": "2012-06-28T22:02:25.993Z",
   "date2": "2012-06-28T22:02:25.993Z",
   "err1": { },
-  "err2": { "3": 3, "prop1": 1, "prop2": 2 },
+  "err2": { "3": "three", "prop1": 1, "prop2": 2 },
   "regex1": { },
-  "regex2": { "3": 3, "prop1": 1, "prop2": 2 },
+  "regex2": { "3": "three", "prop1": 1, "prop2": 2 },
   "null1": null,
   "deep": {
     "a": [
       {
-        "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu",
+        "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
         "b": { "c": { } }
       }
     ],
     "g": {
-      "longstr": "nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"
+      "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
     }
   }
 }</code></pre>
@@ -236,32 +235,34 @@ Output lax JSON (output is valid JS object syntax, but not strict JSON).
 
 <pre><code>{
   num: 9,
-  str1: 'Hello World',
-  str2: 'Hello World',
+  bool: true,
+  str1: "Hello World",
   object0: { },
   object1: { a: 1, b: 2 },
-  object2: { '3': 3, a: 1, b: 2, prop1: 1, prop2: 2 },
   array0: [ ],
   array1: [1, 2, 3, 4],
   array2: [1, 2, null, undefined, , 6],
-  array3: [1, 2, 3, 3, prop1: 1, prop2: 2],
-  date1: "2012-06-28T22:02:25.993Z",
-  date2: "2012-06-28T22:02:25.993Z",
-  err1: { },
-  err2: { '3': 3, prop1: 1, prop2: 2 },
-  regex1: { },
-  regex2: { '3': 3, prop1: 1, prop2: 2 },
+  date1: 2012-06-28T22:02:25.993Z,
+  date2: 2012-06-28T22:02:25.993Z{ "3": "three", prop1: 1, prop2: 2 },
+  err1: [Error: my err msg],
+  err2: [Error: my err msg]{ "3": "three", prop1: 1, prop2: 2 },
+  regex1: /^78/,
+  regex2: /^78/{ "3": "three", prop1: 1, prop2: 2 },
+  fn1: [Function],
+  fn2: [Function: fn_name],
+  fn3: [Function: fn_name],
+  fn4: [Function],
   null1: null,
   undef1: undefined,
   deep: {
     a: [
       {
-        longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+        longstr: "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
         b: { c: { } }
       }
     ],
     g: {
-      longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu'
+      longstr: "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
     }
   }
 }</code></pre>
@@ -271,37 +272,94 @@ Output lax JSON (output is valid JS object syntax, but not strict JSON).
 Uses Node's 'util.inspect' to print the output
 
 <pre><code>{ num: 9,
+  bool: true,
   str1: 'Hello World',
-  str2: 'Hello World',
   object0: {},
   object1: { a: 1, b: 2 },
-  object2: { '3': 3, a: 1, b: 2, prop1: 1, prop2: 2 },
   array0: [],
   array1: [ 1, 2, 3, 4 ],
   array2: [ 1, 2, null, undefined, , 6 ],
-  array3: [ 1, 2, 3, 3, prop1: 1, prop2: 2 ],
   date1: Thu Jun 28 2012 15:02:25 GMT-0700 (PDT),
-  date2: { Thu, 28 Jun 2012 22:02:25 GMT '3': 3, prop1: 1, prop2: 2 },
+  date2: { Thu, 28 Jun 2012 22:02:25 GMT '3': 'three', prop1: 1, prop2: 2 },
   err1: [Error: my err msg],
-  err2: { [Error: my err msg] '3': 3, prop1: 1, prop2: 2 },
+  err2: { [Error: my err msg] '3': 'three', prop1: 1, prop2: 2 },
   regex1: /^78/,
-  regex2: { /^78/ '3': 3, prop1: 1, prop2: 2 },
+  regex2: { /^78/ '3': 'three', prop1: 1, prop2: 2 },
   fn1: [Function],
   fn2: [Function: fn_name],
-  fn3: { [Function: fn_name] '3': 3, prop1: 1, prop2: 2 },
+  fn3: { [Function: fn_name] '3': 'three', prop1: 1, prop2: 2 },
+  fn4: { [Function] '3': 'three', prop1: 1, prop2: 2 },
   null1: null,
   undef1: undefined,
   deep: 
    { a: 
-      [ { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu',
+      [ { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!',
           b: { c: {} } } ],
-     g: { longstr: 'nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu' } } }</code></pre>
+     g: { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!' } } }</code></pre>
+
+#### stringify
+
+Output formatted JSON using JSON.stringify.  Fairly verbose
+
+<pre><code>{
+  "num": 9,
+  "bool": true,
+  "str1": "Hello World",
+  "object0": {},
+  "object1": {
+    "a": 1,
+    "b": 2
+  },
+  "array0": [],
+  "array1": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "array2": [
+    1,
+    2,
+    null,
+    null,
+    null,
+    6
+  ],
+  "date1": "2012-06-28T22:02:25.993Z",
+  "date2": "2012-06-28T22:02:25.993Z",
+  "err1": {},
+  "err2": {
+    "3": "three",
+    "prop1": 1,
+    "prop2": 2
+  },
+  "regex1": {},
+  "regex2": {
+    "3": "three",
+    "prop1": 1,
+    "prop2": 2
+  },
+  "null1": null,
+  "deep": {
+    "a": [
+      {
+        "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
+        "b": {
+          "c": {}
+        }
+      }
+    ],
+    "g": {
+      "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
+    }
+  }
+}</code></pre>
 
 #### text
 
 If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line
 
-<pre><code>{"num":9,"str1":"Hello World","str2":"Hello World","object0":{},"object1":{"a":1,"b":2},"object2":{"3":3,"a":1,"b":2,"prop1":1,"prop2":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"array3":[1,2,3,3],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":3,"prop1":1,"prop2":2},"regex1":{},"regex2":{"3":3,"prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu","b":{"c":{}}}],"g":{"longstr":"nuhaosenthuasoenthuasoenthuasoenthuasoenthuasnoethuasnoethuasonethuasnoethusanoethiasnoethuasonethuasoenhuasnoethuasnoethuasonethusanoethusnaoethuasnoethuiasnoeidaosneutdhaoesntuhaoesnthuasonehuasnoethuaosentuhasoenthuaosnethuasoenthuasoenthuasoentuhasnoethuasnoehuasnoethuasnoethuasonethuasnotehuasnotehuasnoethuasonetu"}}}</code></pre>
+<pre><code>{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}</code></pre>
 
 
 

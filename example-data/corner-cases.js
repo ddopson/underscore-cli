@@ -1,17 +1,29 @@
 module.exports = { 
-  // Primatives
-  num: 9,
-  bool: true,
+  // Numbers
+  num1: 9,
+  num2: withProps(9),
+  num3: withProps(new Number(9)),
+
+  bool1: true,
+  bool2: withProps(true),
+  bool2b: withProps(Boolean(true)),
+  bool3: withProps(new Boolean(true)),
+  
+  // Strings
   str1: 'Hello World',
+  str2: withProps('Hello World'), // this doesn't work! the string is immutable and props don't get set
+  str3: withProps(new String('Hello World')),  // this one actually sets properties
 
   // Objects
   object0: {},
   object1: {'a': 1, 'b': 2}, 
+  object2: withProps({'a': 1, 'b': 2}),
 
   // Arrays
   array0: [],
   array1: [1, 2, 3, 4],
   array2: [1, 2, null, undefined,, 6],
+  array3: withProps([1, 2, 3, 4]),
   
   // Date Objects
   date1: new Date(1340920945993),
@@ -45,8 +57,10 @@ module.exports = {
 };
 
 function withProps(obj) {
-  obj[3] = 'three';
+  obj['3'] = 'three';
+  obj[3] = 'z';
   obj['prop1'] = 1;
   obj['prop2'] = 2;
+  obj[13] = 3;
   return obj;
 }

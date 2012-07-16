@@ -13,7 +13,7 @@ Thusfar, most of the tools to process it are very limited.  Yet, when working in
 
 Underscore-CLI can be a simple pretty printer:
 
-    cat data.json | underscore print
+    cat data.json | underscore print --color
 
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
 
