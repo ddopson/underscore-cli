@@ -1,8 +1,5 @@
 # Overview
 
-
-<pre>
-
 {
   "num": <span style="color:yellow">9</span>,
   "str1": <span style="color:green">"Hello World"</span>,
@@ -64,7 +61,6 @@
     }
   }
 }
-</pre>
 
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
 Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.  
