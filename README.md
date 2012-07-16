@@ -1,6 +1,6 @@
 # Overview
 <pre>
-::: json
+:::json
 "3": <span style="color:yellow">3</span>,
 "a": <span style="color:yellow">1</span>,
 <font color="green">"b": <span style="color:yellow">2</span>,</font>
