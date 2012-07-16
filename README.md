@@ -190,15 +190,9 @@ If you run the tool without any arguments, this is what prints out:
 ### Data Formats
 
 
-#### dense
-
-Output dense JSON using JSON.stringify
-
-<pre><code>{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}</code></pre>
-
 #### json
 
-Output strictly correct, human-readible JSON w/ smart whitespace
+Output strictly correct, human-readible JSON w/ smart whitespace (default format).  This format has recieved a lot of love.  Try the '--color' flag.
 
 <pre><code>{
   "num": 9,
@@ -229,9 +223,73 @@ Output strictly correct, human-readible JSON w/ smart whitespace
   }
 }</code></pre>
 
+#### dense
+
+Output dense JSON using JSON.stringify
+
+<pre><code>{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}</code></pre>
+
+#### stringify
+
+Output formatted JSON using JSON.stringify.  Fairly verbose
+
+<pre><code>{
+  "num": 9,
+  "bool": true,
+  "str1": "Hello World",
+  "object0": {},
+  "object1": {
+    "a": 1,
+    "b": 2
+  },
+  "array0": [],
+  "array1": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "array2": [
+    1,
+    2,
+    null,
+    null,
+    null,
+    6
+  ],
+  "date1": "2012-06-28T22:02:25.993Z",
+  "date2": "2012-06-28T22:02:25.993Z",
+  "err1": {},
+  "err2": {
+    "3": "three",
+    "prop1": 1,
+    "prop2": 2
+  },
+  "regex1": {},
+  "regex2": {
+    "3": "three",
+    "prop1": 1,
+    "prop2": 2
+  },
+  "null1": null,
+  "deep": {
+    "a": [
+      {
+        "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
+        "b": {
+          "c": {}
+        }
+      }
+    ],
+    "g": {
+      "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
+    }
+  }
+}</code></pre>
+
 #### pretty
 
-Output a richer 'inspection' syntax.
+Output a richer 'inspection' syntax.  For array-and-object graphs
 
 <pre><code>{
   num: 9,
@@ -296,64 +354,6 @@ Uses Node's 'util.inspect' to print the output
       [ { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!',
           b: { c: {} } } ],
      g: { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!' } } }</code></pre>
-
-#### stringify
-
-Output formatted JSON using JSON.stringify.  Fairly verbose
-
-<pre><code>{
-  "num": 9,
-  "bool": true,
-  "str1": "Hello World",
-  "object0": {},
-  "object1": {
-    "a": 1,
-    "b": 2
-  },
-  "array0": [],
-  "array1": [
-    1,
-    2,
-    3,
-    4
-  ],
-  "array2": [
-    1,
-    2,
-    null,
-    null,
-    null,
-    6
-  ],
-  "date1": "2012-06-28T22:02:25.993Z",
-  "date2": "2012-06-28T22:02:25.993Z",
-  "err1": {},
-  "err2": {
-    "3": "three",
-    "prop1": 1,
-    "prop2": 2
-  },
-  "regex1": {},
-  "regex2": {
-    "3": "three",
-    "prop1": 1,
-    "prop2": 2
-  },
-  "null1": null,
-  "deep": {
-    "a": [
-      {
-        "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
-        "b": {
-          "c": {}
-        }
-      }
-    ],
-    "g": {
-      "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
-    }
-  }
-}</code></pre>
 
 #### text
 
