@@ -117,6 +117,7 @@ If you run the tool without any arguments, this is what prints out:
       help [command]      Print more detailed help and examples for a specific command
       type                Print the type of the input data: {object, array, number, string, boolean, null, undefined}
       print               Output the data without any transformations. Can be used to pretty-print JSON data.
+      pretty              Output the data without any transformations. Can be used to pretty-print JSON data. (defaults output format to 'pretty')
       run <exp>           Runs arbitrary JS code. Use for CLI Javascripting.
       process <exp>       Run arbitrary JS against the input data.  Expression Args: (data)
       extract <field>     Extract a field from the input data.  Also supports field1.field2.field3
@@ -444,6 +445,10 @@ Why do we print a warning?  Unfortunately, there are a number of language featur
 
     test ? 10 : 20;  // JS: if test is true, then 10, else 20
     test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
+
+### Smart whitespace in output
+
+As mentioned above, dense JSON is nearly unreadable to human beings, so we want to pretty print it.  JSON.stringify will accept an 'indentation' parameter that does make JSON much more readible; however, this will put _everything_ on a new line resulting in output that is silly verbose -- printing "[1, 2, 3, 4]" will take up 6 lines despite having only 12ish characters. Node's "util.inspect" is a bit better, but it doesn't print valid JSON (eg, inspect uses single instead of double quotes).  I don't want to compromize on JSON compatibility just to get pretty output.  So I wrote my own formatter that gives the best of both worlds.  The default output format is strictly JSON compatible, human readible, yet avoids excessive verbosity by putting small objects and arrays on a single line where possible.  The formatting code is also pretty flexible, allowing me to support colorization and a bunch of other nifty features; at some point, I may break the formatter into it's own npm module.
 
 ### Smart auto-consumption of STDIN
 
