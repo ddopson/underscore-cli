@@ -126,8 +126,13 @@ _.map(formats, function (f, name) {
 
 <%= f.description %>
 
+<%
+  if (name !== 'text') { 
+%>
 <pre><code><%= f.stringify(sample).replace(/\033\[[;0-9]*m/g, "") %></code></pre>
 <%
+
+  }
 
 });
 
