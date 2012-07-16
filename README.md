@@ -1,66 +1,66 @@
 # Overview
 
-{
-  "num": <span style="color:yellow">9</span>,
-  "str1": <span style="color:green">"Hello World"</span>,
-  "str2": <span style="color:green">"Hello World"</span>,
-  "object0": { },
-  "object1": { "a": <span style="color:yellow">1</span>, "b": <span style="color:yellow">2</span> },
-  "object2": {
-    "3": <span style="color:yellow">3</span>,
-    "a": <span style="color:yellow">1</span>,
-    "b": <span style="color:yellow">2</span>,
-    "prop1": <span style="color:yellow">1</span>,
-    "prop2": <span style="color:yellow">2</span>
-  },
-  "array0": [ ],
-  "array1": [
-    <span style="color:yellow">1</span>,
-    <span style="color:yellow">2</span>,
-    <span style="color:yellow">3</span>,
-    <span style="color:yellow">4</span>
-  ],
-  "array2": [
-    <span style="color:yellow">1</span>,
-    <span style="color:yellow">2</span>,
-    <span style="color:bold">null</span>,
-    <span style="color:bold">null</span>,
-    <span style="color:bold">null</span>,
-    <span style="color:yellow">6</span>
-  ],
-  "array3": [
-    <span style="color:yellow">1</span>,
-    <span style="color:yellow">2</span>,
-    <span style="color:yellow">3</span>,
-    <span style="color:yellow">3</span>
-  ],
-  "date1": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
-  "date2": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
-  "err1": <span style="color:orange">{ }</span>,
-  "err2": <span style="color:orange">{
-    "3": &lt;span style="color:yellow"&gt;3&lt;/span&gt;,
-    "prop1": &lt;span style="color:yellow"&gt;1&lt;/span&gt;,
-    "prop2": &lt;span style="color:yellow"&gt;2&lt;/span&gt;
-  }</span>,
-  "regex1": <span style="color:red">{ }</span>,
-  "regex2": <span style="color:red">{
-    "3": &lt;span style="color:yellow"&gt;3&lt;/span&gt;,
-    "prop1": &lt;span style="color:yellow"&gt;1&lt;/span&gt;,
-    "prop2": &lt;span style="color:yellow"&gt;2&lt;/span&gt;
-  }</span>,
-  "null1": <span style="color:bold">null</span>,
-  "deep": {
-    "a": [
-      {
-        "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>,
-        "b": { "c": { } }
+    {
+      "num": <span style="color:yellow">9</span>,
+      "str1": <span style="color:green">"Hello World"</span>,
+      "str2": <span style="color:green">"Hello World"</span>,
+      "object0": { },
+      "object1": { "a": <span style="color:yellow">1</span>, "b": <span style="color:yellow">2</span> },
+      "object2": {
+        "3": <span style="color:yellow">3</span>,
+        "a": <span style="color:yellow">1</span>,
+        "b": <span style="color:yellow">2</span>,
+        "prop1": <span style="color:yellow">1</span>,
+        "prop2": <span style="color:yellow">2</span>
+      },
+      "array0": [ ],
+      "array1": [
+        <span style="color:yellow">1</span>,
+        <span style="color:yellow">2</span>,
+        <span style="color:yellow">3</span>,
+        <span style="color:yellow">4</span>
+      ],
+      "array2": [
+        <span style="color:yellow">1</span>,
+        <span style="color:yellow">2</span>,
+        <span style="color:bold">null</span>,
+        <span style="color:bold">null</span>,
+        <span style="color:bold">null</span>,
+        <span style="color:yellow">6</span>
+      ],
+      "array3": [
+        <span style="color:yellow">1</span>,
+        <span style="color:yellow">2</span>,
+        <span style="color:yellow">3</span>,
+        <span style="color:yellow">3</span>
+      ],
+      "date1": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
+      "date2": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
+      "err1": <span style="color:orange">{ }</span>,
+      "err2": <span style="color:orange">{
+        "3": &lt;span style="color:yellow"&gt;3&lt;/span&gt;,
+        "prop1": &lt;span style="color:yellow"&gt;1&lt;/span&gt;,
+        "prop2": &lt;span style="color:yellow"&gt;2&lt;/span&gt;
+      }</span>,
+      "regex1": <span style="color:red">{ }</span>,
+      "regex2": <span style="color:red">{
+        "3": &lt;span style="color:yellow"&gt;3&lt;/span&gt;,
+        "prop1": &lt;span style="color:yellow"&gt;1&lt;/span&gt;,
+        "prop2": &lt;span style="color:yellow"&gt;2&lt;/span&gt;
+      }</span>,
+      "null1": <span style="color:bold">null</span>,
+      "deep": {
+        "a": [
+          {
+            "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>,
+            "b": { "c": { } }
+          }
+        ],
+        "g": {
+          "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>
+        }
       }
-    ],
-    "g": {
-      "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>
     }
-  }
-}
 
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
 Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.  
