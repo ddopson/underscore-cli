@@ -476,6 +476,8 @@ Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Exam
 <a name="polish" />
 # Polish: 1001 Little Conveniences
 
+This section is intended to capture all the places where I spent a great deal of effort to get the best possible behavior on something subtle.  aka "polish".  It also captures some of the intended "best behaviors" that I haven't had cycles to implement yet.
+
 ### Templates as first class NPM modules - ie, real stack traces
 
 When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JS and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JS code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
@@ -493,7 +495,7 @@ This even works to find the last evaluated value inside conditional branches (th
     underscore run 'x=5; if (x > 0) { 10; } else { 0; }'           # last value is 10
     underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y' 
 
-In general, the principle here is that you shouldn't have think to hard because the code should just return what you intuitively expect.
+In general, the principle here is that the code should just return what you intuitively expect without requiring much thought.
 
 ### Autodetection of CoffeeScript
 
