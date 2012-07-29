@@ -1,0 +1,20 @@
+{
+  // strict options
+
+  "trailing": true,
+  "curly": true,
+  "noarg": true,
+  "nonew": true,
+  "undef": true,
+
+  // relaxing options
+
+  "sub": true,          // suppressing warnings for obj['property']
+  "strict": false,
+  "lastsemic": true,
+  "evil": true,         // suppress warnings for 'eval'
+
+  "strobj": true,       // allow new String()
+  "node": true
+
+}
