@@ -1,5 +1,9 @@
 ### 0.2.10 (2012-07-15)
 
+* add the --color CLI param
+
+### 0.2.10 (2012-07-15)
+
 * ground-up rewrite of Formatter code for optimal "strict + pretty + semi-dense" JSON output
 
 ### 0.2.9 (2012-05-07)
