@@ -15,6 +15,8 @@ Underscore-CLI can be a simple pretty printer:
 
     cat data.json | underscore print --color
 
+![example.png](https://raw.github.com/ddopson/underscore-cli/master/doc/example.png)
+
 Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
 
     cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
