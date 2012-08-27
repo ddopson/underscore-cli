@@ -1,4 +1,9 @@
-### 0.2.10 (2012-07-15)
+### 0.2.12 (2012-08-27)
+
+* Perf: reduce total init time from 153 ms to 93 ms
+* add the --trace CLI param
+
+### 0.2.11 (2012-07-29)
 
 * add the --color CLI param
 
