@@ -4,13 +4,13 @@ var _               = require('../lib/underscore');
 var program         = require('commander');
 var fs              = require('fs');
 var util            = require('util');
-var JSONSelect      = require('JSONSelect');
 var inputFormats    = require('../lib/input-formats');
 var outputFormats   = require('../lib/output-formats');
 var globalFunctions = require('../lib/functions');
-var coffee          = require('coffee-script');
 var Template        = require('../lib/template');
 var VM              = require('vm');
+var JSONSelect      = null; // lazy load of require('JSONSelect');
+var coffee          = null; // lazy load of require('coffee-script');
 
 var version;
 try {
@@ -34,6 +34,7 @@ function addStandardOptions(command) {
     .option('--strict', "Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.")
     .option('--color', "Colorize output")
     .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
+    .option('--trace', "Print stack traces when things go wrong")
 }
 
 program.defaultInputFormat = 'lax';
@@ -474,6 +475,9 @@ defineCommand({
   name: 'select <jselexp>',
   description: "Run a 'JSON Selector' query against the input data. See jsonselect.org.",
   fn: function (data, sel) {
+    if (! JSONSelect) {
+      JSONSelect = require('JSONSelect');
+    }
     return JSONSelect.match(sel, data);
   },
   examples: {
@@ -713,7 +717,7 @@ defineCommand({
     try {
       var text = fs.readFileSync(filename, 'utf8');
     } catch (e) {
-      console.error("Error reading template file '%s': %s", filename, e.message);
+      console.error("Error reading template file '%s': %s", filename, program.trace ? e.stack : e.message);
       process.exit(-1);
     }
 
@@ -727,7 +731,7 @@ defineCommand({
         output = compiledTemplate.source;
       }
     } catch (e) {
-      console.error("Error processing template file '%s': %s", filename, e.message);
+      console.error("Error processing template file '%s': %s", filename, program.trace ? e.stack : e.message);
       process.exit(-1);
     }
 
@@ -776,6 +780,9 @@ function main () {
 
 function getUserFn_coffee(expression, args) {
   var code = expression;
+  if (! coffee) {
+    coffee = require('coffee-script');
+  }
   try {
     var js = coffee.compile(code, {filename: 'expression', bare: true});
     console.log("JS: ", js);
@@ -898,7 +905,7 @@ function parseInput(text, source) {
   try {
     return formatObj.parse(text);
   } catch (e) {
-    console.error("Error while parsing %s in mode '%s': %s", source, format, e.message);
+    console.error("Error while parsing %s in mode '%s': %s", source, format, program.trace ? e.stack : e.message);
     process.exit(-1);
   }
 }
@@ -915,7 +922,7 @@ function inputData(cb) {
     try {
       text = fs.readFileSync(program.in, 'utf8');
     } catch (e) {
-      console.error("Error while reading input file '%s': %s", program.in, e.message);
+      console.error("Error while reading input file '%s': %s", program.in, program.trace ? e.stack : e.message);
       process.exit(-1);
     }
     var data = parseInput(text, "'" + program.in + "'");
@@ -969,7 +976,7 @@ function outputData(data) {
         output = formatter(data);
       }
     } catch (e) {
-      console.error("Error formatting output data in mode '%s': %s", format, e.message);
+      console.error("Error formatting output data in mode '%s': %s", format, program.trace ? e.stack : e.message);
       process.exit(-1);
     }
 
@@ -977,7 +984,7 @@ function outputData(data) {
       try {
         fs.writeFileSync(program.out, output, 'utf8');
       } catch (e) {
-        console.error("Error while writing to output file '%s': ", program.out, e.message);
+        console.error("Error while writing to output file '%s': ", program.out, program.trace ? e.stack : e.message);
         process.exit(-1);
       }
     } else {

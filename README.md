@@ -110,7 +110,7 @@ If you run the tool without any arguments, this is what prints out:
 
   
     Usage: 
-      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--color] [--text] [--coffee] [--js]
+      underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--color] [--text] [--trace] [--coffee] [--js]
   
     
   
@@ -162,6 +162,7 @@ If you run the tool without any arguments, this is what prints out:
       --strict              Use strict JSON parsing instead of more lax 'eval' syntax.  To avoid security concerns, use this with ANY data from an external source.
       --color               Colorize output
       --text                Parse data as text instead of JSON. Sets input and output formats to 'text'
+      --trace               Print stack traces when things go wrong
       --coffee              Interpret expression as CoffeeScript. See http://coffeescript.org/
       --js                  Interpret expression as JavaScript. (default is "auto")
   
@@ -511,6 +512,12 @@ Why do we print a warning?  Unfortunately, there are a number of language featur
 
     test ? 10 : 20;  // JS: if test is true, then 10, else 20
     test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
+
+### Lazy loading of CoffeeScript library
+
+Loading the 'coffee-script' npm module takes 50+ ms.  JSONSelect is another 5ms.  That may not sound like much time, but it's the difference between 153 ms and 93 ms, and 153 ms is definitely human perceivable.  It will also make a difference if you are writing a quick-and-dirty bash loop that executes underscore-CLI repeatedly.  Plus, fast just feels good.
+
+A few more notes... Node.js takes about 33 ms to run "hello world", and 45ms if you either "require('fs')" or 'require' anything that's not pre-compiled into the node executable (pretty hard to avoid that).  Adding underscore, underscore.string and a few of node's pre-compiled modules, and basic code loading takes ~60 ms.  That leaves ~33 ms spent on actually running code that initializes the command list and decides what to do with the command-line args that were passed in.
 
 ### Smart whitespace in output
 

@@ -284,6 +284,12 @@ Why do we print a warning?  Unfortunately, there are a number of language featur
     test ? 10 : 20;  // JS: if test is true, then 10, else 20
     test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
 
+### Lazy loading of CoffeeScript library
+
+Loading the 'coffee-script' npm module takes 50+ ms.  JSONSelect is another 5ms.  That may not sound like much time, but it's the difference between 153 ms and 93 ms, and 153 ms is definitely human perceivable.  It will also make a difference if you are writing a quick-and-dirty bash loop that executes underscore-CLI repeatedly.  Plus, fast just feels good.
+
+A few more notes... Node.js takes about 33 ms to run "hello world", and 45ms if you either "require('fs')" or 'require' anything that's not pre-compiled into the node executable (pretty hard to avoid that).  Adding underscore, underscore.string and a few of node's pre-compiled modules, and basic code loading takes ~60 ms.  That leaves ~33 ms spent on actually running code that initializes the command list and decides what to do with the command-line args that were passed in.
+
 ### Smart whitespace in output
 
 As mentioned above, dense JSON is nearly unreadable to human beings, so we want to pretty print it.  JSON.stringify will accept an 'indentation' parameter that does make JSON much more readible; however, this will put _everything_ on a new line resulting in output that is silly verbose -- printing "[1, 2, 3, 4]" will take up 6 lines despite having only 12ish characters. Node's "util.inspect" is a bit better, but it doesn't print valid JSON (eg, inspect uses single instead of double quotes).  I don't want to compromize on JSON compatibility just to get pretty output.  So I wrote my own formatter that gives the best of both worlds.  The default output format is strictly JSON compatible, human readible, yet avoids excessive verbosity by putting small objects and arrays on a single line where possible.  The formatting code is also pretty flexible, allowing me to support colorization and a bunch of other nifty features; at some point, I may break the formatter into it's own npm module.
