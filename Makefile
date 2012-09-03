@@ -25,7 +25,7 @@ build: lint test readme
 .PHONY: readme rme
 readme rme:
 	@$(ECHO_E) "$(YELLOW)Generating README.md from README.template$(NOCOLOR)"
-	$(UNDERSCORE) template -d '{}' README.template > README.md
+	$(UNDERSCORE) template -d '{}' README.template --trace > README.md
 	@$(ECHO_E) "$(YELLOW)Generating Examples.md$(NOCOLOR)"
 	$(UNDERSCORE) examples | $(PERL) -pe '\
 		/^underscore (\w+)/ and $$c=$$1; \
