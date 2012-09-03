@@ -1,3 +1,8 @@
+
+### V.next?
+
+* Perf: reduce init time further to 85 ms
+
 ### 0.2.12 (2012-08-27)
 
 * Perf: reduce total init time from 153 ms to 93 ms
