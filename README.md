@@ -195,7 +195,7 @@ If you run the tool without any arguments, this is what prints out:
 
 #### json
 
-The default format.  Outputs strictly correct, human-readible JSON w/ smart whitespace. This format has recieved a lot of love.  Try the '--color' flag.
+The default format.  Outputs strictly correct, human-readible JSON w/ smart whitespace. This format has received a lot of love.  Try the '--color' flag.
 
 
 <pre><code>{
