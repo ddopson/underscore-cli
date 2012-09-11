@@ -299,35 +299,35 @@ Output a richer 'inspection' syntax.  When printing array-and-object graphs that
 
 
 <pre><code>{
-  num: 9,
-  bool: true,
-  str1: "Hello World",
+  num: <b>9</b>,
+  bool: <b>true</b>,
+  str1: <b>"Hello World"</b>,
   object0: { },
-  object1: { a: 1, b: 2 },
+  object1: { a: <b>1</b>, b: <b>2</b> },
   array0: [ ],
-  array1: [1, 2, 3, 4],
-  array2: [1, 2, null, undefined, , 6],
-  date1: 2012-06-28T22:02:25.993Z,
-  date2: 2012-06-28T22:02:25.993Z{ "3": "three", prop1: 1, prop2: 2 },
-  err1: [Error: my err msg],
-  err2: [Error: my err msg]{ "3": "three", prop1: 1, prop2: 2 },
-  regex1: /^78/,
-  regex2: /^78/{ "3": "three", prop1: 1, prop2: 2 },
-  fn1: [Function],
-  fn2: [Function: fn_name],
-  fn3: [Function: fn_name],
-  fn4: [Function],
-  null1: null,
-  undef1: undefined,
+  array1: [<b>1</b>, <b>2</b>, <b>3</b>, <b>4</b>],
+  array2: [<b>1</b>, <b>2</b>, <b>null</b>, <b>undefined</b>, , <b>6</b>],
+  date1: <b>2012-06-28T22:02:25.993Z</b>,
+  date2: <b>2012-06-28T22:02:25.993Z</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
+  err1: <b>[Error: my err msg]</b>,
+  err2: <b>[Error: my err msg]</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
+  regex1: <b>/^78/</b>,
+  regex2: <b>/^78/</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
+  fn1: <b>[Function]</b>,
+  fn2: <b>[Function: fn_name]</b>,
+  fn3: <b>[Function: fn_name]</b>,
+  fn4: <b>[Function]</b>,
+  null1: <b>null</b>,
+  undef1: <b>undefined</b>,
   deep: {
     a: [
       {
-        longstr: "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
+        longstr: <b>"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</b>,
         b: { c: { } }
       }
     ],
     g: {
-      longstr: "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
+      longstr: <b>"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</b>
     }
   }
 }</code></pre>
@@ -380,7 +380,7 @@ MessagePack binary JSON format
 Textual representation of MessagePack, like "<A4>stuff<B8>"
 
 
-<pre><code>&#60;de&#62;&#60;00&#62;&#60;15&#62;&#60;a3&#62;num&#60;09&#62;&#60;a4&#62;bool&#60;c3&#62;&#60;a4&#62;str1&#60;ab&#62;Hello World&#60;a7&#62;object0&#60;80&#62;&#60;a7&#62;object1&#60;82&#62;&#60;a1&#62;a&#60;01&#62;&#60;a1&#62;b&#60;02&#62;&#60;a6&#62;array0&#60;90&#62;&#60;a6&#62;array1&#60;94&#62;&#60;01&#62;&#60;02&#62;&#60;03&#62;&#60;04&#62;&#60;a6&#62;array2&#60;96&#62;&#60;01&#62;&#60;02&#62;&#60;c0&#62;&#60;c0&#62;&#60;c0&#62;&#60;06&#62;&#60;a5&#62;date1&#60;80&#62;&#60;a5&#62;date2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a4&#62;err1&#60;80&#62;&#60;a4&#62;err2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a6&#62;regex1&#60;80&#62;&#60;a6&#62;regex2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn1&#60;80&#62;&#60;a3&#62;fn2&#60;80&#62;&#60;a3&#62;fn3&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn4&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a5&#62;null1&#60;c0&#62;&#60;a6&#62;undef1&#60;c0&#62;&#60;a4&#62;deep&#60;82&#62;&#60;a1&#62;a&#60;91&#62;&#60;82&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#60;a1&#62;b&#60;81&#62;&#60;a1&#62;c&#60;80&#62;&#60;a1&#62;g&#60;81&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
+<pre><code><b>&#60de&#62</b><b>&#6000&#62</b><b>&#6015&#62</b><b>&#60a3&#62</b>num<b>&#6009&#62</b><b>&#60a4&#62</b>bool<b>&#60c3&#62</b><b>&#60a4&#62</b>str1<b>&#60ab&#62</b>Hello World<b>&#60a7&#62</b>object0<b>&#6080&#62</b><b>&#60a7&#62</b>object1<b>&#6082&#62</b><b>&#60a1&#62</b>a<b>&#6001&#62</b><b>&#60a1&#62</b>b<b>&#6002&#62</b><b>&#60a6&#62</b>array0<b>&#6090&#62</b><b>&#60a6&#62</b>array1<b>&#6094&#62</b><b>&#6001&#62</b><b>&#6002&#62</b><b>&#6003&#62</b><b>&#6004&#62</b><b>&#60a6&#62</b>array2<b>&#6096&#62</b><b>&#6001&#62</b><b>&#6002&#62</b><b>&#60c0&#62</b><b>&#60c0&#62</b><b>&#60c0&#62</b><b>&#6006&#62</b><b>&#60a5&#62</b>date1<b>&#6080&#62</b><b>&#60a5&#62</b>date2<b>&#6083&#62</b><b>&#6003&#62</b><b>&#60a5&#62</b>three<b>&#60a5&#62</b>prop1<b>&#6001&#62</b><b>&#60a5&#62</b>prop2<b>&#6002&#62</b><b>&#60a4&#62</b>err1<b>&#6080&#62</b><b>&#60a4&#62</b>err2<b>&#6083&#62</b><b>&#6003&#62</b><b>&#60a5&#62</b>three<b>&#60a5&#62</b>prop1<b>&#6001&#62</b><b>&#60a5&#62</b>prop2<b>&#6002&#62</b><b>&#60a6&#62</b>regex1<b>&#6080&#62</b><b>&#60a6&#62</b>regex2<b>&#6083&#62</b><b>&#6003&#62</b><b>&#60a5&#62</b>three<b>&#60a5&#62</b>prop1<b>&#6001&#62</b><b>&#60a5&#62</b>prop2<b>&#6002&#62</b><b>&#60a3&#62</b>fn1<b>&#6080&#62</b><b>&#60a3&#62</b>fn2<b>&#6080&#62</b><b>&#60a3&#62</b>fn3<b>&#6083&#62</b><b>&#6003&#62</b><b>&#60a5&#62</b>three<b>&#60a5&#62</b>prop1<b>&#6001&#62</b><b>&#60a5&#62</b>prop2<b>&#6002&#62</b><b>&#60a3&#62</b>fn4<b>&#6083&#62</b><b>&#6003&#62</b><b>&#60a5&#62</b>three<b>&#60a5&#62</b>prop1<b>&#6001&#62</b><b>&#60a5&#62</b>prop2<b>&#6002&#62</b><b>&#60a5&#62</b>null1<b>&#60c0&#62</b><b>&#60a6&#62</b>undef1<b>&#60c0&#62</b><b>&#60a4&#62</b>deep<b>&#6082&#62</b><b>&#60a1&#62</b>a<b>&#6091&#62</b><b>&#6082&#62</b><b>&#60a7&#62</b>longstr<b>&#60da&#62</b><b>&#6000&#62</b><b>&#608f&#62</b>This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!<b>&#60a1&#62</b>b<b>&#6081&#62</b><b>&#60a1&#62</b>c<b>&#6080&#62</b><b>&#60a1&#62</b>g<b>&#6081&#62</b><b>&#60a7&#62</b>longstr<b>&#60da&#62</b><b>&#6000&#62</b><b>&#608f&#62</b>This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
 
 
 
