@@ -199,30 +199,38 @@ The default format.  Outputs strictly correct, human-readible JSON w/ smart whit
 
 
 <pre><code>{
-  "num": 9,
-  "bool": true,
-  "str1": "Hello World",
+  "num": <span style="color:yellow">9</span>,
+  "bool": <span style="color:yellow">true</span>,
+  "str1": <span style="color:green">"Hello World"</span>,
   "object0": { },
-  "object1": { "a": 1, "b": 2 },
+  "object1": { "a": <span style="color:yellow">1</span>, "b": <span style="color:yellow">2</span> },
   "array0": [ ],
-  "array1": [1, 2, 3, 4],
-  "array2": [1, 2, null, null, null, 6],
-  "date1": "2012-06-28T22:02:25.993Z",
-  "date2": "2012-06-28T22:02:25.993Z",
+  "array1": [<span style="color:yellow">1</span>, <span style="color:yellow">2</span>, <span style="color:yellow">3</span>, <span style="color:yellow">4</span>],
+  "array2": [<span style="color:yellow">1</span>, <span style="color:yellow">2</span>, <span style="color:bold">null</span>, <span style="color:bold">null</span>, <span style="color:bold">null</span>, <span style="color:yellow">6</span>],
+  "date1": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
+  "date2": <span style="color:magenta">"2012-06-28T22:02:25.993Z"</span>,
   "err1": { },
-  "err2": { "3": "three", "prop1": 1, "prop2": 2 },
+  "err2": {
+    "3": <span style="color:green">"three"</span>,
+    "prop1": <span style="color:yellow">1</span>,
+    "prop2": <span style="color:yellow">2</span>
+  },
   "regex1": { },
-  "regex2": { "3": "three", "prop1": 1, "prop2": 2 },
-  "null1": null,
+  "regex2": {
+    "3": <span style="color:green">"three"</span>,
+    "prop1": <span style="color:yellow">1</span>,
+    "prop2": <span style="color:yellow">2</span>
+  },
+  "null1": <span style="color:bold">null</span>,
   "deep": {
     "a": [
       {
-        "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!",
+        "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>,
         "b": { "c": { } }
       }
     ],
     "g": {
-      "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
+      "longstr": <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>
     }
   }
 }</code></pre>
@@ -299,35 +307,47 @@ Output a richer 'inspection' syntax.  When printing array-and-object graphs that
 
 
 <pre><code>{
-  num: <b>9</b>,
-  bool: <b>true</b>,
-  str1: <b>"Hello World"</b>,
+  num: <span style="color:yellow">9</span>,
+  bool: <span style="color:yellow">true</span>,
+  str1: <span style="color:green">"Hello World"</span>,
   object0: { },
-  object1: { a: <b>1</b>, b: <b>2</b> },
+  object1: { a: <span style="color:yellow">1</span>, b: <span style="color:yellow">2</span> },
   array0: [ ],
-  array1: [<b>1</b>, <b>2</b>, <b>3</b>, <b>4</b>],
-  array2: [<b>1</b>, <b>2</b>, <b>null</b>, <b>undefined</b>, , <b>6</b>],
-  date1: <b>2012-06-28T22:02:25.993Z</b>,
-  date2: <b>2012-06-28T22:02:25.993Z</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
-  err1: <b>[Error: my err msg]</b>,
-  err2: <b>[Error: my err msg]</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
-  regex1: <b>/^78/</b>,
-  regex2: <b>/^78/</b>{ "3": <b>"three"</b>, prop1: <b>1</b>, prop2: <b>2</b> },
-  fn1: <b>[Function]</b>,
-  fn2: <b>[Function: fn_name]</b>,
-  fn3: <b>[Function: fn_name]</b>,
-  fn4: <b>[Function]</b>,
-  null1: <b>null</b>,
-  undef1: <b>undefined</b>,
+  array1: [<span style="color:yellow">1</span>, <span style="color:yellow">2</span>, <span style="color:yellow">3</span>, <span style="color:yellow">4</span>],
+  array2: [<span style="color:yellow">1</span>, <span style="color:yellow">2</span>, <span style="color:bold">null</span>, <span style="color:grey">undefined</span>, , <span style="color:yellow">6</span>],
+  date1: <span style="color:magenta">2012-06-28T22:02:25.993Z</span>,
+  date2: <span style="color:magenta">2012-06-28T22:02:25.993Z</span>{
+    "3": <span style="color:green">"three"</span>,
+    prop1: <span style="color:yellow">1</span>,
+    prop2: <span style="color:yellow">2</span>
+  },
+  err1: <span style="color:orange">[Error: my err msg]</span>,
+  err2: <span style="color:orange">[Error: my err msg]</span>{
+    "3": <span style="color:green">"three"</span>,
+    prop1: <span style="color:yellow">1</span>,
+    prop2: <span style="color:yellow">2</span>
+  },
+  regex1: <span style="color:red">/^78/</span>,
+  regex2: <span style="color:red">/^78/</span>{
+    "3": <span style="color:green">"three"</span>,
+    prop1: <span style="color:yellow">1</span>,
+    prop2: <span style="color:yellow">2</span>
+  },
+  fn1: <span style="color:cyan">[Function]</span>,
+  fn2: <span style="color:cyan">[Function: fn_name]</span>,
+  fn3: <span style="color:cyan">[Function: fn_name]</span>,
+  fn4: <span style="color:cyan">[Function]</span>,
+  null1: <span style="color:bold">null</span>,
+  undef1: <span style="color:grey">undefined</span>,
   deep: {
     a: [
       {
-        longstr: <b>"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</b>,
+        longstr: <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>,
         b: { c: { } }
       }
     ],
     g: {
-      longstr: <b>"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</b>
+      longstr: <span style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</span>
     }
   }
 }</code></pre>
