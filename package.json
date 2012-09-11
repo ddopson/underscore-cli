@@ -8,7 +8,8 @@
     "underscore.string": "*",
     "commander": "*",
     "coffee-script": "*",
-    "JSONSelect": "*"
+    "JSONSelect": "*",
+    "msgpack": "*"
   },
   "devDependencies": { "mocha": "*" },
   "main": "index.js",

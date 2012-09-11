@@ -915,13 +915,14 @@ function parseInput(text, source) {
   }
 
   if (! inputFormats[format]) {
-    console.error("Unrecognized input format: '%s'.  See 'help formats'", format);
+    var valid_formats = "['" + _.keys(inputFormats).join("', '") + "']";
+    console.error("Unrecognized input format: '%s'.  See 'help formats', or select from %s", format, valid_formats);
     process.exit(-1);
   }
 
   var formatObj = inputFormats[format];
 
-  if(!text.match(/./)) {
+  if(text.length == 0) {
     console.error("Error while parsing %s: File is empty!", source);
     process.exit(-1);
   }
@@ -944,7 +945,7 @@ function inputData(cb) {
     cb(undefined);
   } else if (program.in) {
     try {
-      text = fs.readFileSync(program.in, 'utf8');
+      text = fs.readFileSync(program.in);
     } catch (e) {
       console.error("Error while reading input file '%s': %s", program.in, program.trace ? e.stack : e.message);
       process.exit(-1);
@@ -1012,9 +1013,11 @@ function outputData(data) {
         process.exit(-1);
       }
     } else {
-      // trim the last newline, if exists
-      output = output.replace(/\n$/, '');
-      console.log(output);
+      process.stdout.write(output);
+      // Ensure we end w/ a newline
+      if (!(typeof output == 'string' && output.match(/\n$/))) {
+        console.log();
+      }
     }
   }
 }

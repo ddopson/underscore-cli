@@ -129,9 +129,20 @@ _.map(formats, function (f, name) {
 <%= f.description %>
 
 <%
-  if (name !== 'text') { 
+  if (name !== 'text') {
 %>
-<pre><code><%= f.stringify(sample).replace(/\033\[[;0-9]*m/g, "") %></code></pre>
+<pre><code><%=
+  (f.stringify(sample).toString('binary'))
+    .replace(/\033\[[;0-9]*m/g, "")
+    .replace(/./g, function (x) {
+      var cc = x.charCodeAt(0);
+      if (cc > 31 && cc < 127 && !/[<>]/.test(x)) {
+        return x;
+      } else {
+        return '&#' + cc + ';';
+      }
+    })
+%></code></pre>
 <%
 
   }
@@ -152,7 +163,7 @@ _.map(formats, function (f, name) {
 
 ### Playing with data from a webservice
 
-Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  
+Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.
 
 First of all, note how raw unformatted JSON is really hard to parse with your eyes ...
 
@@ -267,13 +278,13 @@ This one is a bit [CoffeeScript](http://coffee-script.org) inspired.  When we pa
 This even works to find the last evaluated value inside conditional branches (these also return 10):
 
     underscore run 'x=5; if (x > 0) { 10; } else { 0; }'           # last value is 10
-    underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y' 
+    underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y'
 
 In general, the principle here is that the code should just return what you intuitively expect without requiring much thought.
 
 ### Autodetection of CoffeeScript
 
-If you type a CoffeeScript expression and forget to use the '--coffee' flag, Underscore-CLI will first attempt to parse it as JavaScript, and if that fails, parse it as CoffeeScript.  
+If you type a CoffeeScript expression and forget to use the '--coffee' flag, Underscore-CLI will first attempt to parse it as JavaScript, and if that fails, parse it as CoffeeScript.
 
 However, a warning is emitted:
 

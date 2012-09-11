@@ -368,6 +368,20 @@ Uses Node's 'util.inspect' to print the output
 If data is a string, it is printed directly without quotes.  If data is an array, elements are separated by newlines.  Objects and arrays-within-arrays are JSON formated into a single line.  The stock example does not convey the intent of this format, which is designed to enable traditional text processing via JavaScript and to facilitate flattening of JSON lists into line-delimited lists.
 
 
+#### msgpack
+
+MessagePack binary JSON format
+
+
+<pre><code>&#222;&#0;&#21;&#163;num&#9;&#164;bool&#195;&#164;str1&#171;Hello World&#167;object0&#128;&#167;object1&#130;&#161;a&#1;&#161;b&#2;&#166;array0&#144;&#166;array1&#148;&#1;&#2;&#3;&#4;&#166;array2&#150;&#1;&#2;&#192;&#192;&#192;&#6;&#165;date1&#128;&#165;date2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#164;err1&#128;&#164;err2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#166;regex1&#128;&#166;regex2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn1&#128;&#163;fn2&#128;&#163;fn3&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn4&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#165;null1&#192;&#166;undef1&#192;&#164;deep&#130;&#161;a&#145;&#130;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#161;b&#129;&#161;c&#128;&#161;g&#129;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
+
+#### msgpack.print
+
+Textual representation of MessagePack, like "<A4>stuff<B8>"
+
+
+<pre><code>&#60;de&#62;&#60;00&#62;&#60;15&#62;&#60;a3&#62;num&#60;09&#62;&#60;a4&#62;bool&#60;c3&#62;&#60;a4&#62;str1&#60;ab&#62;Hello World&#60;a7&#62;object0&#60;80&#62;&#60;a7&#62;object1&#60;82&#62;&#60;a1&#62;a&#60;01&#62;&#60;a1&#62;b&#60;02&#62;&#60;a6&#62;array0&#60;90&#62;&#60;a6&#62;array1&#60;94&#62;&#60;01&#62;&#60;02&#62;&#60;03&#62;&#60;04&#62;&#60;a6&#62;array2&#60;96&#62;&#60;01&#62;&#60;02&#62;&#60;c0&#62;&#60;c0&#62;&#60;c0&#62;&#60;06&#62;&#60;a5&#62;date1&#60;80&#62;&#60;a5&#62;date2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a4&#62;err1&#60;80&#62;&#60;a4&#62;err2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a6&#62;regex1&#60;80&#62;&#60;a6&#62;regex2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn1&#60;80&#62;&#60;a3&#62;fn2&#60;80&#62;&#60;a3&#62;fn3&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn4&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a5&#62;null1&#60;c0&#62;&#60;a6&#62;undef1&#60;c0&#62;&#60;a4&#62;deep&#60;82&#62;&#60;a1&#62;a&#60;91&#62;&#60;82&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#60;a1&#62;b&#60;81&#62;&#60;a1&#62;c&#60;80&#62;&#60;a1&#62;g&#60;81&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
+
 
 
 
@@ -381,7 +395,7 @@ If data is a string, it is printed directly without quotes.  If data is an array
 
 ### Playing with data from a webservice
 
-Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.  
+Let's play with a real data source, like http://www.reddit.com/r/earthporn.json.  For convenience (and consistent test results), an abbreviated version of this data is stored in example-data/earthporn.json.
 
 First of all, note how raw unformatted JSON is really hard to parse with your eyes ...
 
@@ -496,13 +510,13 @@ This one is a bit [CoffeeScript](http://coffee-script.org) inspired.  When we pa
 This even works to find the last evaluated value inside conditional branches (these also return 10):
 
     underscore run 'x=5; if (x > 0) { 10; } else { 0; }'           # last value is 10
-    underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y' 
+    underscore run 'x=5; if (x > 0) { y=5; } else { y=-99; } x+y;' # last value is 'x+y'
 
 In general, the principle here is that the code should just return what you intuitively expect without requiring much thought.
 
 ### Autodetection of CoffeeScript
 
-If you type a CoffeeScript expression and forget to use the '--coffee' flag, Underscore-CLI will first attempt to parse it as JavaScript, and if that fails, parse it as CoffeeScript.  
+If you type a CoffeeScript expression and forget to use the '--coffee' flag, Underscore-CLI will first attempt to parse it as JavaScript, and if that fails, parse it as CoffeeScript.
 
 However, a warning is emitted:
 
