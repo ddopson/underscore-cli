@@ -199,38 +199,38 @@ The default format.  Outputs strictly correct, human-readible JSON w/ smart whit
 
 
 <pre><code>{
-  "num": <tag style="color:yellow">9</tag>,
-  "bool": <tag style="color:yellow">true</tag>,
-  "str1": <tag style="color:green">"Hello World"</tag>,
+  "num": <b><p style="color:yellow">9</p></b>,
+  "bool": <b><p style="color:yellow">true</p></b>,
+  "str1": <b><p style="color:green">"Hello World"</p></b>,
   "object0": { },
-  "object1": { "a": <tag style="color:yellow">1</tag>, "b": <tag style="color:yellow">2</tag> },
+  "object1": { "a": <b><p style="color:yellow">1</p></b>, "b": <b><p style="color:yellow">2</p></b> },
   "array0": [ ],
-  "array1": [<tag style="color:yellow">1</tag>, <tag style="color:yellow">2</tag>, <tag style="color:yellow">3</tag>, <tag style="color:yellow">4</tag>],
-  "array2": [<tag style="color:yellow">1</tag>, <tag style="color:yellow">2</tag>, <tag style="color:bold">null</tag>, <tag style="color:bold">null</tag>, <tag style="color:bold">null</tag>, <tag style="color:yellow">6</tag>],
-  "date1": <tag style="color:magenta">"2012-06-28T22:02:25.993Z"</tag>,
-  "date2": <tag style="color:magenta">"2012-06-28T22:02:25.993Z"</tag>,
+  "array1": [<b><p style="color:yellow">1</p></b>, <b><p style="color:yellow">2</p></b>, <b><p style="color:yellow">3</p></b>, <b><p style="color:yellow">4</p></b>],
+  "array2": [<b><p style="color:yellow">1</p></b>, <b><p style="color:yellow">2</p></b>, <b><p style="color:bold">null</p></b>, <b><p style="color:bold">null</p></b>, <b><p style="color:bold">null</p></b>, <b><p style="color:yellow">6</p></b>],
+  "date1": <b><p style="color:magenta">"2012-06-28T22:02:25.993Z"</p></b>,
+  "date2": <b><p style="color:magenta">"2012-06-28T22:02:25.993Z"</p></b>,
   "err1": { },
   "err2": {
-    "3": <tag style="color:green">"three"</tag>,
-    "prop1": <tag style="color:yellow">1</tag>,
-    "prop2": <tag style="color:yellow">2</tag>
+    "3": <b><p style="color:green">"three"</p></b>,
+    "prop1": <b><p style="color:yellow">1</p></b>,
+    "prop2": <b><p style="color:yellow">2</p></b>
   },
   "regex1": { },
   "regex2": {
-    "3": <tag style="color:green">"three"</tag>,
-    "prop1": <tag style="color:yellow">1</tag>,
-    "prop2": <tag style="color:yellow">2</tag>
+    "3": <b><p style="color:green">"three"</p></b>,
+    "prop1": <b><p style="color:yellow">1</p></b>,
+    "prop2": <b><p style="color:yellow">2</p></b>
   },
-  "null1": <tag style="color:bold">null</tag>,
+  "null1": <b><p style="color:bold">null</p></b>,
   "deep": {
     "a": [
       {
-        "longstr": <tag style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</tag>,
+        "longstr": <b><p style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</p></b>,
         "b": { "c": { } }
       }
     ],
     "g": {
-      "longstr": <tag style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</tag>
+      "longstr": <b><p style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</p></b>
     }
   }
 }</code></pre>
@@ -307,47 +307,47 @@ Output a richer 'inspection' syntax.  When printing array-and-object graphs that
 
 
 <pre><code>{
-  num: <tag style="color:yellow">9</tag>,
-  bool: <tag style="color:yellow">true</tag>,
-  str1: <tag style="color:green">"Hello World"</tag>,
+  num: <b><p style="color:yellow">9</p></b>,
+  bool: <b><p style="color:yellow">true</p></b>,
+  str1: <b><p style="color:green">"Hello World"</p></b>,
   object0: { },
-  object1: { a: <tag style="color:yellow">1</tag>, b: <tag style="color:yellow">2</tag> },
+  object1: { a: <b><p style="color:yellow">1</p></b>, b: <b><p style="color:yellow">2</p></b> },
   array0: [ ],
-  array1: [<tag style="color:yellow">1</tag>, <tag style="color:yellow">2</tag>, <tag style="color:yellow">3</tag>, <tag style="color:yellow">4</tag>],
-  array2: [<tag style="color:yellow">1</tag>, <tag style="color:yellow">2</tag>, <tag style="color:bold">null</tag>, <tag style="color:grey">undefined</tag>, , <tag style="color:yellow">6</tag>],
-  date1: <tag style="color:magenta">2012-06-28T22:02:25.993Z</tag>,
-  date2: <tag style="color:magenta">2012-06-28T22:02:25.993Z</tag>{
-    "3": <tag style="color:green">"three"</tag>,
-    prop1: <tag style="color:yellow">1</tag>,
-    prop2: <tag style="color:yellow">2</tag>
+  array1: [<b><p style="color:yellow">1</p></b>, <b><p style="color:yellow">2</p></b>, <b><p style="color:yellow">3</p></b>, <b><p style="color:yellow">4</p></b>],
+  array2: [<b><p style="color:yellow">1</p></b>, <b><p style="color:yellow">2</p></b>, <b><p style="color:bold">null</p></b>, <b><p style="color:grey">undefined</p></b>, , <b><p style="color:yellow">6</p></b>],
+  date1: <b><p style="color:magenta">2012-06-28T22:02:25.993Z</p></b>,
+  date2: <b><p style="color:magenta">2012-06-28T22:02:25.993Z</p></b>{
+    "3": <b><p style="color:green">"three"</p></b>,
+    prop1: <b><p style="color:yellow">1</p></b>,
+    prop2: <b><p style="color:yellow">2</p></b>
   },
-  err1: <tag style="color:orange">[Error: my err msg]</tag>,
-  err2: <tag style="color:orange">[Error: my err msg]</tag>{
-    "3": <tag style="color:green">"three"</tag>,
-    prop1: <tag style="color:yellow">1</tag>,
-    prop2: <tag style="color:yellow">2</tag>
+  err1: <b><p style="color:orange">[Error: my err msg]</p></b>,
+  err2: <b><p style="color:orange">[Error: my err msg]</p></b>{
+    "3": <b><p style="color:green">"three"</p></b>,
+    prop1: <b><p style="color:yellow">1</p></b>,
+    prop2: <b><p style="color:yellow">2</p></b>
   },
-  regex1: <tag style="color:red">/^78/</tag>,
-  regex2: <tag style="color:red">/^78/</tag>{
-    "3": <tag style="color:green">"three"</tag>,
-    prop1: <tag style="color:yellow">1</tag>,
-    prop2: <tag style="color:yellow">2</tag>
+  regex1: <b><p style="color:red">/^78/</p></b>,
+  regex2: <b><p style="color:red">/^78/</p></b>{
+    "3": <b><p style="color:green">"three"</p></b>,
+    prop1: <b><p style="color:yellow">1</p></b>,
+    prop2: <b><p style="color:yellow">2</p></b>
   },
-  fn1: <tag style="color:cyan">[Function]</tag>,
-  fn2: <tag style="color:cyan">[Function: fn_name]</tag>,
-  fn3: <tag style="color:cyan">[Function: fn_name]</tag>,
-  fn4: <tag style="color:cyan">[Function]</tag>,
-  null1: <tag style="color:bold">null</tag>,
-  undef1: <tag style="color:grey">undefined</tag>,
+  fn1: <b><p style="color:cyan">[Function]</p></b>,
+  fn2: <b><p style="color:cyan">[Function: fn_name]</p></b>,
+  fn3: <b><p style="color:cyan">[Function: fn_name]</p></b>,
+  fn4: <b><p style="color:cyan">[Function]</p></b>,
+  null1: <b><p style="color:bold">null</p></b>,
+  undef1: <b><p style="color:grey">undefined</p></b>,
   deep: {
     a: [
       {
-        longstr: <tag style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</tag>,
+        longstr: <b><p style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</p></b>,
         b: { c: { } }
       }
     ],
     g: {
-      longstr: <tag style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</tag>
+      longstr: <b><p style="color:green">"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"</p></b>
     }
   }
 }</code></pre>
