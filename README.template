@@ -126,7 +126,7 @@ _.map(formats, function (f, name) {
 %>
 #### <%= name %>
 
-<%= f.description %>
+<%= f.description.replace('<', '&lt;') %>
 
 <%
   if (name !== 'text') {
