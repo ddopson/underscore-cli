@@ -809,7 +809,7 @@ function getUserFn_coffee(expression, args) {
   }
   try {
     var js = coffee.compile(code, {filename: 'expression', bare: true});
-    console.log("JS: ", js);
+    //console.log("JS: ", js);
     var script = VM.createScript(js);
     var context = VM.createContext(globalFunctions);
   } catch (e) {
