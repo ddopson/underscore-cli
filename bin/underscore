@@ -8,6 +8,7 @@ var inputFormats    = require('../lib/input-formats');
 var outputFormats   = require('../lib/output-formats');
 var globalFunctions = require('../lib/functions');
 var Template        = require('../lib/template');
+var Module          = require('module');
 var VM              = require('vm');
 var JSONSelect      = null; // lazy load of require('JSONSelect');
 var coffee          = null; // lazy load of require('coffee-script');
@@ -802,41 +803,20 @@ function main () {
   }
 }
 
-function getUserFn_coffee(expression, args) {
-  var code = expression;
-  if (! coffee) {
-    coffee = require('coffee-script');
-  }
-  try {
-    var js = coffee.compile(code, {filename: 'expression', bare: true});
-    //console.log("JS: ", js);
-    var script = VM.createScript(js);
-    var context = VM.createContext(globalFunctions);
-  } catch (e) {
-    return util.format("Error while compiling user expression '%s' as CoffeeScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
-  }
-  return function () {
-    try {
-      for(var i = 0; i < args.length; i++) {
-        var name = args[i];
-        context[name] = arguments[i];
-      }   
-      var ret = script.runInContext(context);
-      return ret; 
-    } catch (e) {
-      console.error("Error while evaluating user expression '%s' as CoffeeScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
-      process.exit(-1);
-    }
-  };
-}
-
-function getUserFn_js(expression, args) {
+function getUserFn_js(expression, args, type) {
+  if (!type)
+    type = 'JavaScript'
   var code = expression;
   try {
     var script = VM.createScript(code);
+    var mod = new Module(process.cwd, module);
+    mod.paths = Module._nodeModulePaths(process.cwd);
+    var _context = _.extend(globalFunctions, {
+      require: mod.require.bind(mod)
+    });
     var context = VM.createContext(globalFunctions);
   } catch (e) {
-    return util.format("Error while compiling user expression '%s' as JavaScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
+    return util.format("Error while compiling user expression '%s' as %s: %s", stylize(code, 'expr'), type, stylize(program.trace ? e.stack : e.message, 'error'));
   }
 
   return function () {
@@ -848,11 +828,25 @@ function getUserFn_js(expression, args) {
       var ret = script.runInContext(context);
       return ret;
     } catch (e) {
-      console.error("Error while evaluating user expression '%s' as JavaScript: %s", stylize(code, 'expr'), stylize(e.message, 'error'));
+      console.error("Error while evaluating user expression '%s' as %s: %s", stylize(code, 'expr'), type, stylize(program.trace ? e.stack : e.message, 'error'));
       process.exit(-1);
     }
   };
 }
+
+function getUserFn_coffee(expression, args) {
+  var code = expression;
+  if (! coffee) {
+    coffee = require('coffee-script');
+  }
+  try {
+    var js = coffee.compile(code, {filename: 'expression', bare: true});
+  } catch (e) {
+    return util.format("Error while compiling user expression '%s' as CoffeeScript: %s", stylize(code, 'expr'), stylize(program.trace ? e.stack : e.message, 'error'));
+  }
+  return getUserFn_js(js, args, 'CoffeeScript')
+}
+
 
 function getUserFn(expression, args) {
   var js, coffee;
