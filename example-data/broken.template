@@ -1,0 +1,11 @@
+this template
+
+will throw
+
+an Exception
+
+<%
+
+  throw new Error("template has a bug");
+
+%>
