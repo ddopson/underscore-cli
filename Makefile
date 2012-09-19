@@ -43,7 +43,7 @@ dist:
 	rm -rf package
 	mkdir package
 	gcp -R bin/ lib/ example-data/ Makefile README.md README.template package.json index.js TODO.md package/
-	tar -czf underscore-cli-$(VERSION).tgz package/
+	tar -czvf underscore-cli-$(VERSION).tgz package/
 
 .PHONY: lint
 lint:
