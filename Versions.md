@@ -1,7 +1,14 @@
 
 ### V.next?
 
+* more awesome stuff? - maybe 
+
+### 0.2.13 (2012-09-18)
+
+* Feature: MessagePack input/output support
 * Perf: reduce init time further to 85 ms
+* bugfix: extraneous logging was breaking coffeescript chaining
+* bugfix: require should work inside expressions
 
 ### 0.2.12 (2012-08-27)
 
