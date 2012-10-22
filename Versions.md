@@ -3,6 +3,10 @@
 
 * more awesome stuff? - maybe 
 
+### 0.2.14 (2012-10-22)
+
+* bugfix: newer versions of commander.js would fail to correctly print help menu
+
 ### 0.2.13 (2012-09-18)
 
 * Feature: MessagePack input/output support
