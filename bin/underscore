@@ -143,10 +143,11 @@ Command.prototype.usage = function(str){
 };
 
 Command.prototype.fullName = function () {
+  // DDOPSON-2012-10-22 - Commander.js changed the property from 'name' to '_name' somewhere between 0.6.1 and 1.0.5.  We use (cmd.name || cmd._name) to work with both versions.  Really, I hacked Commander so much I should just fork it and have my own version.
   if (this.parent) {
-    return this.parent.fullName() + ' ' + this.name;
+    return this.parent.fullName() + ' ' + (this.name || this._name);
   } else {
-    return this.name;
+    return (this.name || this._name);
   }
 };
 
