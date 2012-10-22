@@ -67,7 +67,8 @@ Command.prototype.commandHelp = function () {
             : (arg.name == 'command' ? '[' + arg.name + ']' : '');
         })
         .join(' ');
-      return [cmd.name + ' ' + args, cmd.description()];
+        // DDOPSON-2012-10-22 - Commander.js changed the property from 'name' to '_name' somewhere between 0.6.1 and 1.0.5.  We use (cmd.name || cmd._name) to work with both versions.  Really, I hacked Commander so much I should just fork it and have my own version.
+      return [(cmd.name || cmd._name) + ' ' + args, cmd.description()];
     });
 
   var maxlen = _.max(_.map(cmds, function (cmd) { return cmd[0].length; }));
