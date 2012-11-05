@@ -1,7 +1,11 @@
 
 ### V.next?
 
-* more awesome stuff? - maybe 
+* more awesome stuff? - maybe ...
+
+### 0.2.16 (2012-11-05)
+
+* make {coffee-script, JSONSelect, msgpack} 'optional' dependencies, so install doesn't break if they fail (eg win32 msgpack)
 
 ### 0.2.15 (2012-11-05)
 
