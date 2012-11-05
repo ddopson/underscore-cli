@@ -3,6 +3,10 @@
 
 * more awesome stuff? - maybe 
 
+### 0.2.15 (2012-11-05)
+
+* bugfix: 'console' was not being exposed to all user expressions
+
 ### 0.2.14 (2012-10-22)
 
 * bugfix: newer versions of commander.js would fail to correctly print help menu
