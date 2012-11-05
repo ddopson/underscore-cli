@@ -48,6 +48,7 @@ dist:
 .PHONY: publish
 publish: dist
 	git tag -f v$(VERSION)
+	git push --tags
 	npm publish underscore-cli-$(VERSION).tgz
 
 .PHONY: lint
