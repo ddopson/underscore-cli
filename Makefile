@@ -45,6 +45,11 @@ dist:
 	gcp -R bin/ lib/ example-data/ Makefile README.md README.template package.json index.js TODO.md package/
 	tar -czvf underscore-cli-$(VERSION).tgz package/
 
+.PHONY: publish
+publish: dist
+	git tag -f v$(VERSION)
+	npm publish underscore-cli-$(VERSION).tgz
+
 .PHONY: lint
 lint:
 	@$(ECHO_E) "$(YELLOW)Running JSHint$(NOCOLOR)"
