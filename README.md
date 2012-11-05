@@ -373,14 +373,14 @@ If data is a string, it is printed directly without quotes.  If data is an array
 MessagePack binary JSON format
 
 
-<pre><code>&#222;&#0;&#21;&#163;num&#9;&#164;bool&#195;&#164;str1&#171;Hello World&#167;object0&#128;&#167;object1&#130;&#161;a&#1;&#161;b&#2;&#166;array0&#144;&#166;array1&#148;&#1;&#2;&#3;&#4;&#166;array2&#150;&#1;&#2;&#192;&#192;&#192;&#6;&#165;date1&#128;&#165;date2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#164;err1&#128;&#164;err2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#166;regex1&#128;&#166;regex2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn1&#128;&#163;fn2&#128;&#163;fn3&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn4&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#165;null1&#192;&#166;undef1&#192;&#164;deep&#130;&#161;a&#145;&#130;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#161;b&#129;&#161;c&#128;&#161;g&#129;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
+<pre><code>&#222;&#0;&#21;&#163;num&#9;&#164;bool&#195;&#164;str1&#171;Hello World&#167;object0&#128;&#167;object1&#130;&#161;a&#1;&#161;b&#2;&#166;array0&#144;&#166;array1&#148;&#1;&#2;&#3;&#4;&#166;array2&#150;&#1;&#2;&#192;&#192;&#192;&#6;&#165;date1&#184;2012-06-28T22:02:25.993Z&#165;date2&#184;2012-06-28T22:02:25.993Z&#164;err1&#128;&#164;err2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#166;regex1&#128;&#166;regex2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn1&#128;&#163;fn2&#128;&#163;fn3&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn4&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#165;null1&#192;&#166;undef1&#192;&#164;deep&#130;&#161;a&#145;&#130;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#161;b&#129;&#161;c&#128;&#161;g&#129;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
 
 #### msgpack.print
 
 Textual representation of MessagePack
 
 
-<pre><code>&#60;de&#62;&#60;00&#62;&#60;15&#62;&#60;a3&#62;num&#60;09&#62;&#60;a4&#62;bool&#60;c3&#62;&#60;a4&#62;str1&#60;ab&#62;Hello World&#60;a7&#62;object0&#60;80&#62;&#60;a7&#62;object1&#60;82&#62;&#60;a1&#62;a&#60;01&#62;&#60;a1&#62;b&#60;02&#62;&#60;a6&#62;array0&#60;90&#62;&#60;a6&#62;array1&#60;94&#62;&#60;01&#62;&#60;02&#62;&#60;03&#62;&#60;04&#62;&#60;a6&#62;array2&#60;96&#62;&#60;01&#62;&#60;02&#62;&#60;c0&#62;&#60;c0&#62;&#60;c0&#62;&#60;06&#62;&#60;a5&#62;date1&#60;80&#62;&#60;a5&#62;date2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a4&#62;err1&#60;80&#62;&#60;a4&#62;err2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a6&#62;regex1&#60;80&#62;&#60;a6&#62;regex2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn1&#60;80&#62;&#60;a3&#62;fn2&#60;80&#62;&#60;a3&#62;fn3&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn4&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a5&#62;null1&#60;c0&#62;&#60;a6&#62;undef1&#60;c0&#62;&#60;a4&#62;deep&#60;82&#62;&#60;a1&#62;a&#60;91&#62;&#60;82&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#60;a1&#62;b&#60;81&#62;&#60;a1&#62;c&#60;80&#62;&#60;a1&#62;g&#60;81&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
+<pre><code>&#60;de&#62;&#60;00&#62;&#60;15&#62;&#60;a3&#62;num&#60;09&#62;&#60;a4&#62;bool&#60;c3&#62;&#60;a4&#62;str1&#60;ab&#62;Hello World&#60;a7&#62;object0&#60;80&#62;&#60;a7&#62;object1&#60;82&#62;&#60;a1&#62;a&#60;01&#62;&#60;a1&#62;b&#60;02&#62;&#60;a6&#62;array0&#60;90&#62;&#60;a6&#62;array1&#60;94&#62;&#60;01&#62;&#60;02&#62;&#60;03&#62;&#60;04&#62;&#60;a6&#62;array2&#60;96&#62;&#60;01&#62;&#60;02&#62;&#60;c0&#62;&#60;c0&#62;&#60;c0&#62;&#60;06&#62;&#60;a5&#62;date1&#60;b8&#62;2012-06-28T22:02:25.993Z&#60;a5&#62;date2&#60;b8&#62;2012-06-28T22:02:25.993Z&#60;a4&#62;err1&#60;80&#62;&#60;a4&#62;err2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a6&#62;regex1&#60;80&#62;&#60;a6&#62;regex2&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn1&#60;80&#62;&#60;a3&#62;fn2&#60;80&#62;&#60;a3&#62;fn3&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a3&#62;fn4&#60;83&#62;&#60;03&#62;&#60;a5&#62;three&#60;a5&#62;prop1&#60;01&#62;&#60;a5&#62;prop2&#60;02&#62;&#60;a5&#62;null1&#60;c0&#62;&#60;a6&#62;undef1&#60;c0&#62;&#60;a4&#62;deep&#60;82&#62;&#60;a1&#62;a&#60;91&#62;&#60;82&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#60;a1&#62;b&#60;81&#62;&#60;a1&#62;c&#60;80&#62;&#60;a1&#62;g&#60;81&#62;&#60;a7&#62;longstr&#60;da&#62;&#60;00&#62;&#60;8f&#62;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
 
 
 
@@ -527,11 +527,13 @@ Why do we print a warning?  Unfortunately, there are a number of language featur
     test ? 10 : 20;  // JS: if test is true, then 10, else 20
     test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
 
-### Lazy loading of CoffeeScript library
+### Lazy loading of CoffeeScript/Msgpack/JSONSelect libraries
 
 Loading the 'coffee-script' npm module takes 50+ ms.  JSONSelect is another 5ms.  That may not sound like much time, but it's the difference between 153 ms and 93 ms, and 153 ms is definitely human perceivable.  It will also make a difference if you are writing a quick-and-dirty bash loop that executes underscore-CLI repeatedly.  Plus, fast just feels good.
 
 A few more notes... Node.js takes about 33 ms to run "hello world", and 45ms if you either "require('fs')" or 'require' anything that's not pre-compiled into the node executable (pretty hard to avoid that).  Adding underscore, underscore.string and a few of node's pre-compiled modules, and basic code loading takes ~60 ms.  That leaves ~33 ms spent on actually running code that initializes the command list and decides what to do with the command-line args that were passed in.
+
+3rdly, as of v0.2.16, underscore-CLI now marks these packages as "optionalDependencies", meaning that on the minority of systems where there is an issues installing one of those packages (there was [a report](https://github.com/ddopson/underscore-cli/issues/12) of problems with msgpack), the overall underscore-CLI installation won't fail.
 
 ### Smart whitespace in output
 
@@ -550,9 +552,39 @@ TBI - as of this version, the last evaluated expression value is always returned
 TBI - as of this version, all commands slurp the entire input stream and parse it before doing any data manipulation.  This works fine for the vast majority of scenarios, but if you actually had a 30GB JSON file, it would be a bit clunky.  For set-oriented commands like 'map', a smarter core engine plus a smarter JSON parser could enable stream-oriented processing where data processing occurs continuously as the input is read and streamed to the output without ever needing to store the entire dataset in memory at once.  This feature requires a custom JSON-parser and some serious fancy, but I'll get to it eventually.  If you have any performance-sensitive use-cases, post an issue on Github, and I'd be glad to work with you.
 
 
+# Reporting Bugs / Requesting Features
 
+I strongly encourage bug reports and feature requests.  I'll look at all of them eventually, though if I'm slammed at work or have something happening in my personal life, I might get a little bit behind.  It is my hobby project after-all, and by all means, you are welcome to submit a pull-request which I'll get to a heck of a lot faster than a feature I have to build myself :)
 
+When reporting a bug that might be related to a dependency, it's usually helpful to list out which platform you are on.  Here's my info (as of 2012-11-05):
 
+    # uname -a
+    Darwin ddopson.local 11.4.2 Darwin Kernel Version 11.4.2: Thu Aug 23 16:25:48 PDT 2012; root:xnu-1699.32.7~1/RELEASE_X86_64 x86_64 i386 MacBookPro10,1 Darwin
+
+    # node -v
+    v0.8.1
+
+    # npm -v
+    1.1.35
+
+    # npm ls
+    underscore-cli@0.2.16 /Users/Dopson/work/other/underscore-cli
+    ├── coffee-script@1.4.0
+    ├─┬ commander@1.0.5
+    │ └── keypress@0.1.0
+    ├── JSONSelect@0.4.0
+    ├─┬ mocha@1.6.0
+    │ ├── commander@0.6.1
+    │ ├── debug@0.7.0
+    │ ├── diff@1.0.2
+    │ ├── growl@1.5.1
+    │ ├─┬ jade@0.26.3
+    │ │ └── mkdirp@0.3.0
+    │ ├── mkdirp@0.3.3
+    │ └── ms@0.3.0
+    ├── msgpack@0.1.7
+    ├── underscore@1.4.2
+    └── underscore.string@2.3.0
 
 
 <a name="alternatives" />
