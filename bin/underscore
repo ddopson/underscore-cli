@@ -811,8 +811,8 @@ function getUserFn_js(expression, args, type) {
   var code = expression;
   try {
     var script = VM.createScript(code);
-    var mod = new Module(process.cwd, module);
-    mod.paths = Module._nodeModulePaths(process.cwd);
+    var mod = new Module(process.cwd(), module);
+    mod.paths = Module._nodeModulePaths(process.cwd());
     var _context = _.extend(globalFunctions, {
       require: mod.require.bind(mod)
     });
