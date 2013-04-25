@@ -3,6 +3,10 @@
 
 * more awesome stuff? - maybe ...
 
+### 0.2.17 (2013-04-25)
+
+* Fixes for Node v0.10.x
+
 ### 0.2.16 (2012-11-05)
 
 * make {coffee-script, JSONSelect, msgpack} 'optional' dependencies, so install doesn't break if they fail (eg win32 msgpack)
