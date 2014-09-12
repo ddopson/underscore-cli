@@ -596,6 +596,7 @@ When reporting a bug that might be related to a dependency, it's usually helpful
 * [TickTick] (https://github.com/kristopolous/TickTick) - Bash focused JSON manipulation.  Iteresting w/ heavy Bash integration. Complements this tool.
 * [json] (https://github.com/trentm/json) - Similar idea.
 * [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JS environment. Good technical documentation.
+* [jp] (https://github.com/kototama/jp) - Similar idea, implemented in Haskell. Use function combinators to select, filter and modify the JSON input. 
 * [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JS library.
 * [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea.... now available as an Underscore-CLI command.
 * [RecordStream] (https://github.com/benbernard/RecordStream) - PERL based tool intended to process JSON "rows".  I need to add similar multi-record support to underscore-CLI.
