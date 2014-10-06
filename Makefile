@@ -42,7 +42,7 @@ dist:
 	@$(ECHO_E) "$(YELLOW)Packing up tarball$(NOCOLOR)"
 	rm -rf package
 	mkdir package
-	gcp -R bin/ lib/ example-data/ Makefile README.md README.template package.json index.js TODO.md package/
+	rsync -a bin lib example-data Makefile README.md README.template package.json index.js TODO.md package/
 	tar -czvf underscore-cli-$(VERSION).tgz package/
 
 .PHONY: publish
