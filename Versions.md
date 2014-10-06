@@ -3,6 +3,10 @@
 
 * more awesome stuff? - maybe ...
 
+### 0.2.18 (2013-04-25)
+
+* Fix dependency break: Commander needs a specific older version
+
 ### 0.2.17 (2013-04-25)
 
 * Fixes for Node v0.10.x
