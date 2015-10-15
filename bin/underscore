@@ -36,6 +36,7 @@ function addStandardOptions(command) {
     .option('--color', "Colorize output")
     .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
     .option('--trace', "Print stack traces when things go wrong")
+    .option('--wrapwidth <width>', "Modify line-wrap width")
 }
 
 program.defaultInputFormat = 'lax';
@@ -986,6 +987,10 @@ function outputData(data) {
 
     if (program.color && typeof formatter.withConfig == 'function') {
       formatter = formatter.withConfig({color: true});
+    }
+
+    if (program.wrapwidth && typeof formatter.withConfig == 'function') {
+      formatter = formatter.withConfig({wrapWidth: program.wrapwidth});
     }
     
     var output;
