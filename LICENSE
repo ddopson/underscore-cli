@@ -1,0 +1,25 @@
+Copyright (c) 2015 Dave Dopson.
+All rights reserved.
+
+1) BSD license text:
+Redistribution and use in source and binary forms are permitted
+provided that the above copyright notice and this paragraph are
+duplicated in all such forms and that any documentation,
+advertising materials, and other materials related to such
+distribution and use acknowledge that the software was developed
+by Dave Dopson. The name of Dave Dopson may not be used to endorse or promote products derived
+from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+2) Additional non-binding request (email me!)
+If you reading this to vet the license for use in a product or service, I
+request that you send a quick email to ddopson at gmail letting me know that
+you used my code. I'll say, "Awesome! Can you tell me what it's going in?"  This
+request is not legally binding (I can't / won't do anything if you ignore it).
+BSD is pretty permissive, but if you need another license type, just ask.
+I'm a big fan of the tounge-in-cheek WTFPL, but some lawyers told me that WTFPL
+"doesn't have enough disclaimers". Lawyers. BSD has disclaimers. In case it's
+still not obvious, no part of this paragraph is legally binding or alters the
+formal (disclaimerish) text of the BSD license in any way. Cheers! --Dave
