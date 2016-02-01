@@ -378,7 +378,7 @@ var commands = {
     fn: function (data, field) {
       var fields = field.split('.');
       var sofar = '';
-      _.map(fields, function (f) {
+      _.each(fields, function (f) {
         if (data[f] !== undefined) {
           data = data[f];
           sofar = sofar + '.' + f;
