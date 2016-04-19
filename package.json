@@ -1,7 +1,7 @@
 {
   "name": "underscore-cli",
   "description": "Command-line interface to underscore.js - useful for shell scripting and JSON processing",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "contributors": ["Dave Dopson <ddopson@gmail.com>"],
   "dependencies": { "underscore": "1.8.3", "underscore.string": "3.2.3", "commander": "1.0.5" },
   "optionalDependencies": { "coffee-script": "*", "JSONSelect": "*", "msgpack": "*" },

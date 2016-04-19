@@ -3,6 +3,10 @@
 
 * more awesome stuff? - maybe ...
 
+### 0.2.19 (2016-04-19)
+
+* Fix dependency break: underscore.string
+
 ### 0.2.18 (2013-04-25)
 
 * Fix dependency break: Commander needs a specific older version
