@@ -671,6 +671,15 @@ var commands = {
     }
   },
 
+  slugify: {
+    name: 'slugify',
+    description: "Transform text into an ascii slug which can be used in safely in URLs.",
+    fn: _.slugify,
+    examples: [
+      { cmd: "echo 'Un éléphant à lorée du bois' | underscore slugify --text", result: 'un-elephant-a-loree-du-bois', format: 'text'}
+    ]
+  },
+
   template: {
     name: 'template <filename>',
     description: "Process an underscore template and print the results. See 'help template'",
