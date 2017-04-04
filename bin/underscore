@@ -675,6 +675,7 @@ var commands = {
     name: 'slugify',
     description: "Transform text into an ascii slug which can be used in safely in URLs.",
     fn: _.slugify,
+    defaultInputFormat: 'text',
     defaultOutputFormat: 'text',
     examples: [
       { cmd: "echo 'Un éléphant à lorée du bois' | underscore slugify", result: 'un-elephant-a-loree-du-bois', format: 'text'}
