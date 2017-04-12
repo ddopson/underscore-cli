@@ -671,6 +671,66 @@ var commands = {
     }
   },
 
+  capitalize: {
+    fn: _.capitalize,
+    description: "Converts first letter of the string to uppercase.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo 'foo bar' | underscore capitalize", result: 'Foo bar', format: 'text'}
+    ]
+  },
+
+  titleize: {
+    fn: _.titleize,
+    description: "Converts first letter of each word to uppercase.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo 'foo bar' | underscore titleize", result: 'Foo Bar', format: 'text'}
+    ]
+  },
+
+  camelize: {
+    fn: _.camelize,
+    description: "Converts underscored or dasherized string to a camelized one.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo '-moz-transform' | underscore camelize", result: 'MozTransform', format: 'text'}
+    ]
+  },
+
+  underscored: {
+    fn: _.underscored,
+    description: "Converts a camelized or dasherized string into an underscored one.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo 'MozTransform' | underscore underscored", result: 'moz_transform', format: 'text'}
+    ]
+  },
+
+  humanize: {
+    fn: _.humanize,
+    description: "Converts an underscored, camelized, or dasherized string into a humanized one.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo '  capitalize dash-CamelCase_underscore trim  ' | underscore humanize", result: 'Capitalize dash camel case underscore trim', format: 'text'}
+    ]
+  },  
+
+  slugify: {
+    fn: _.slugify,    
+    description: "Transform text into an ascii slug which can be used in safely in URLs.",
+    defaultInputFormat: 'text',
+    defaultOutputFormat: 'text',
+    examples: [
+      { cmd: "echo 'Un éléphant à lorée du bois' | underscore slugify", result: 'un-elephant-a-loree-du-bois', format: 'text'}
+    ]
+  },
+
   template: {
     name: 'template <filename>',
     description: "Process an underscore template and print the results. See 'help template'",
