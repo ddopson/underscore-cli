@@ -37,6 +37,7 @@ function addStandardOptions(command) {
     .option('--text', "Parse data as text instead of JSON. Sets input and output formats to 'text'")
     .option('--trace', "Print stack traces when things go wrong")
     .option('--wrapwidth <width>', "Modify line-wrap width")
+    .option('--indent <width>', "Modify indentation width")
 }
 
 program.defaultInputFormat = 'lax';
@@ -1051,6 +1052,11 @@ function outputData(data) {
 
     if (program.wrapwidth && typeof formatter.withConfig == 'function') {
       formatter = formatter.withConfig({wrapWidth: program.wrapwidth});
+    }
+
+    if (program.indent && typeof formatter.withConfig == 'function') {
+      var indentString = ' '.repeat(program.indent);
+      formatter = formatter.withConfig({indent: indentString});
     }
     
     var output;
