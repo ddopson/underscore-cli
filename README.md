@@ -1,9 +1,9 @@
 # Overview
 
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
-Thusfar, most of the tools to process it are very limited.  Yet, when working in Javascript, JSON is fluid and natural.
+Thusfar, most of the tools to process it are very limited.  Yet, when working in JavaScript, JSON is fluid and natural.
 
-<b>Why can't command-line Javascript be easy?</b>
+<b>Why can't command-line JavaScript be easy?</b>
 
 Underscore-CLI can be a simple pretty printer:
 
@@ -11,7 +11,7 @@ Underscore-CLI can be a simple pretty printer:
 
 ![example.png](https://raw.github.com/ddopson/underscore-cli/master/doc/example.png)
 
-Or it can form the backbone of a rich, full-powered Javascript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
+Or it can form the backbone of a rich, full-powered JavaScript command-line, inspired by "perl -pe", and doing for structured data what sed, awk, and grep do for text.
 
     cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
 
@@ -19,16 +19,16 @@ See [Real World Example] (#real_world_example) for the output and more examples.
 
 ### Underscore-CLI is:
 
- * **FLEXIBLE** - THE "swiss-army-knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered Javascript command-line
+ * **FLEXIBLE** - THE "Swiss Army knife" tool for processing JSON data - can be used as a simple pretty-printer, or as a full-powered JavaScript command-line
  * **POWERFUL** - Exposes the full power and functionality of [underscore.js] (http://documentcloud.github.com/underscore/) (plus [underscore.string] (https://github.com/epeli/underscore.string), [json:select](http://jsonselect.org/#overview), and [CoffeeScript](http://coffeescript.org/))
- * **SIMPLE** - Makes it simple to write JS one-liners similar to using "perl -pe"
+ * **SIMPLE** - Makes it simple to write JavaScript one-liners similar to using "perl -pe"
  * **CHAINED** - Multiple command invokations can be chained together to create a data processing pipeline
  * **MULTI-FORMAT** - Rich support for input / output formats - pretty-printing, strict JSON, etc.  See [Data Formats] (#data_formats)
  * **DOCUMENTED** - Excellent command-line documentation with multiple examples for every command
 
 ### A Bit More Explanation ...
 
-Underscore-CLI is built on [Node.js](http://nodejs.org/#download), which is less than a 4M download and [very easy to install](#installing_node).  Node.js is rapidly gaining mindshare as a tool for writing scalable services in Javascript.
+Underscore-CLI is built on [Node.js](http://nodejs.org/#download), which is less than a 4M download and [very easy to install](#installing_node).  Node.js is rapidly gaining mindshare as a tool for writing scalable services in JavaScript.
 
 Unfortutately, out-of-the-box, Node.js is a pretty horrible as a command-line tool.  This is what it takes to simply echo stdin:
 
@@ -76,17 +76,17 @@ Here's what it takes to increment the minor version number for an NPM package (s
 # Installing Underscore-CLI
 
 <a name="installing_node"></a>
-### Installing Node (command-line javascript)
+### Installing Node.js (command-line JavaScript)
 
-Installing Node is easy.  It's only a 4M download:
+Installing Node.js is easy.  It's only a 4M download:
 
-[Download Node](http://nodejs.org/#download)
+[Download Node.js](http://nodejs.org/#download)
 
 Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
 
     brew install node
 
-For more details on what node is, see [this StackOverflow thread](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
+For more details on what Node.js is, see [this StackOverflow question](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
 
 ### Installing
     npm install -g underscore-cli
@@ -195,7 +195,7 @@ If you run the tool without any arguments, this is what prints out:
 
 #### json
 
-The default format.  Outputs strictly correct, human-readible JSON w/ smart whitespace. This format has received a lot of love.  Try the '--color' flag.
+The default format.  Outputs strictly correct, human-readible JSON with smart whitespace. This format has received a lot of love.  Try the '--color' flag.
 
 
 <pre><code>{
@@ -334,7 +334,7 @@ Output a richer 'inspection' syntax.  When printing array-and-object graphs that
 
 #### inspect
 
-Uses Node's 'util.inspect' to print the output
+Uses Node.js's 'util.inspect' to print the output
 
 
 <pre><code>{ num: 9,
@@ -497,7 +497,7 @@ This section is intended to capture all the places where I spent a great deal of
 
 ### Templates as first class NPM modules - ie, real stack traces
 
-When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JS and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JS code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
+When using the 'template' command, we go to great length to provide a fully debuggable experience.  We have a custom version of the template compilation code (templates are compiled to JavaScript and then evaluated) that ensures a 1:1 mapping between line numbers in the original *.template file and line numbers in the generated JavaScript code.  This code is then loaded as if it were a real Node.js module (literally, using a require() statement).  This means that should anything go wrong, the resulting stack traces and sytax exceptions will have correct line numbers from the original template file.
 
 ### Expressions auto-return the last value
 
@@ -522,22 +522,22 @@ However, a warning is emitted:
 
     "Warning: Parsing user expression 'foo?.bar?.baz' as CoffeeScript.  Use '--coffee' to be more explicit."
 
-Why do we print a warning?  Unfortunately, there are a number of language features that are ambiguous between JS and Coffee.  ie, expressions that are valid in both languages but with different meaning.  For example:
+Why do we print a warning?  Unfortunately, there are a number of language features that are ambiguous between JavaScript and CoffeeScript.  I.e., expressions that are valid in both languages but with different meaning.  For example:
 
     test ? 10 : 20;  // JS: if test is true, then 10, else 20
     test ? 10 : 20;  // Coffee: if test is true, then test, else {10: 20}.  Tragic.
 
 ### Lazy loading of CoffeeScript/Msgpack/JSONSelect libraries
 
-Loading the 'coffee-script' npm module takes 50+ ms.  JSONSelect is another 5ms.  That may not sound like much time, but it's the difference between 153 ms and 93 ms, and 153 ms is definitely human perceivable.  It will also make a difference if you are writing a quick-and-dirty bash loop that executes underscore-CLI repeatedly.  Plus, fast just feels good.
+Loading the 'coffee-script' npm module takes 50+ ms.  JSONSelect is another 5 ms.  That may not sound like much time, but it's the difference between 153 ms and 93 ms, and 153 ms is definitely human perceivable.  It will also make a difference if you are writing a quick-and-dirty bash loop that executes underscore-CLI repeatedly.  Plus, fast just feels good.
 
-A few more notes... Node.js takes about 33 ms to run "hello world", and 45ms if you either "require('fs')" or 'require' anything that's not pre-compiled into the node executable (pretty hard to avoid that).  Adding underscore, underscore.string and a few of node's pre-compiled modules, and basic code loading takes ~60 ms.  That leaves ~33 ms spent on actually running code that initializes the command list and decides what to do with the command-line args that were passed in.
+A few more notes... Node.js takes about 33 ms to run "hello world", and 45ms if you either "require('fs')" or 'require' anything that's not pre-compiled into the node executable (pretty hard to avoid that).  Adding underscore, underscore.string and a few of Node.js's pre-compiled modules, and basic code loading takes ~60 ms.  That leaves ~33 ms spent on actually running code that initializes the command list and decides what to do with the command-line args that were passed in.
 
 3rdly, as of v0.2.16, underscore-CLI now marks these packages as "optionalDependencies", meaning that on the minority of systems where there is an issues installing one of those packages (there was [a report](https://github.com/ddopson/underscore-cli/issues/12) of problems with msgpack), the overall underscore-CLI installation won't fail.
 
 ### Smart whitespace in output
 
-As mentioned above, dense JSON is nearly unreadable to human beings, so we want to pretty print it.  JSON.stringify will accept an 'indentation' parameter that does make JSON much more readible; however, this will put _everything_ on a new line resulting in output that is silly verbose -- printing "[1, 2, 3, 4]" will take up 6 lines despite having only 12ish characters. Node's "util.inspect" is a bit better, but it doesn't print valid JSON (eg, inspect uses single instead of double quotes).  I don't want to compromize on JSON compatibility just to get pretty output.  So I wrote my own formatter that gives the best of both worlds.  The default output format is strictly JSON compatible, human readible, yet avoids excessive verbosity by putting small objects and arrays on a single line where possible.  The formatting code is also pretty flexible, allowing me to support colorization and a bunch of other nifty features; at some point, I may break the formatter into it's own npm module.
+As mentioned above, dense JSON is nearly unreadable to human beings, so we want to pretty print it.  JSON.stringify will accept an 'indentation' parameter that does make JSON much more readible; however, this will put _everything_ on a new line resulting in output that is silly verbose -- printing "[1, 2, 3, 4]" will take up 6 lines despite having only 12ish characters. Node's "util.inspect" is a bit better, but it doesn't print valid JSON (for example, inspect uses single instead of double quotes).  I don't want to compromize on JSON compatibility just to get pretty output.  So I wrote my own formatter that gives the best of both worlds.  The default output format is strictly JSON compatible, human readible, yet avoids excessive verbosity by putting small objects and arrays on a single line where possible.  The formatting code is also pretty flexible, allowing me to support colorization and a bunch of other nifty features; at some point, I may break the formatter into its own npm module.
 
 ### Smart auto-consumption of STDIN
 
@@ -549,7 +549,7 @@ TBI - as of this version, the last evaluated expression value is always returned
 
 ### Efficienct stream processing for set-oriented commands like 'map'
 
-TBI - as of this version, all commands slurp the entire input stream and parse it before doing any data manipulation.  This works fine for the vast majority of scenarios, but if you actually had a 30GB JSON file, it would be a bit clunky.  For set-oriented commands like 'map', a smarter core engine plus a smarter JSON parser could enable stream-oriented processing where data processing occurs continuously as the input is read and streamed to the output without ever needing to store the entire dataset in memory at once.  This feature requires a custom JSON-parser and some serious fancy, but I'll get to it eventually.  If you have any performance-sensitive use-cases, post an issue on Github, and I'd be glad to work with you.
+TBI - as of this version, all commands slurp the entire input stream and parse it before doing any data manipulation.  This works fine for the vast majority of scenarios, but if you actually had a 30 GB JSON file, it would be a bit clunky.  For set-oriented commands like 'map', a smarter core engine plus a smarter JSON parser could enable stream-oriented processing where data processing occurs continuously as the input is read and streamed to the output without ever needing to store the entire dataset in memory at once.  This feature requires a custom JSON-parser and some serious fancy, but I'll get to it eventually.  If you have any performance-sensitive use-cases, post an issue on GitHub, and I'd be glad to work with you.
 
 
 # Reporting Bugs / Requesting Features
@@ -590,16 +590,16 @@ When reporting a bug that might be related to a dependency, it's usually helpful
 <a name="alternatives" />
 # Alternatives
 
-* [jsonpipe] (https://github.com/dvxhouse/jsonpipe) - Python focused, w/ a featureset centered around a single scenario
+* [jsonpipe] (https://github.com/dvxhouse/jsonpipe) - Python focused, with a featureset centered around a single scenario
 * [jshon] (http://kmkeen.com/jshon/) - Has a lot of functions, but very terse
 * [json-command] (https://github.com/zpoley/json-command) - very limited
-* [TickTick] (https://github.com/kristopolous/TickTick) - Bash focused JSON manipulation.  Iteresting w/ heavy Bash integration. Complements this tool.
+* [TickTick] (https://github.com/kristopolous/TickTick) - Bash focused JSON manipulation.  Iteresting with heavy Bash integration. Complements this tool.
 * [json] (https://github.com/trentm/json) - Similar idea.
-* [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JS environment. Good technical documentation.
+* [jsawk] (https://github.com/micha/jsawk) - Similar idea. Uses a custom JavaScript environment. Good technical documentation.
 * [jp] (https://github.com/kototama/jp) - Similar idea, implemented in Haskell. Use function combinators to select, filter and modify the JSON input. 
-* [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JS library.
+* [jsonpath] (http://code.google.com/p/jsonpath/wiki/Javascript) - this is not a CLI tool.  It's a runtime JavaScript library.
 * [json:select()] (http://jsonselect.org/#tryit) - this is not a CLI tool.  CSS-like selectors for JSON.  Very interesting idea.... now available as an Underscore-CLI command.
-* [RecordStream] (https://github.com/benbernard/RecordStream) - PERL based tool intended to process JSON "rows".  I need to add similar multi-record support to underscore-CLI.
+* [RecordStream] (https://github.com/benbernard/RecordStream) - Perl based tool intended to process JSON "rows".  I need to add similar multi-record support to underscore-CLI.
 * [jq] (http://stedolan.github.io/jq/) single portable binary written in C with a decent amount of examples provided
-Please add a Github issue if I've missed any.
+Please add a GitHub issue if I've missed any.
 
