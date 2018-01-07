@@ -3,7 +3,7 @@
 JSON is an excellent data interchange format and rapidly becoming the preferred format for Web APIs.
 Thusfar, most of the tools to process it are very limited.  Yet, when working in JavaScript, JSON is fluid and natural.
 
-<b>Why can't command-line JavaScript be easy?</b>
+**Why can't command-line JavaScript be easy?**
 
 Underscore-CLI can be a simple pretty printer:
 
@@ -15,7 +15,7 @@ Or it can form the backbone of a rich, full-powered JavaScript command-line, ins
 
     cat example-data/earthporn.json | underscore extract 'data.children' | underscore pluck data | underscore pluck title
 
-See [Real World Example] (#real_world_example) for the output and more examples.
+See [Real World Example](#real_world_example) for the output and more examples.
 
 ### Underscore-CLI is:
 
@@ -68,17 +68,11 @@ Here's what it takes to increment the minor version number for an NPM package (s
     underscore -i package.json process 'vv=data.version.split("."),vv[2]++,data.version=vv.join("."),data' -o package.json
 
 
-
-
-
-
-<a name="installing" />
 # Installing Underscore-CLI
 
-<a name="installing_node"></a>
 ### Installing Node.js (command-line JavaScript)
 
-Installing Node.js is easy.  It's only a 4M download:
+Installing Node.js is easy. It's only a 4M download:
 
 [Download Node.js](http://nodejs.org/#download)
 
@@ -89,26 +83,18 @@ Alternatively, if you do [homebrew](http://mxcl.github.com/homebrew/), you can:
 For more details on what Node.js is, see [this StackOverflow question](http://stackoverflow.com/questions/1884724/what-is-node-js/6782438#6782438)
 
 ### Installing
+
     npm install -g underscore-cli
     underscore help
 
-
-
-
-
-
-
-
-
-<a name="documentation" />
 # Documentation
 
-<a name="usage"/>
+.
+
 ### Usage
 
 If you run the tool without any arguments, this is what prints out:
 
-  
     Usage: 
       underscore <command> [--in <filename>|--data <JSON>|--nodata] [--infmt <format>] [--out <filename>] [--outfmt <format>] [--quiet] [--strict] [--color] [--text] [--trace] [--coffee] [--js]
   
@@ -186,19 +172,19 @@ If you run the tool without any arguments, this is what prints out:
       
       underscore reduce --data '[1, 2, 3, 4]' 'total+value'
       # 10
-      
-  
 
-<a name="data_formats"/>
+
 ### Data Formats
 
+[TBA]
 
 #### json
 
 The default format.  Outputs strictly correct, human-readible JSON with smart whitespace. This format has received a lot of love.  Try the '--color' flag.
 
 
-<pre><code>{
+<pre><code>
+{
   "num": 9,
   "bool": true,
   "str1": "Hello World",
@@ -225,21 +211,24 @@ The default format.  Outputs strictly correct, human-readible JSON with smart wh
       "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
     }
   }
-}</code></pre>
+}
+</code></pre>
+
 
 #### dense
 
 Output dense JSON using JSON.stringify.  Efficient, but hard to read.
 
-
-<pre><code>{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}</code></pre>
+<pre><code>
+{"num":9,"bool":true,"str1":"Hello World","object0":{},"object1":{"a":1,"b":2},"array0":[],"array1":[1,2,3,4],"array2":[1,2,null,null,null,6],"date1":"2012-06-28T22:02:25.993Z","date2":"2012-06-28T22:02:25.993Z","err1":{},"err2":{"3":"three","prop1":1,"prop2":2},"regex1":{},"regex2":{"3":"three","prop1":1,"prop2":2},"null1":null,"deep":{"a":[{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!","b":{"c":{}}}],"g":{"longstr":"This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"}}}
+</code></pre>
 
 #### stringify
 
-Output formatted JSON using JSON.stringify.  A bit too verbose.
+Output formatted JSON using JSON.stringify. A bit too verbose.
 
-
-<pre><code>{
+<pre><code>
+{
   "num": 9,
   "bool": true,
   "str1": "Hello World",
@@ -291,14 +280,16 @@ Output formatted JSON using JSON.stringify.  A bit too verbose.
       "longstr": "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
     }
   }
-}</code></pre>
+}
+</code></pre>
 
 #### pretty
 
 Output a richer 'inspection' syntax.  When printing array-and-object graphs that can be generated by JSON.parse, the output is valid JavaScript syntax (but not strict JSON).  When handling complex objects not expressable in declarative JavaScript (eg arrays that also have object properties), the output is informative, but not parseable as JavaScript.
 
 
-<pre><code>{
+<pre><code>
+{
   num: 9,
   bool: true,
   str1: "Hello World",
@@ -330,14 +321,17 @@ Output a richer 'inspection' syntax.  When printing array-and-object graphs that
       longstr: "This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!"
     }
   }
-}</code></pre>
+}
+</code></pre>
+
 
 #### inspect
 
 Uses Node.js's 'util.inspect' to print the output
 
 
-<pre><code>{ num: 9,
+<pre><code>
+{ num: 9,
   bool: true,
   str1: 'Hello World',
   object0: {},
@@ -361,7 +355,9 @@ Uses Node.js's 'util.inspect' to print the output
    { a: 
       [ { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!',
           b: { c: {} } } ],
-     g: { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!' } } }</code></pre>
+     g: { longstr: 'This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!' } } }
+</code></pre>
+
 
 #### text
 
@@ -371,7 +367,6 @@ If data is a string, it is printed directly without quotes.  If data is an array
 #### msgpack
 
 MessagePack binary JSON format
-
 
 <pre><code>&#222;&#0;&#21;&#163;num&#9;&#164;bool&#195;&#164;str1&#171;Hello World&#167;object0&#128;&#167;object1&#130;&#161;a&#1;&#161;b&#2;&#166;array0&#144;&#166;array1&#148;&#1;&#2;&#3;&#4;&#166;array2&#150;&#1;&#2;&#192;&#192;&#192;&#6;&#165;date1&#184;2012-06-28T22:02:25.993Z&#165;date2&#184;2012-06-28T22:02:25.993Z&#164;err1&#128;&#164;err2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#166;regex1&#128;&#166;regex2&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn1&#128;&#163;fn2&#128;&#163;fn3&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#163;fn4&#131;&#3;&#165;three&#165;prop1&#1;&#165;prop2&#2;&#165;null1&#192;&#166;undef1&#192;&#164;deep&#130;&#161;a&#145;&#130;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!&#161;b&#129;&#161;c&#128;&#161;g&#129;&#167;longstr&#218;&#0;&#143;This really long string will force the object containing it to line-wrap.  Underscore-cli is smart about whitespace and only wraps when needed!</code></pre>
 
@@ -384,13 +379,6 @@ Textual representation of MessagePack
 
 
 
-
-
-
-
-
-
-<a name="real_world_example"/>
 # Real World Examples
 
 ### Playing with data from a webservice
@@ -482,15 +470,6 @@ Look at [Examples.md](https://github.com/ddopson/underscore-cli/blob/master/Exam
 
 
 
-
-
-
-
-
-
-
-
-<a name="polish" />
 # Polish: 1001 Little Conveniences
 
 This section is intended to capture all the places where I spent a great deal of effort to get the best possible behavior on something subtle.  aka "polish".  It also captures some of the intended "best behaviors" that I haven't had cycles to implement yet.
@@ -587,7 +566,6 @@ When reporting a bug that might be related to a dependency, it's usually helpful
     └── underscore.string@2.3.0
 
 
-<a name="alternatives" />
 # Alternatives
 
 * [jsonpipe] (https://github.com/dvxhouse/jsonpipe) - Python focused, with a featureset centered around a single scenario
