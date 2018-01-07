@@ -432,7 +432,7 @@ If we want to grep the results, 'text' is a better format choice:
     Valle de la Luna, Chile [OS] [1024x683]
     Frosted trees after a snowstorm in Laax, Switzerland [OC] [1072x712]
 
-Let's create code-style names for those images using the 'camelize' function from [underscore.string] (https://github.com/epeli/underscore.string).
+Let's create code-style names for those images using the 'camelize' function from [underscore.string](https://github.com/epeli/underscore.string).
 
     cat earthporn.json | underscore select '.data .title' | underscore map 'camelize(value.replace(/\[.*\]/g,"")).replace(/[^a-zA-Z]/g,"")' --outfmt text
 
