@@ -1,0 +1,41 @@
+name: underscore
+base: core18
+version: git
+summary: Command-line utility-belt for hacking JSON and Javascript
+description: |
+  JSON is an excellent data interchange format and rapidly becoming the
+  preferred format for Web APIs. Thusfar, most of the tools to process it
+  are very limited. Yet, when working in JavaScript, JSON is fluid and
+  natural.
+  
+  Why can't command-line JavaScript be easy?
+  
+  Underscore-CLI can be a simple pretty printer:
+  
+  cat data.json | underscore print --color
+  
+  Or it can form the backbone of a rich, full-powered JavaScript command-line,
+  inspired by "perl -pe", and doing for structured data what sed, awk, and
+  grep do for text.
+  
+  cat example-data/earthporn.json | underscore extract 'data.children' \
+    | underscore pluck data | underscore pluck title
+
+
+grade: stable
+confinement: strict
+
+parts:
+  underscore:
+    plugin: nodejs
+    source: .
+    build-packages:
+      - python
+      - make
+      - gcc
+      - g++
+
+apps:
+  underscore:
+    command: underscore
+    plugs: [home, network]
